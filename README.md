@@ -9,21 +9,27 @@ Google-Ads-first lead-gen website rebuild. Navy + orange. Phase 1 = 15 pages, Ph
 1. `docs/01-REQUIREMENTS-ANALYSIS.md` — everything the client asked for, conflicts, risks, our calls
 2. `docs/02-SITEMAP-AND-REDIRECTS.md` — final URL list + 301 map
 3. `docs/03-OPEN-QUESTIONS.md` — what to ask the client before build
-4. `client-docs/` — the 2 original client .docx files, our proposal PDF, and `extracted/` verbatim text
+4. `docs/04-SCOPE-FIT-GROWTH-PACKAGE.md` — requirements vs. package
+5. `docs/05-BUILD-NOTES-AND-LAUNCH.md` — how the site is built + launch checklist
+6. `client-docs/` — the 2 original client .docx files, our proposal PDF, and `extracted/` verbatim text
 
 ## Status
-- 2026-09-07 proposal sent ($740 Foundation / $1,130 Growth)
-- 2026-09-11 client docs received and analysed → **awaiting answers to open questions + package decision**
-- Next: design system + homepage preview
+- 2026-09-07 proposal sent · Growth package ($1,130) agreed
+- 2026-09-11 full client brief received (logo, palette, tagline, 4-layer structure, feature list)
+- 2026-09-11 **v1 site built**: 33 URLs, smart quote form, full SEO layer, 301 map. See `docs/05-BUILD-NOTES-AND-LAUNCH.md`
+- Next: client review → env vars (GTM, Resend) → Vercel deploy → real photos
 
-## Stack (planned)
-React (Next.js) + Tailwind, deployed on Vercel. Form → email + SMS. GA4 + GTM + Google Ads conversions.
+## Stack
+Next.js 16 + Tailwind v4 + TypeScript, Vercel. Form → email (Resend) + SMS (Twilio) + optional CRM webhook. GA4 + GTM + Google Ads conversions via dataLayer events.
 
 ## Structure
 ```
-src/          app code
-public/       images (WebP), favicon
-components/   shared UI
-docs/         analysis, sitemap, questions
-client-docs/  client source documents
+src/app/          routes (home, [slug] service template, core pages, api/quote, sitemap, robots)
+src/components/   Header (mega menu), Footer, StickyBar, QuoteForm, Sections, Icons, UsaMap
+src/data/         site.ts · services.ts (ALL pages) · quote.ts · reviews.ts · faqs.ts
+src/lib/          seo.ts · schema.ts · analytics.ts
+public/images/    logo.webp, og-default.png (photos go here)
+components/       → symlink to src/components
+docs/             analysis, sitemap, questions, scope fit, build notes, screenshots
+client-docs/      client source documents
 ```
