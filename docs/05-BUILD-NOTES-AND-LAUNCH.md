@@ -70,4 +70,4 @@ npm run build && npm start
 - Changed on purpose: mockup typo fixed ("Florpon to Floridy"); review = Christopher Smith (real Google review) not "Robert L."; "BBB Accredited" kept in the trust strip pending client confirmation (remove from `TRUST` in page.tsx if not accredited).
 - New photo slots (placeholders cropped from the mockup, replace with same names): `boat-type-speedboat`, `boat-type-cabin-cruiser`, `boat-type-no-trailer`, `boat-band-semi-yacht`, `boat-opt-open`, `boat-opt-enclosed`, `boat-opt-oversize`, `boat-cta-boat`.
 - Heading blue token `--color-royal` (#1e63d6) added for reference-style blue headings.
-- `standalone/boat-transport/` = the same page as one static HTML file for dropping into the old WordPress host as an interim Ads page (see `standalone/UPLOAD-GUIDE.md`).
+- `wordpress-boat-page/boat-transport/` = the same page as one static HTML file for dropping into the old WordPress host as an interim Ads page (see `wordpress-boat-page/UPLOAD-GUIDE.md`).
