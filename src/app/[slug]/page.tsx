@@ -15,7 +15,8 @@ import { SpecificPhotoGrid, Timeline } from "@/components/Visual";
 import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards, type TypeCard } from "@/components/Landing";
 
 type Params = { slug: string };
-export function generateStaticParams(): Params[] { return pages.map((p) => ({ slug: p.slug })); }
+// /boat-transport/ has its own dedicated page (src/app/boat-transport/) built to the client reference.
+export function generateStaticParams(): Params[] { return pages.filter((p) => p.slug !== "boat-transport").map((p) => ({ slug: p.slug })); }
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

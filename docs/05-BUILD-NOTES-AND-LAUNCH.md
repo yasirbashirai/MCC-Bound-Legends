@@ -63,3 +63,11 @@ npm install
 npm run dev        # http://localhost:3000
 npm run build && npm start
 ```
+
+## 2026-09-12 — /boat-transport/ rebuilt to the client's reference mockup
+- Dedicated page: `src/app/boat-transport/page.tsx` (+ `src/components/BoatQuoteForm.tsx`). The `[slug]` route skips this slug.
+- Section order = mockup: hero + white quote card → 8 boat types → 8 snowbird routes → price tiers → "Big boats" band → how it works + shipping options + coverage/review sidebar → CTA band. Site header/footer stay global.
+- Changed on purpose: mockup typo fixed ("Florpon to Floridy"); review = Christopher Smith (real Google review) not "Robert L."; "BBB Accredited" kept in the trust strip pending client confirmation (remove from `TRUST` in page.tsx if not accredited).
+- New photo slots (placeholders cropped from the mockup, replace with same names): `boat-type-speedboat`, `boat-type-cabin-cruiser`, `boat-type-no-trailer`, `boat-band-semi-yacht`, `boat-opt-open`, `boat-opt-enclosed`, `boat-opt-oversize`, `boat-cta-boat`.
+- Heading blue token `--color-royal` (#1e63d6) added for reference-style blue headings.
+- `standalone/boat-transport/` = the same page as one static HTML file for dropping into the old WordPress host as an interim Ads page (see `standalone/UPLOAD-GUIDE.md`).
