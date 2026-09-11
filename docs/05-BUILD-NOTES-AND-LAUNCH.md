@@ -2,7 +2,13 @@
 
 ## Stack
 Next.js 16 (App Router, static export per page) · Tailwind v4 · TypeScript · deployed on Vercel.
-Fonts: Barlow Condensed (display) + Inter (body). No stock photos yet: visual system = custom vehicle silhouettes (match the logo), navy gradients, dot-matrix USA route map.
+Fonts: Barlow Condensed (display) + Inter (body).
+
+## Visual system v2 (2026-09-11)
+- **Hero**: full-bleed Ken Burns crossfade slideshow (`HeroSlideshow.tsx`) with scroll parallax, staggered word-reveal headline, glass quote card, category ribbon.
+- **Photos auto-detect** from `public/images/photos/` (`src/lib/images.ts`). Missing files fall back to the illustrated treatment. Filenames + prompts: `docs/06-IMAGE-PROMPT-PACK.md`. Currently loaded: hero-1/2/3, cat-auto, cat-commercial, cat-boat, section-florida/cab/skyline (all derived from the client's 2 images).
+- **Motion**: reveal variants (up/left/right/scale + stagger via `--d`), count-up facts strip (real numbers only), animated timeline line, review carousel (auto, swipe), brand ticker, CTA shimmer, image-card zoom + gradient underline, back-to-top.
+- **Bento category grid**: photo cards, first card 2x2.
 
 ## Architecture (client's 4-layer structure)
 | Layer | Where | Count |

@@ -11,7 +11,7 @@ export function Reveal() {
   const path = usePathname();
   useEffect(() => {
     document.documentElement.classList.add("js");
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal:not(.in)"));
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal:not(.in), .reveal-left:not(.in), .reveal-right:not(.in), .reveal-scale:not(.in), .reveal-up:not(.in)"));
     const vh = window.innerHeight;
     const pending: HTMLElement[] = [];
     els.forEach((e) => { if (e.getBoundingClientRect().top < vh * 1.15) e.classList.add("in"); else pending.push(e); });

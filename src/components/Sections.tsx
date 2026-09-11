@@ -7,6 +7,8 @@ import { Arrow, Chat, Check, Chevron, Doc, Phone, Route, Ruler, Shield, Star, Us
 import { PhoneLink } from "./PhoneLink";
 import { Container } from "./Container";
 import { UsaMap } from "./UsaMap";
+import Image from "next/image";
+import { photo } from "@/lib/images";
 
 /* ── Section heading ─────────────────────────────────────────────────── */
 export function SectionHead({ eyebrow, title, sub, light = false, align = "center" }: { eyebrow: string; title: React.ReactNode; sub?: string; light?: boolean; align?: "center" | "left" }) {
@@ -20,9 +22,9 @@ export function SectionHead({ eyebrow, title, sub, light = false, align = "cente
 }
 
 /* ── Trust strip: accurate brokerage trust points ────────────────────── */
-export function TrustStrip({ dark = false }: { dark?: boolean }) {
+export function TrustStrip({ dark = false, cols = 4 }: { dark?: boolean; cols?: 2 | 4 }) {
   return (
-    <ul className={`grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 ${dark ? "text-white" : "text-navy"}`}>
+    <ul className={`grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 ${cols === 4 ? "lg:grid-cols-4" : ""} ${dark ? "text-white" : "text-navy"}`}>
       {site.trust.map((t) => (
         <li key={t.label} className="flex items-start gap-3">
           <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${dark ? "bg-blue/20 text-blue-300" : "bg-blue-100 text-blue"}`}><Shield className="h-5 w-5" /></span>
@@ -227,10 +229,12 @@ export function WhoWeServe() {
 
 /* ── CTA band ─────────────────────────────────────────────────────────── */
 export function CtaBand({ title = "Ready to move it? Get your free quote.", sub = "No deposit to book. Carrier insurance verified before dispatch. A real coordinator on every shipment." }: { title?: string; sub?: string }) {
+  const bg = photo("section-cab");
   return (
     <section className="relative overflow-hidden bg-navy">
+      {bg && <Image src={bg} alt="" fill sizes="100vw" className="object-cover opacity-30" aria-hidden="true" />}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.96),rgba(13,31,53,.75))]" aria-hidden="true" />
       <div className="road-grid absolute inset-0" aria-hidden="true" />
-      <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-blue/20 blur-3xl" aria-hidden="true" />
       <Container className="relative flex flex-col items-center gap-6 py-16 text-center lg:flex-row lg:justify-between lg:text-left">
         <div>
           <h2 className="display text-4xl text-white sm:text-5xl">{title}</h2>

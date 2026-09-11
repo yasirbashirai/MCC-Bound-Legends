@@ -50,7 +50,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   }
 
   return (
-    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "rounded-2xl border border-white/10 bg-navy-700/80 p-5 shadow-[var(--shadow-glow)] backdrop-blur sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
+    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
       <div className="mb-5">
         <h2 className={`display-md text-2xl ${dark ? "text-white" : "text-navy"}`}>
           {serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote"}
@@ -122,7 +122,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
           <fieldset className={`sm:col-span-2 rounded-xl border p-3.5 ${dark ? "border-blue/30 bg-blue/10" : "border-blue/30 bg-blue-100/40"}`}>
             <legend className={`px-1.5 text-xs font-bold uppercase tracking-wider ${dark ? "text-blue-300" : "text-blue"}`}>Dimensions help us match the right trailer</legend>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[["length", "Length (ft)"], ["width", "Width / beam (ft)"], ["height", "Height (ft)"], ["weight", "Weight / GVWR (lbs)"]].map(([n, l]) => (
+              {[["length", "Length (ft)"], ["width", "Width (ft)"], ["height", "Height (ft)"], ["weight", "Weight (lbs)"]].map(([n, l]) => (
                 <div key={n}><label className={label} htmlFor={`${n}-${variant}`}>{l}</label><input id={`${n}-${variant}`} name={n} inputMode="decimal" placeholder="—" className={field} /></div>
               ))}
             </div>

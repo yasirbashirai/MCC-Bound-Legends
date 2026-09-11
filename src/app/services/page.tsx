@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
 import { Arrow, Check, VehicleIcon } from "@/components/Icons";
 import { AlsoCoordinated, Breadcrumbs, CtaBand, SectionHead, SpecificGrid, TrustStrip } from "@/components/Sections";
+import { CategoryPhotoGrid, SpecificPhotoGrid } from "@/components/Visual";
 
 export const metadata = meta("Nationwide Transport Services | MCC Bound Legends", "Every transport service MCC Bound Legends coordinates: auto, commercial vehicle, boat, RV, motorcycle, construction and heavy equipment, plus specific vehicles and special situations.", "/services/");
 const crumbs = [{ name: "Home", href: "/" }, { name: "Services", href: "/services/" }];
@@ -26,6 +27,8 @@ export default function Services() {
         </Container>
       </section>
 
+      <section className="bg-cloud py-16"><Container><CategoryPhotoGrid /></Container></section>
+
       {categories.map((c, i) => {
         const kids = childrenOf(c.slug);
         return (
@@ -39,7 +42,7 @@ export default function Services() {
                 <Link href={`/${c.slug}/`} className="btn-blue mt-6 px-5 py-3 text-[15px]">{c.name} page <Arrow className="h-4 w-4" /></Link>
               </div>
               <div>
-                {kids.length > 0 ? <SpecificGrid heading="Specific pages" items={kids} /> : (
+                {kids.length > 0 ? <SpecificPhotoGrid items={kids} /> : (
                   <div className="card reveal p-6"><p className="eyebrow mb-3 text-muted">Coordinated under this category</p><ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-[15px] text-navy">{c.vehicles.map((v) => <li key={v} className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-blue" />{v}</li>)}</ul></div>
                 )}
               </div>
