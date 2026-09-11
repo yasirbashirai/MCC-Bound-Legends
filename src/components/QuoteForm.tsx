@@ -10,13 +10,16 @@ import { Arrow, Check, Lock } from "./Icons";
 type Props = {
   defaultType?: ShipType;
   serviceName?: string;      // e.g. "Excavator Transport" -> heading + hidden field
-  variant?: "card" | "page"; // card = navy hero card, page = full light form
-  compact?: boolean;         // hero: hide year/make/model until step 2
+  variant?: "card" | "page" | "white"; // card = navy hero card, page = full light form, white = reference-style white hero card
+  compact?: boolean;         // hero: single year/make/model field
+  minimal?: boolean;         // reference hero: only type, zips, name, phone, email
+  title?: string;
 };
 
 const years = Array.from({ length: 60 }, (_, i) => String(new Date().getFullYear() + 1 - i));
 
-export function QuoteForm({ defaultType = "car", serviceName, variant = "card", compact = false }: Props) {
+export function QuoteForm({ defaultType = "car", serviceName, variant = "card", compact = false, minimal = false, title }: Props) {
+  if (minimal) compact = true;
   const router = useRouter();
   const path = usePathname();
   const [type, setType] = useState<ShipType>(defaultType);
@@ -50,12 +53,12 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   }
 
   return (
-    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
+    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : variant === "white" ? "rounded-2xl bg-white p-5 shadow-[0_30px_60px_-20px_rgb(13_31_53/0.55)] ring-1 ring-line sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
       <div className="mb-5">
-        <h2 className={`display-md text-2xl ${dark ? "text-white" : "text-navy"}`}>
-          {serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote"}
+        <h2 className={`display-md ${minimal ? "text-[26px]" : "text-2xl"} ${dark ? "text-white" : "text-navy"}`}>
+          {title ?? (serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote")}
         </h2>
-        <p className={`mt-1 text-sm ${dark ? "text-white/65" : "text-slate"}`}>Fast. Free. No deposit to book. A real person reviews every request.</p>
+        <p className={`mt-1 text-sm ${dark ? "text-white/65" : "text-slate"}`}>{minimal ? "Fast. Free. No obligation. No deposit to book." : "Fast. Free. No deposit to book. A real person reviews every request."}</p>
       </div>
 
       {/* Honeypot */}
@@ -82,6 +85,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
           <input id={`dz-${variant}`} name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 10001" className={field} required />
         </div>
 
+        {!minimal && (<>
         <div>
           <label className={label} htmlFor={`date-${variant}`}>Preferred pickup date</label>
           <input id={`date-${variant}`} name="pickup_date" type="date" className={field} min={new Date().toISOString().slice(0, 10)} />
@@ -96,6 +100,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
             ))}
           </div>
         </div>
+        </>)}
 
         {/* Vehicle identity */}
         {has("vehicle") && !compact && (
@@ -110,7 +115,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
             </div>
           </>
         )}
-        {compact && (
+        {compact && !minimal && (
           <div className="sm:col-span-2">
             <label className={label} htmlFor={`ymm-${variant}`}>Year / Make / Model</label>
             <input id={`ymm-${variant}`} name="ymm" placeholder="e.g. 2019 Ford F-350 or 2015 Sea Ray 310" className={field} />
@@ -118,7 +123,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
         )}
 
         {/* Conditional: dimensions (commercial, marine, RV, equipment) */}
-        {has("dimensions") && (
+        {has("dimensions") && !minimal && (
           <fieldset className={`sm:col-span-2 rounded-xl border p-3.5 ${dark ? "border-blue/30 bg-blue/10" : "border-blue/30 bg-blue-100/40"}`}>
             <legend className={`px-1.5 text-xs font-bold uppercase tracking-wider ${dark ? "text-blue-300" : "text-blue"}`}>Dimensions help us match the right trailer</legend>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -150,7 +155,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
           </fieldset>
         )}
 
-        <div className="sm:col-span-2 grid gap-3.5 sm:grid-cols-3">
+        <div className={`sm:col-span-2 grid gap-3.5 ${minimal ? "" : "sm:grid-cols-3"}`}>
           <div><label className={label} htmlFor={`name-${variant}`}>Your name</label><input id={`name-${variant}`} name="name" autoComplete="name" placeholder="Full name" className={field} required /></div>
           <div><label className={label} htmlFor={`phone-${variant}`}>Phone</label><input id={`phone-${variant}`} name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" className={field} required /></div>
           <div><label className={label} htmlFor={`email-${variant}`}>Email</label><input id={`email-${variant}`} name="email" type="email" autoComplete="email" placeholder="you@email.com" className={field} required /></div>
@@ -168,16 +173,20 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
 
       {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-orange mt-4 w-full py-4 text-lg disabled:opacity-70">
-        {loading ? "Sending…" : "Get My Free Quote Now"} <Arrow className="h-5 w-5" />
+      <button type="submit" disabled={loading} className={`btn-orange mt-4 w-full py-4 text-lg disabled:opacity-70 ${minimal ? "display-md tracking-wide" : ""}`}>
+        {loading ? "Sending…" : minimal ? "Get My Free Quote" : "Get My Free Quote Now"} <Arrow className="h-5 w-5" />
       </button>
 
+      {minimal ? (
+        <p className={`mt-3 flex items-center justify-center gap-1.5 text-[12px] ${dark ? "text-white/60" : "text-muted"}`}><Lock className="h-3.5 w-3.5" /> Your information is safe and secure.</p>
+      ) : (
       <ul className={`mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-[12px] ${dark ? "text-white/60" : "text-muted"}`}>
         {["No deposit to book", "Carrier insurance verified", "Response within business hours"].map((t) => (
           <li key={t} className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-success" />{t}</li>
         ))}
         <li className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" />Your information is safe</li>
       </ul>
+      )}
     </form>
   );
 }

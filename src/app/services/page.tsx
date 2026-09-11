@@ -7,7 +7,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
 import { Arrow, Check, VehicleIcon } from "@/components/Icons";
 import { AlsoCoordinated, Breadcrumbs, CtaBand, SectionHead, SpecificGrid, TrustStrip } from "@/components/Sections";
-import { CategoryPhotoGrid, SpecificPhotoGrid } from "@/components/Visual";
+import { SpecificPhotoGrid } from "@/components/Visual";
+import { PhotoCardRow, StatsBand, WhyBand, categoryCards } from "@/components/Landing";
 
 export const metadata = meta("Nationwide Transport Services | MCC Bound Legends", "Every transport service MCC Bound Legends coordinates: auto, commercial vehicle, boat, RV, motorcycle, construction and heavy equipment, plus specific vehicles and special situations.", "/services/");
 const crumbs = [{ name: "Home", href: "/" }, { name: "Services", href: "/services/" }];
@@ -27,7 +28,8 @@ export default function Services() {
         </Container>
       </section>
 
-      <section className="bg-cloud py-16"><Container><CategoryPhotoGrid /></Container></section>
+      <section className="bg-cloud py-6"><Container><PhotoCardRow cards={categoryCards()} /></Container></section>
+      <StatsBand />
 
       {categories.map((c, i) => {
         const kids = childrenOf(c.slug);
@@ -60,6 +62,7 @@ export default function Services() {
           <p className="mt-6 text-sm text-white/55">Not sure which category fits? Call {site.phone} and describe it. We will tell you exactly how it moves.</p>
         </Container>
       </section>
+      <WhyBand />
       <CtaBand />
     </>
   );

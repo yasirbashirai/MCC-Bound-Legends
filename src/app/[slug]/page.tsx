@@ -2,68 +2,101 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/data/site";
-import { brokerNote, childrenOf, getPage, pages } from "@/data/services";
+import { brokerNote, childrenOf, getPage, iconFor, pages } from "@/data/services";
+import { reviews } from "@/data/reviews";
 import { meta } from "@/lib/seo";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
-import Image from "next/image";
-import { servicePhoto } from "@/lib/images";
-import { Words } from "@/components/Words";
-import { CategoryPhotoGrid, SpecificPhotoGrid, Timeline } from "@/components/Visual";
+import { photo, servicePhoto } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
-import { QuoteForm } from "@/components/QuoteForm";
-import { PhoneLink } from "@/components/PhoneLink";
-import { Arrow, Check, Phone, Shield, VehicleIcon } from "@/components/Icons";
-import { Breadcrumbs, CtaBand, FaqList, ReviewCard, SectionHead, TrustStrip } from "@/components/Sections";
-import { reviews } from "@/data/reviews";
+import { Arrow, Check, Doc, Route, Ruler, Shield } from "@/components/Icons";
+import { Breadcrumbs, CtaBand, FaqList, ReviewCard, SectionHead } from "@/components/Sections";
+import { SpecificPhotoGrid, Timeline } from "@/components/Visual";
+import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards, type TypeCard } from "@/components/Landing";
 
 type Params = { slug: string };
-
 export function generateStaticParams(): Params[] { return pages.map((p) => ({ slug: p.slug })); }
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { slug } = await params;
-  const p = getPage(slug); if (!p) return {};
+  const { slug } = await params; const p = getPage(slug); if (!p) return {};
   return meta(p.title, p.description, `/${p.slug}/`);
 }
+
+/** Per-category flavour for the hero right column + type row heading. */
+const FLAVOUR: Record<string, { tag: [string, string]; rowEyebrow: string; rowTitle: string; whyTitle: React.ReactNode }> = {
+  "auto-transport": { tag: ["Any car.", "Any state."], rowEyebrow: "We transport all types of vehicles", rowTitle: "Any car. Anywhere.", whyTitle: <>Door to door.<br />Coast to coast.</> },
+  "boat-transport": { tag: ["Florida boats.", "Bigger horizons."], rowEyebrow: "We transport all types of boats", rowTitle: "Any boat. Anywhere.", whyTitle: <>Florida rooted.<br />Nationwide service.</> },
+  "rv-transport": { tag: ["Home on wheels.", "Moved with care."], rowEyebrow: "We transport all types of RVs", rowTitle: "Any RV. Anywhere.", whyTitle: <>Drive-away or hauled.<br />Your call.</> },
+  "commercial-vehicle-transport": { tag: ["Business moves.", "Handled."], rowEyebrow: "We transport all types of commercial vehicles", rowTitle: "Any truck. Any fleet.", whyTitle: <>Built for<br />businesses.</> },
+  "motorcycle-transport": { tag: ["Two wheels.", "Zero worries."], rowEyebrow: "We transport all types of powersports", rowTitle: "Any bike. Anywhere.", whyTitle: <>Strapped, chocked,<br />protected.</> },
+  "construction-equipment-transport": { tag: ["Heavy iron.", "Moved right."], rowEyebrow: "We transport all types of equipment", rowTitle: "Any machine. Any site.", whyTitle: <>Permits, trailers,<br />loading. Handled.</> },
+  "heavy-equipment-transport": { tag: ["Oversize.", "On schedule."], rowEyebrow: "We transport all types of machinery", rowTitle: "Any load. Any size.", whyTitle: <>Planned down to<br />the last bridge.</> },
+};
+const BOAT_TYPES: TypeCard[] = [
+  { href: "#quote", title: "Center Console Boats", sub: "18' to 40+ feet", img: photo("type-center-console"), icon: "boat" },
+  { href: "/yacht-transport/", title: "Yacht Transport", sub: "Luxury & oversized", img: photo("type-yacht"), icon: "yacht" },
+  { href: "#quote", title: "Sailboat Transport", sub: "Mast down, local & long distance", img: photo("type-sailboat"), icon: "boat" },
+  { href: "#quote", title: "Pontoon Boats", sub: "All sizes and brands", img: photo("type-pontoon"), icon: "boat" },
+  { href: "#quote", title: "Fishing Boats", sub: "Inshore & offshore", img: photo("type-fishing-boat"), icon: "boat" },
+  { href: "#quote", title: "Jet Skis & Watercraft", sub: "Single or multiple units", img: photo("type-jet-ski"), icon: "boat" },
+];
 
 export default async function ServicePage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const p = getPage(slug); if (!p) notFound();
   const parent = p.parent ? getPage(p.parent) : undefined;
+  const cat = parent ?? p;
   const kids = childrenOf(p.slug);
   const related = p.related.map(getPage).filter(Boolean) as typeof pages;
   const crumbs = [{ name: "Home", href: "/" }, { name: "Services", href: "/services/" }, ...(parent ? [{ name: parent.name, href: `/${parent.slug}/` }] : []), { name: p.name, href: `/${p.slug}/` }];
-  const img = servicePhoto(p.slug, p.parent ?? p.slug);
   const review = reviews.find((r) => r.service.toLowerCase().includes(p.name.split(" ")[0].toLowerCase())) ?? reviews[0];
+  const fl = FLAVOUR[cat.slug] ?? FLAVOUR["auto-transport"];
+  const heroImg = servicePhoto(p.slug, p.parent ?? p.slug);
+  const slides = cat.slug === "boat-transport" && photo("hero-2") ? [{ src: photo("hero-2")!, alt: "Boat transport on a Florida causeway" }] : heroImg ? [{ src: heroImg, alt: p.name }] : [];
+  const firstSentence = p.intro.split(". ")[0] + ".";
+
+  // Type cards: children pages first (real links), then vehicle types from the data (quote anchors)
+  const typeCards: TypeCard[] = cat.slug === "boat-transport" && p.kind === "category" ? BOAT_TYPES : [
+    ...kids.map((k) => ({ href: `/${k.slug}/`, title: k.name, sub: k.short, img: photo(`svc-${k.slug}`), icon: k.icon })),
+    ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: null, icon: iconFor(v, p.icon) })),
+  ].slice(0, 7);
+  const clip = (t: string, n = 64) => (t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, "") + "…");
+  const whyPts = p.considerations.slice(0, 4).map((c, i) => ({ icon: [Ruler, Route, Doc, Shield][i], t: c.title, s: clip(c.text.split(". ")[0]) }));
 
   return (
     <>
       <JsonLd data={[breadcrumbSchema(crumbs), serviceSchema(p.name, p.description, p.slug), faqSchema(p.faqs)]} />
 
-      {/* Hero with form above the fold (client requirement on every service page) */}
-      <section className="hero-bg relative overflow-hidden text-white">
-        {img && <Image src={img} alt="" fill priority sizes="100vw" quality={78} className="object-cover" aria-hidden="true" />}
-        <div className={`absolute inset-0 ${img ? "bg-[linear-gradient(90deg,rgba(13,31,53,.93)_0%,rgba(13,31,53,.82)_42%,rgba(13,31,53,.38)_100%)]" : ""}`} />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,31,53,.3),transparent_40%,rgba(10,22,40,.9))]" />
-        <div className="road-grid absolute inset-0" aria-hidden="true" />
-        {!img && <VehicleIcon name={p.icon} className="pointer-events-none absolute -right-10 top-10 hidden h-96 w-[620px] text-blue/10 lg:block" />}
-        <Container className="relative grid gap-10 py-12 lg:grid-cols-[1.1fr_0.9fr] lg:py-16">
-          <div>
-            <Breadcrumbs items={crumbs} light />
-            <p className="eyebrow mt-6 text-blue-300">{p.eyebrow}</p>
-            <h1 className="display mt-3 text-5xl leading-[0.92] drop-shadow-[0_4px_24px_rgba(0,0,0,.4)] sm:text-6xl lg:text-7xl"><Words text={p.h1} step={45} /></h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">{p.intro}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#quote" className="btn-orange px-7 py-4 text-lg">Get My Free {p.name.split(" ")[0]} Quote <Arrow className="h-5 w-5" /></a>
-              <PhoneLink location={`hero_${p.slug}`} className="btn-ghost px-7 py-4 text-lg"><Phone className="h-5 w-5" /> {site.phone}</PhoneLink>
+      <LandingHero
+        slides={slides}
+        fallbackIcon={p.icon}
+        crumbs={<div className="mb-4"><Breadcrumbs items={crumbs} light /></div>}
+        eyebrow={p.eyebrow}
+        lines={[p.h1]}
+        sub={firstSentence}
+        formDefault={p.formDefault}
+        serviceName={p.name}
+        formTitle={`Get Your ${p.name.replace(/ Transport$| Shipping$/i, "")} Quote`}
+        tagline={fl.tag}
+      />
+
+      {/* Type row */}
+      <section className="bg-cloud py-8">
+        <Container>
+          <div className="reveal mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow text-blue">{fl.rowEyebrow}</p>
+              <h2 className="display mt-1 text-4xl text-navy sm:text-5xl">{p.kind === "category" ? fl.rowTitle : `${p.name}, handled properly.`}</h2>
+              <p className="mt-1 text-sm text-slate">Trusted by owners, dealers and businesses nationwide.</p>
             </div>
-            <div className="mt-10"><TrustStrip dark cols={2} /></div>
+            <Link href="/services/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-navy">View all services <Arrow className="h-4 w-4" /></Link>
           </div>
-          <div className="reveal-right lg:sticky lg:top-28"><QuoteForm defaultType={p.formDefault} serviceName={p.name} /></div>
+          <PhotoCardRow cards={typeCards} cols={typeCards.length >= 7 ? 7 : 6} />
         </Container>
       </section>
+
+      <WhyBand eyebrow={`Why choose MCC for ${p.name.toLowerCase()}`} title={fl.whyTitle} points={whyPts} />
 
       {/* What we coordinate + equipment */}
       <section className="bg-white py-20">
@@ -71,7 +104,8 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <div className="reveal-left">
             <p className="eyebrow mb-3 text-blue">What we coordinate</p>
             <h2 className="display text-4xl text-navy sm:text-5xl">{p.kind === "category" ? `Every kind of ${p.name.split(" & ")[0].toLowerCase()} shipment` : `${p.name}, handled properly`}</h2>
-            <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+            <p className="mt-4 text-lg leading-relaxed text-slate">{p.intro}</p>
+            <ul className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {p.vehicles.map((v) => <li key={v} className="flex items-start gap-2.5 rounded-lg bg-cloud px-3.5 py-2.5 text-[15px] font-medium text-navy"><Check className="mt-0.5 h-4 w-4 shrink-0 text-blue" />{v}</li>)}
             </ul>
           </div>
@@ -83,13 +117,15 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         </Container>
       </section>
 
-      {/* What we evaluate before dispatch */}
+      <StatsBand />
+
+      {/* What we check */}
       <section className="bg-cloud py-20">
         <Container>
           <SectionHead eyebrow="Before a truck is dispatched" title="What we check, so nothing surprises you at pickup." />
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             {p.considerations.map((c, i) => (
-              <div key={c.title} className="card reveal p-6" style={{ transitionDelay: `${i * 60}ms` }}>
+              <div key={c.title} className="card reveal-up p-6" style={{ ["--d" as string]: `${i * 60}ms` }}>
                 <span className="display text-4xl text-blue/30">0{i + 1}</span>
                 <h3 className="mt-2 text-lg font-bold text-navy">{c.title}</h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-slate">{c.text}</p>
@@ -99,33 +135,19 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         </Container>
       </section>
 
-      {/* Children (category) or siblings */}
       {(kids.length > 0 || related.length > 0) && (
         <section className="bg-white py-20">
           <Container>
-            {kids.length > 0 ? (
-              <>
-                <SectionHead align="left" eyebrow="What exactly is it?" title={<>Specific {p.name.toLowerCase()} pages</>} />
-                <SpecificPhotoGrid items={kids} />
-              </>
-            ) : (
-              <>
-                <SectionHead align="left" eyebrow="Related transport" title="You may also need" />
-                <SpecificPhotoGrid items={related} />
-              </>
-            )}
+            <SectionHead align="left" eyebrow={kids.length ? "What exactly is it?" : "Related transport"} title={kids.length ? <>Specific {p.name.toLowerCase()} pages</> : "You may also need"} />
+            <SpecificPhotoGrid items={kids.length ? kids : related} />
           </Container>
         </section>
       )}
 
-      {/* How it works + review */}
       <section className="bg-cloud py-20">
         <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_0.8fr]">
-          <div>
-            <SectionHead align="left" eyebrow="How it works" title="Three steps. One coordinator." />
-            <Timeline />
-          </div>
-          <div className="reveal flex flex-col gap-4">
+          <div><SectionHead align="left" eyebrow="How it works" title="Three steps. One coordinator." /><Timeline /></div>
+          <div className="reveal-right flex flex-col gap-4">
             <p className="eyebrow text-blue">Verified review</p>
             <ReviewCard r={review} />
             <Link href="/testimonials/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-navy">All customer reviews <Arrow className="h-4 w-4" /></Link>
@@ -133,23 +155,21 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         </Container>
       </section>
 
-      {/* FAQ */}
       <section className="bg-white py-20">
         <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="reveal">
+          <div className="reveal-left">
             <p className="eyebrow mb-3 text-blue">{p.name} FAQ</p>
             <h2 className="display text-4xl text-navy sm:text-5xl">Questions we hear about {p.name.toLowerCase()}.</h2>
             <p className="mt-4 text-slate">Something not covered? Call {site.phone}, {site.hours}.</p>
           </div>
-          <div className="reveal"><FaqList faqs={p.faqs} /></div>
+          <div className="reveal-right"><FaqList faqs={p.faqs} /></div>
         </Container>
       </section>
 
-      {/* Other categories */}
-      <section className="bg-cloud py-16">
+      <section className="bg-cloud py-14">
         <Container>
-          <p className="eyebrow mb-5 text-muted">Shipping something else?</p>
-          <CategoryPhotoGrid exclude={parent?.slug ?? p.slug} />
+          <p className="eyebrow mb-4 text-muted">Shipping something else?</p>
+          <PhotoCardRow cards={categoryCards(cat.slug)} cols={6} />
         </Container>
       </section>
 

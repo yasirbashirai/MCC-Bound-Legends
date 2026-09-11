@@ -4,6 +4,14 @@
 Next.js 16 (App Router, static export per page) · Tailwind v4 · TypeScript · deployed on Vercel.
 Fonts: Barlow Condensed (display) + Inter (body).
 
+## Visual system v3 (2026-09-11, matches client's reference concept)
+- White header with overhanging shield logo plate, navy links, orange display CTA.
+- `LandingHero` (Landing.tsx): photo visible, left message + 4 trust items, white minimal quote card (type, ZIPs, name, phone, email + SMS consent), right badge column (xl). Used on home AND every category/service page (with breadcrumbs, page-specific form preselect + tagline).
+- `PhotoCardRow`: 7 photo cards with white caption strips (home: categories; category pages: vehicle types, boat page uses 6 boat-type thumbs).
+- `StatsBand` (real numbers only) and `WhyBand` (photo backdrop, 4 icon points, orange CTA).
+- Placeholder thumbs `thumb-*.webp` / `type-*.webp` were extracted from the client's own reference concepts; replace with generated images from the prompt pack.
+- `iconFor()` in services.ts maps any vehicle label to the best silhouette for fallback cards.
+
 ## Visual system v2 (2026-09-11)
 - **Hero**: full-bleed Ken Burns crossfade slideshow (`HeroSlideshow.tsx`) with scroll parallax, staggered word-reveal headline, glass quote card, category ribbon.
 - **Photos auto-detect** from `public/images/photos/` (`src/lib/images.ts`). Missing files fall back to the illustrated treatment. Filenames + prompts: `docs/06-IMAGE-PROMPT-PACK.md`. Currently loaded: hero-1/2/3, cat-auto, cat-commercial, cat-boat, section-florida/cab/skyline (all derived from the client's 2 images).

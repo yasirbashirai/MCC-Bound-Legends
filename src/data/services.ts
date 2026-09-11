@@ -682,3 +682,24 @@ export const futurePages = [
   "ATV & UTV Transport", "Backhoe Transport", "Wheel Loader Transport", "Industrial Machinery Transport",
   "Agricultural Equipment Transport",
 ];
+
+/** Best-fit silhouette for a free-text vehicle/equipment label. */
+export function iconFor(label: string, fallback: IconKey): IconKey {
+  const l = label.toLowerCase();
+  const rules: [RegExp, IconKey][] = [
+    [/without trailer|on blocks|in the water|dry storage/, "boatlift"], [/yacht|sportfish|cruiser|trawler|catamaran/, "yacht"],
+    [/sail|pontoon|console|fishing|jet ski|watercraft|houseboat|powerboat|speedboat|bay boat|runabout|boat/, "boat"],
+    [/excavator/, "excavator"], [/skid|track loader|stand-on/, "skidsteer"], [/dozer/, "bulldozer"], [/forklift|telehandler|reach truck|order picker/, "forklift"],
+    [/crane|roller|compactor|grader|trencher|backhoe|wheel loader|tractor(?!s,)|combine|sprayer|generator|transformer|press|machinery|industrial|manufacturing|oversized|crated|agricultural|farm/, "industrial"],
+    [/box truck|straight truck|cube|refrigerated|lift-gate|moving/, "boxtruck"], [/semi|day cab|sleeper|glider|tractor/, "semi"],
+    [/utility|service body|bucket|boom|mechanic|crane truck|cab-and-chassis|chassis|dump|landscape|plumbing|hvac|work truck/, "worktruck"],
+    [/van|bus|shuttle|fleet|dealer|rental|lease|relocation|inventory|company/, "fleet"],
+    [/motorhome|class a|class b|class c|travel trailer|fifth wheel|toy hauler|camper|park model|rv/, "rv"],
+    [/motorcycle|cruiser|sport bike|touring|trike|dirt bike|dual sport|atv|utv|quad|side-by-side|golf cart|lsv|snowmobile|powersport/, "motorcycle"],
+    [/non-running|non-starting|salvage|damaged|inoperable|project|barn|do not roll|collision/, "nonrunning"], [/auction|lot|insurance-auction/, "auction"],
+    [/classic|antique|exotic|luxury|restoration|show car|collector|supercar|low-clearance|modified|lifted/, "enclosed"],
+    [/car|sedan|suv|crossover|pickup|truck/, "car"],
+  ];
+  for (const [re, icon] of rules) if (re.test(l)) return icon;
+  return fallback;
+}
