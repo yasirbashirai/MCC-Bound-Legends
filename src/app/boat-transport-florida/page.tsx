@@ -99,7 +99,7 @@ const FaqItem = ({ f }: { f: FAQ }) => (
 );
 
 export default function BoatTransportFloridaPage() {
-  const hero = photo("hero-2");
+  const hero = photo("boat-hero") ?? photo("hero-2");
   const band = photo("boat-band-semi-yacht");
   const cta = photo("boat-cta-boat");
   const crumbs = [{ name: "Home", href: "/" }, { name: "Services", href: "/services/" }, { name: P.name, href: PATH }];
@@ -113,13 +113,13 @@ export default function BoatTransportFloridaPage() {
       <section className="relative overflow-hidden bg-navy text-white">
         {/* Photo sits in the gap between the copy and the quote card (mockup: truck + boat fully visible, not behind the form) */}
         {hero && (
-          <div className="absolute inset-0 lg:left-[22%] lg:right-[27%] lg:[mask-image:linear-gradient(90deg,transparent,black_14%,black_88%,transparent)]" aria-hidden="true">
-            <Image src={hero} alt="" fill priority sizes="(max-width:1024px) 100vw, 55vw" className="object-cover object-[55%_50%]" />
+          <div className="absolute inset-0 lg:right-[24%] lg:[mask-image:linear-gradient(90deg,black_80%,transparent)]" aria-hidden="true">
+            <Image src={hero} alt="" fill priority sizes="(max-width:1024px) 100vw, 80vw" className="object-cover object-[0%_62%]" />
           </div>
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.97)_0%,rgba(13,31,53,.92)_22%,rgba(13,31,53,.55)_34%,rgba(13,31,53,0)_46%)] max-lg:bg-[linear-gradient(180deg,rgba(13,31,53,.95),rgba(13,31,53,.85))]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.86)_0%,rgba(13,31,53,.7)_22%,rgba(13,31,53,.3)_42%,rgba(13,31,53,0)_56%)] max-lg:bg-[linear-gradient(180deg,rgba(13,31,53,.95),rgba(13,31,53,.85))]" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
-          <div className="flex flex-col pb-5 lg:pt-[112px]">
+          <div className="flex flex-col pb-5 lg:pt-[136px]">
             <span className="mb-3.5 w-max rounded-full bg-orange px-4 py-1.5 text-[14px] font-semibold">Snowbird Boat Transport Specialists — Florida</span>
             <h1 className="font-display max-w-[600px] text-[36px] font-extrabold leading-[1.05] drop-shadow-[0_2px_14px_rgba(0,0,0,.55)] sm:text-[48px]">Boat Transport to Florida — Snowbird Season Specialists</h1>
             <p className="mb-5 mt-3.5 max-w-[440px] text-[16px] leading-[1.55] text-white/95 drop-shadow-[0_1px_8px_rgba(0,0,0,.6)]">Shipping your boat south for winter? MCC Bound Legends coordinates seasonal boat transport to Florida from New York, New Jersey, Michigan, Ohio, Massachusetts and all northern states. Door-to-door. No deposit to book. Get your free boat shipping quote in 60 seconds.</p>

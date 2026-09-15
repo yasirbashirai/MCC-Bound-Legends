@@ -45,7 +45,7 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
 
   return (
     <form id="quote" onSubmit={onSubmit} noValidate className="scroll-mt-28 rounded-xl bg-white p-4 pb-3 text-ink shadow-[0_24px_60px_-16px_rgb(0_0_0/0.55)] ring-1 ring-line">
-      <h2 className="font-display text-[24px] font-extrabold leading-[1.08] text-navy">{title}</h2>
+      <h2 className="font-display text-[24px] font-extrabold leading-[1.08] text-royal">{title}</h2>
       <p className="mb-3 mt-1 text-[13px] text-slate">Find out in 60 seconds — free, no deposit, no obligation.</p>
 
       {/* Honeypot */}

@@ -40,7 +40,7 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-2">
           <div className="flex items-center gap-6">
             <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex"><Pin className="h-4 w-4 text-blue" />{site.address.full}</span>
-            <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Shield className="h-4 w-4 text-blue" />USDOT {site.usdot} <span className="text-white/30">|</span> MC {site.mc} <span className="text-white/30">|</span> Licensed &amp; Bonded Broker</span>
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Shield className="h-4 w-4 text-blue" />USDOT {site.usdot} <span className="text-white/30">|</span> MC {site.mc} <span className="text-white/30">|</span> Licensed &amp; Bonded</span>
           </div>
           <div className="flex items-center gap-5 pl-6">
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Clock className="h-4 w-4 text-blue" />{site.hours}</span>
@@ -61,7 +61,7 @@ export function Header() {
           <Link href="/" className="relative flex shrink-0 items-center" aria-label={`${site.name} home`}>
             {/* Shield plate: overhangs the hero on desktop, like the reference */}
             <span className={`logo-plate relative block bg-white px-3 pb-2 pt-1 lg:absolute lg:-top-2.5 lg:left-0 lg:z-[60] lg:rounded-b-[28px] lg:px-5 lg:pb-4 lg:pt-3 lg:shadow-[0_18px_40px_-16px_rgb(13_31_53/0.55)] ${scrolled ? "lg:!rounded-b-2xl lg:!pb-2 lg:!pt-2" : ""}`}>
-              <span className={`relative block h-14 w-[90px] transition-all duration-500 sm:h-16 sm:w-[104px] ${scrolled ? "lg:h-14 lg:w-[96px]" : "lg:h-[116px] lg:w-[188px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="188px" className="object-contain" priority /></span>
+              <span className={`relative block h-16 w-16 transition-all duration-500 sm:h-[76px] sm:w-[76px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[150px] lg:w-[160px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="160px" className="object-contain" priority /></span>
             </span>
             <span className="hidden lg:block lg:w-[228px]" aria-hidden="true" />
           </Link>
@@ -70,13 +70,13 @@ export function Header() {
             {NAV.map((n) =>
               n.mega ? (
                 <div key={n.href} className="relative" onMouseEnter={() => setMega(true)} onMouseLeave={() => setMega(false)}>
-                  <Link href={n.href} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path?.startsWith("/services") || mega ? "text-blue" : "text-navy"}`} aria-expanded={mega}>
+                  <Link href={n.href} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path?.startsWith("/services") || mega ? "text-blue" : "text-royal"}`} aria-expanded={mega}>
                     {n.label} <Chevron className="h-4 w-4 opacity-70" />
                   </Link>
                   {mega && <MegaMenu />}
                 </div>
               ) : (
-                <Link key={n.href} href={n.href} className={`whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path === n.href ? "text-blue underline decoration-blue decoration-2 underline-offset-8" : "text-navy"}`}>
+                <Link key={n.href} href={n.href} className={`whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path === n.href ? "text-blue underline decoration-blue decoration-2 underline-offset-8" : "text-royal"}`}>
                   {n.label}
                 </Link>
               )
@@ -84,11 +84,11 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <PhoneLink location="header" className="hidden items-center gap-2 whitespace-nowrap text-navy md:flex">
+            <PhoneLink location="header" className="hidden items-center gap-2 whitespace-nowrap text-royal md:flex">
               <span className="grid h-10 w-10 place-items-center rounded-full bg-blue-100 text-blue"><Phone className="h-5 w-5" /></span>
               <span className="leading-tight">
                 <span className="block font-display text-[22px] font-bold tracking-wide">{site.phone}</span>
-                <span className="hidden text-[11px] text-muted xl:block">Talk to a transport specialist</span>
+                <span className="hidden text-[11px] text-royal/80 xl:block">Talk to a transport specialist</span>
               </span>
             </PhoneLink>
             <Link href="/get-a-quote/" className="btn-orange display-md whitespace-nowrap px-4 py-2.5 text-[15px] tracking-wide sm:px-6 sm:py-3 sm:text-lg">

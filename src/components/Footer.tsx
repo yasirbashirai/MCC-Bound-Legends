@@ -28,7 +28,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="inline-flex items-center gap-3">
-            <span className="block rounded-xl bg-white px-2 py-1"><span className="relative block h-12 w-20"><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="96px" className="object-contain" /></span></span>
+            <span className="block rounded-xl bg-white p-1.5"><span className="relative block h-14 w-14"><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="96px" className="object-contain" /></span></span>
             <span className="display text-2xl text-white">MCC <span className="text-blue">Bound</span> Legends</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed">
