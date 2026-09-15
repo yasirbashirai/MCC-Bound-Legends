@@ -322,13 +322,13 @@ export default function BoatTransportFloridaPage() {
       {/* ── CTA BAND ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[linear-gradient(90deg,#0b3d78,#0d5cb6_40%,#0d5cb6_70%,#0b3d78)] text-white">
         {cta && (
-          <div className="absolute bottom-0 left-0 top-0 hidden w-[42%] lg:block" aria-hidden="true">
-            <Image src={cta} alt="" fill sizes="42vw" className="object-cover object-[35%_60%]" />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,92,182,0)_60%,#0d5cb6_100%)]" />
+          <div className="absolute bottom-0 left-0 top-0 hidden w-[46%] lg:block" aria-hidden="true">
+            <Image src={cta} alt="" fill sizes="46vw" className="object-cover object-[50%_55%]" />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,92,182,0)_65%,#0d5cb6_100%)]" />
           </div>
         )}
-        <div className="relative mx-auto grid min-h-[150px] max-w-7xl items-center gap-6 px-5 py-7 text-center sm:px-8 lg:grid-cols-[1fr_auto]">
-          <div className="lg:pl-[34%]">
+        <div className="relative mx-auto grid min-h-[170px] max-w-7xl items-center gap-6 px-5 py-7 text-center sm:px-8 lg:grid-cols-[1fr_auto]">
+          <div className="lg:pl-[38%]">
             <h2 className="font-display text-[31px] font-extrabold leading-tight">Safe Boats. Happier Destinations.</h2>
             <p className="mt-0.5 text-[16px]">Get your free boat shipping quote to Florida today.</p>
             <ul className="mt-2 flex flex-wrap justify-center gap-5 text-[14px] font-medium">
