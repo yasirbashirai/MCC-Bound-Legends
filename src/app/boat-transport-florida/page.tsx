@@ -212,12 +212,12 @@ export default function BoatTransportFloridaPage() {
       {/* ── BIG BOATS BAND ───────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-navy text-white">
         {band && (
-          <div className="absolute inset-0 lg:left-[19%] lg:right-[21%] lg:[mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]" aria-hidden="true">
-            <Image src={band} alt="" fill sizes="(max-width:1024px) 100vw, 60vw" className="object-cover object-[45%_45%] max-sm:opacity-35" />
+          <div className="absolute inset-0 lg:left-[17%] lg:right-[20%] lg:[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]" aria-hidden="true">
+            <Image src={band} alt="" fill sizes="(max-width:1024px) 100vw, 63vw" className="object-cover object-[50%_62%] max-sm:opacity-35" />
           </div>
         )}
         <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.98)_0%,rgba(13,31,53,.85)_18%,rgba(13,31,53,0)_30%,rgba(13,31,53,0)_70%,rgba(13,31,53,.85)_82%,rgba(13,31,53,1)_100%)] lg:block" aria-hidden="true" />
-        <div className="relative mx-auto grid min-h-[230px] max-w-7xl items-center gap-5 px-5 py-7 sm:px-8 lg:grid-cols-[280px_1fr_260px]">
+        <div className="relative mx-auto grid min-h-[300px] max-w-7xl items-center gap-5 px-5 py-8 sm:px-8 lg:grid-cols-[280px_1fr_260px]">
           <div>
             <h2 className="font-display text-[32px] font-extrabold leading-none"><span className="block">BIG BOATS.</span><span className="block">LONG DISTANCES.</span><span className="block text-blue">NO PROBLEM.</span></h2>
             <p className="mb-3.5 mt-2.5 max-w-[270px] text-[13.5px] leading-[1.45] text-white/95">From coastal moves to cross-country shipping, we handle boat transport so you can focus on what matters — the journey ahead.</p>
@@ -246,7 +246,7 @@ export default function BoatTransportFloridaPage() {
                 const src = photo(img);
                 return (
                   <li key={t} className="overflow-hidden rounded-md border border-line bg-white">
-                    <span className="relative block aspect-[3.6] bg-mist">{src && <Image src={src} alt={t} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover" />}</span>
+                    <span className="relative block aspect-[2/1] bg-mist">{src && <Image src={src} alt={t} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover" />}</span>
                     <div className="px-3.5 pb-3.5 pt-3">
                       <b className="mb-1.5 block text-[17px] font-bold text-royal">{t}</b>
                       <ul>{pts.map((p) => <li key={p} className="mb-1 flex gap-1.5 text-[13.5px] leading-[1.35] text-navy"><CheckDot className="mt-0.5 h-[13px] w-[13px]" color="bg-blue" />{p}</li>)}</ul>
