@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Boat Transport to Florida — Landing Page Setup Guide | MCC Bound Legends</title>
+<style>
+@page { size: Letter; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f172a; font-size: 12.5px; line-height: 1.5; }
+.page { width: 8.5in; height: 11in; padding: 0.55in 0.6in 0.5in; page-break-after: always; position: relative; overflow: hidden; }
+.page:last-child { page-break-after: auto; }
+h1 { font-family: "Arial Narrow", "Barlow Condensed", Impact, sans-serif; font-weight: 800; font-size: 34px; line-height: 1.02; color: #0d1f35; margin: 0 0 6px; letter-spacing: -.01em; }
+h2 { font-family: "Arial Narrow", "Barlow Condensed", Impact, sans-serif; font-weight: 800; font-size: 22px; color: #1e63d6; margin: 18px 0 8px; letter-spacing: -.005em; }
+h3 { font-size: 13.5px; color: #0d1f35; margin: 12px 0 4px; }
+p { margin: 0 0 8px; }
+.lead { font-size: 14px; color: #475569; }
+.tag { display: inline-block; background: #f97316; color: #fff; font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+.cover { background: linear-gradient(160deg, #0d1f35 0%, #0a1628 60%, #08131f 100%); color: #fff; }
+.cover h1 { color: #fff; font-size: 44px; margin-top: 18px; }
+.cover .lead { color: rgba(255,255,255,.85); font-size: 16px; max-width: 5.6in; }
+.cover .logo { width: 150px; background: #fff; border-radius: 16px; padding: 10px; }
+.cover .meta { position: absolute; bottom: .6in; left: .6in; right: .6in; display: flex; justify-content: space-between; font-size: 11.5px; color: rgba(255,255,255,.7); border-top: 1px solid rgba(255,255,255,.15); padding-top: 12px; }
+.shot { width: 100%; border-radius: 10px; border: 1px solid #dbe3ee; }
+.cover .shot { border: 0; box-shadow: 0 20px 50px rgba(0,0,0,.45); margin-top: 26px; }
+ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 6px 0 0; }
+ol.steps li { counter-increment: s; position: relative; padding: 0 0 10px 40px; min-height: 30px; }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: #1e63d6; color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 14px; }
+code, .path { font-family: Menlo, Consolas, monospace; font-size: 11.5px; background: #eef2f7; padding: 1px 6px; border-radius: 4px; color: #0d1f35; }
+.box { border: 1px solid #dbe3ee; border-radius: 10px; padding: 12px 14px; margin: 10px 0; background: #fff; }
+.box.blue { background: #e8f4fd; border-color: #bfe0fb; }
+.box.orange { background: #fff4ea; border-color: #fdd2ae; }
+.box.navy { background: #0d1f35; color: #fff; border-color: #0d1f35; }
+.box.navy code { background: rgba(255,255,255,.12); color: #fff; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid #dbe3ee; vertical-align: top; }
+th { background: #eef2f7; color: #0d1f35; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.ok { color: #16a34a; font-weight: 700; } .no { color: #dc2626; font-weight: 700; }
+ul.check { list-style: none; padding: 0; margin: 4px 0; }
+ul.check li { padding: 4px 0 4px 26px; position: relative; }
+ul.check li::before { content: ""; position: absolute; left: 0; top: 7px; width: 14px; height: 14px; border: 2px solid #1e63d6; border-radius: 4px; }
+.tree { font-family: Menlo, Consolas, monospace; font-size: 11.5px; background: #0d1f35; color: #e2e8f0; border-radius: 8px; padding: 12px 14px; line-height: 1.6; white-space: pre; }
+.foot { position: absolute; bottom: .35in; left: .6in; right: .6in; display: flex; justify-content: space-between; font-size: 10px; color: #64748b; border-top: 1px solid #dbe3ee; padding-top: 8px; }
+.callout { display: flex; gap: 12px; align-items: flex-start; }
+.num { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: #f97316; color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 16px; }
+small { color: #64748b; }
+</style></head>
+<body>
+
+<!-- ─── COVER ─────────────────────────────────────────────────────────── -->
+<section class="page cover">
+  <img class="logo" src="../boat-transport-florida/images/logo.webp" alt="MCC Bound Legends">
+  <div class="tag">Setup Guide · September 2026</div>
+  <h1>Boat Transport to Florida<br>Landing Page</h1>
+  <p class="lead">How to put the new <b>mccboundlegends.com/boat-transport-florida/</b> page on the current WordPress website, connect the lead form, and confirm Google Ads tracking, in about 15 minutes.</p>
+  <img class="shot" src="cover-shot.png" alt="Landing page preview">
+  <div class="meta"><span>MCC Bound Legends LLC · (888) 785-0028 · USDOT 4464266 · MC 1760960</span><span>Prepared by Yasir Bashir · yasirbashir.com</span></div>
+</section>
+
+<!-- ─── PAGE 1: HOW IT WORKS WITH WORDPRESS ───────────────────────────── -->
+<section class="page">
+  <div class="tag">Read this first</div>
+  <h1>How this page works with WordPress</h1>
+  <p class="lead">The landing page is a <b>self-contained HTML folder</b> that sits next to WordPress on the same domain. WordPress keeps running exactly as it does today. Nothing in WordPress, the theme or any plugin is changed.</p>
+
+  <div class="grid2">
+    <div class="box blue">
+      <h3 style="margin-top:0">✔ What works</h3>
+      <ul style="margin:0;padding-left:16px">
+        <li>Same domain, exact URL for Google Ads: <code>/boat-transport-florida/</code></li>
+        <li>Design is identical to the approved page (desktop + mobile)</li>
+        <li>All photos, buttons, quote form, phone links, FAQ accordion</li>
+        <li>Page title, meta description, canonical URL and Google schema are built in, so Google indexes it normally</li>
+        <li>Google Tag Manager + Google Ads tags are already inside (same IDs as the rest of the site)</li>
+        <li>Leads arrive by email; the visitor lands on a thank-you page</li>
+      </ul>
+    </div>
+    <div class="box orange">
+      <h3 style="margin-top:0">✖ What does not sync</h3>
+      <ul style="margin:0;padding-left:16px">
+        <li>It is not listed under WordPress → Pages and does not open in Elementor</li>
+        <li>Changes to the WordPress menu or footer do not update on this page (its header and footer are copies)</li>
+        <li>Yoast / Rank Math do not see it; it is not in the WordPress sitemap</li>
+        <li>Text edits are made in the HTML file (or send the change to Yasir, who rebuilds and re-uploads in minutes)</li>
+        <li>Text-message (SMS) alerts are not available with the email form</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Why this approach</h2>
+  <p>The goal is to launch the Google Ads campaign now. This folder goes live in 5 minutes with no risk to the existing site. Rebuilding the same design inside Elementor takes about a day, will not be pixel-exact, and becomes throwaway work if the new website replaces WordPress.</p>
+
+  <div class="box navy">
+    <b>Decision needed:</b> Is WordPress staying long-term, or is the new website replacing it?<br>
+    <span style="opacity:.85">Staying → we build this page again inside Elementor so it is fully editable in WordPress. Being replaced → upload this folder now and launch the ads; the page moves to the new site automatically at launch.</span>
+  </div>
+
+  <h2>What's in the package</h2>
+  <div class="tree">boat-transport-florida-upload.zip      ← upload this one file
+└─ boat-transport-florida/
+   ├─ index.html                       the landing page (styles + scripts inside)
+   ├─ images/                          15 photos (logo, hero, boat types, options)
+   └─ thank-you/index.html             form success page (Google Ads conversion page)</div>
+  <div class="foot"><span>MCC Bound Legends · Boat landing page setup guide</span><span>Page 1</span></div>
+</section>
+
+<!-- ─── PAGE 2: UPLOAD STEPS ───────────────────────────────────────────── -->
+<section class="page">
+  <div class="tag">Step 1 · 5 minutes</div>
+  <h1>Upload to Hostinger</h1>
+  <p class="lead">Done through the Hostinger File Manager. No FTP program needed.</p>
+  <ol class="steps">
+    <li><b>Log in to Hostinger</b> → hPanel → <b>Websites</b> → <b>mccboundlegends.com</b> → <b>Manage</b>.</li>
+    <li>Left menu → <b>Files</b> → <b>File Manager</b>.</li>
+    <li>Open the folder <span class="path">public_html/</span>. You will see WordPress there (<code>wp-admin</code>, <code>wp-content</code>, <code>wp-includes</code>). Do not touch those.</li>
+    <li>Click <b>Upload</b> (top-right) and upload <span class="path">boat-transport-florida-upload.zip</span> into <span class="path">public_html/</span>.</li>
+    <li>Right-click the zip → <b>Extract</b> → extract into the current folder. Then delete the zip.</li>
+    <li>Check the result. You must now have:<br>
+      <span class="path">public_html/boat-transport-florida/index.html</span><br>
+      <span class="path">public_html/boat-transport-florida/images/</span> (15 files)<br>
+      <span class="path">public_html/boat-transport-florida/thank-you/index.html</span></li>
+    <li>Open <b>https://mccboundlegends.com/boat-transport-florida/</b> in a browser. The page is live.</li>
+  </ol>
+
+  <div class="box">
+    <b>If you see a WordPress "Page not found" instead:</b>
+    <ol style="margin:4px 0 0;padding-left:18px">
+      <li>hPanel → <b>Advanced</b> → <b>Cache Manager</b> → purge / clear cache (LiteSpeed).</li>
+      <li>WordPress admin → <b>Pages</b> → search "boat-transport-florida". If a WordPress page with that slug exists, rename its slug.</li>
+      <li>Reload. A real folder always wins over a WordPress permalink once the cache is cleared.</li>
+    </ol>
+  </div>
+
+  <h2>Rollback</h2>
+  <p>Delete the folder <span class="path">public_html/boat-transport-florida/</span>. WordPress is untouched.</p>
+  <div class="foot"><span>MCC Bound Legends · Boat landing page setup guide</span><span>Page 2</span></div>
+</section>
+
+<!-- ─── PAGE 3: FORM + TRACKING ────────────────────────────────────────── -->
+<section class="page">
+  <div class="tag">Step 2 · 3 minutes</div>
+  <h1>Activate the quote form</h1>
+  <p class="lead">The form sends leads by email through <b>FormSubmit</b> (free, no plugin, no API key). It needs one activation click.</p>
+  <ol class="steps">
+    <li>On the live page, fill in the quote form with test details and submit it.</li>
+    <li>FormSubmit emails <b>Jeff.c@mccboundlegends.com</b> a message titled <i>"Activate form"</i>. Check spam if it is not in the inbox. Click the activation link <b>once</b>.</li>
+    <li>Submit the form again. The lead now arrives as a clean table email with: Year/Make/Model, boat type, length, pick-up ZIP, drop-off ZIP, trailer, date, name, phone, email, SMS consent.</li>
+    <li>After submitting, the visitor lands on <span class="path">/boat-transport-florida/thank-you/</span>.</li>
+  </ol>
+  <p><small>To send leads to a different address: open <code>index.html</code>, find the line <code>action="https://formsubmit.co/Jeff.c@mccboundlegends.com"</code> and change the email. Re-activation is needed for a new address.</small></p>
+
+  <div class="tag" style="margin-top:14px">Step 3 · 10 minutes</div>
+  <h1>Google Ads conversion tracking</h1>
+  <p class="lead">The page already loads Google Tag Manager <b>GTM-M44WB2FK</b> and the Google Ads tag <b>AW-18234011636</b>. It sends three events that GTM turns into conversions:</p>
+  <table>
+    <tr><th>Event</th><th>When it fires</th><th>Use it as</th></tr>
+    <tr><td><code>phone_click</code></td><td>Any phone number is tapped/clicked (header, hero, routes, bottom bar)</td><td>Conversion: <b>Phone Click</b></td></tr>
+    <tr><td><code>quote_submit</code></td><td>The quote form is submitted</td><td>Conversion: <b>Quote Form Submit</b></td></tr>
+    <tr><td><code>generate_lead</code></td><td>The thank-you page loads</td><td>Backup conversion (page load)</td></tr>
+  </table>
+  <ol class="steps">
+    <li><b>Google Ads</b> → Goals → Conversions → <b>+ New conversion action</b> → Website → "Add a conversion action manually". Create <b>Quote Form Submit</b> (Submit lead form, count One) and <b>Phone Click</b> (Contact, count Every). Choose "Use Google Tag Manager" and copy each <b>Conversion label</b>.</li>
+    <li><b>Google Tag Manager</b> → container GTM-M44WB2FK → Admin → <b>Import Container</b> → file <span class="path">mcc-gtm-sitewide-conversions.json</span> (supplied) → Existing workspace → <b>Merge</b>.</li>
+    <li>Variables → paste the two labels into <i>Const – Label: Quote Submit</i> and <i>Const – Label: Phone Click</i>.</li>
+    <li>Click <b>Preview</b>, open the live page, tap the phone number and submit a test quote. Both tags show as fired. Click <b>Publish</b>.</li>
+    <li>Within a few hours Google Ads shows the conversions as "Recording conversions". Launch the campaign.</li>
+  </ol>
+  <p><small>The same events exist on the new website, so this GTM setup keeps working after the site moves, on every page, not just the boat page.</small></p>
+  <div class="foot"><span>MCC Bound Legends · Boat landing page setup guide</span><span>Page 3</span></div>
+</section>
+
+<!-- ─── PAGE 4: CHECKLIST ──────────────────────────────────────────────── -->
+<section class="page">
+  <div class="tag">Before the ads go live</div>
+  <h1>Launch checklist</h1>
+  <p class="lead">Test on a computer and on a phone. Every item must pass.</p>
+  <ul class="check">
+    <li><b>Page loads</b> at https://mccboundlegends.com/boat-transport-florida/ with no WordPress header around it</li>
+    <li><b>Browser tab</b> reads: <i>Boat Shipping to Florida — Free Quote | MCC Bound Legends</i></li>
+    <li><b>Quote form</b> submitted → activation link clicked → second test lead arrives by email</li>
+    <li><b>Phone number</b> tapped on a phone → dialer opens with (888) 785-0028</li>
+    <li><b>Orange sticky bar</b> visible at the bottom on mobile; both buttons work</li>
+    <li><b>Every "Get a Quote" button</b> on the page scrolls to the form (boat types, routes, price cards, bottom band)</li>
+    <li><b>FAQ questions</b> expand and collapse when clicked</li>
+    <li><b>USDOT 4464266 / MC 1760960</b> shown in the top bar, hero photo and footer</li>
+    <li><b>Copyright</b> at the bottom says 2026</li>
+    <li><b>PageSpeed</b> (pagespeed.web.dev) mobile score above 70; take a screenshot</li>
+    <li><b>Google Ads</b> shows both conversions recording after the test submit</li>
+  </ul>
+
+  <h2>Things to confirm on the content</h2>
+  <div class="box">
+    <ul style="margin:0;padding-left:16px">
+      <li><b>"BBB Accredited"</b> appears in the hero trust strip and footer (from the supplied copy). If MCC is not BBB accredited, tell Yasir and it is removed.</li>
+      <li><b>Prices</b> $1,500 – $5,000+ by boat size, as supplied.</li>
+      <li><b>Reviews</b> are the four real boat-transport reviews from Google and Trustpilot (Christopher Smith, Malik, Anna Carlson, Emmanuel Rosario), quoted as published.</li>
+    </ul>
+  </div>
+
+  <h2>Making changes later</h2>
+  <p>Send the change (text, photo, price) to Yasir. The page is generated from a master copy, so any edit is rebuilt and the new zip re-uploaded the same way as in Step 1. Replacing the folder keeps the URL, tracking and form unchanged.</p>
+
+  <h2>Contacts</h2>
+  <table>
+    <tr><th>Item</th><th>Value</th></tr>
+    <tr><td>Live URL</td><td>https://mccboundlegends.com/boat-transport-florida/</td></tr>
+    <tr><td>Thank-you URL</td><td>https://mccboundlegends.com/boat-transport-florida/thank-you/</td></tr>
+    <tr><td>Lead email</td><td>Jeff.c@mccboundlegends.com (FormSubmit)</td></tr>
+    <tr><td>Google Tag Manager</td><td>GTM-M44WB2FK</td></tr>
+    <tr><td>Google Ads tag</td><td>AW-18234011636</td></tr>
+    <tr><td>Hosting</td><td>Hostinger · public_html/boat-transport-florida/</td></tr>
+  </table>
+  <div class="foot"><span>MCC Bound Legends · Boat landing page setup guide · Prepared by Yasir Bashir, yasirbashir.com</span><span>Page 4</span></div>
+</section>
+</body></html>
