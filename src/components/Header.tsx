@@ -61,9 +61,9 @@ export function Header() {
           <Link href="/" className="relative flex shrink-0 items-center" aria-label={`${site.name} home`}>
             {/* Shield plate: overhangs the hero on desktop, like the reference */}
             <span className={`logo-plate relative block bg-white px-3 pb-2 pt-1 lg:absolute lg:-top-2.5 lg:left-0 lg:z-[60] lg:rounded-b-[28px] lg:px-5 lg:pb-4 lg:pt-3 lg:shadow-[0_18px_40px_-16px_rgb(13_31_53/0.55)] ${scrolled ? "lg:!rounded-b-2xl lg:!pb-2 lg:!pt-2" : ""}`}>
-              <span className={`relative block h-12 w-[78px] transition-all duration-500 sm:h-14 sm:w-[92px] ${scrolled ? "lg:h-12 lg:w-[84px]" : "lg:h-[92px] lg:w-[150px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="150px" className="object-contain" priority /></span>
+              <span className={`relative block h-14 w-[90px] transition-all duration-500 sm:h-16 sm:w-[104px] ${scrolled ? "lg:h-14 lg:w-[96px]" : "lg:h-[116px] lg:w-[188px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="188px" className="object-contain" priority /></span>
             </span>
-            <span className="hidden lg:block lg:w-[190px]" aria-hidden="true" />
+            <span className="hidden lg:block lg:w-[228px]" aria-hidden="true" />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">

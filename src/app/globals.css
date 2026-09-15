@@ -27,6 +27,9 @@
   --font-display: var(--font-barlow), "Arial Narrow", sans-serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
 
+  /* Site-wide content width. Client asked for a wider layout so sections breathe (2026-09-15). */
+  --container-7xl: 100rem;
+
   --shadow-card: 0 1px 2px rgb(13 31 53 / 0.06), 0 8px 24px -12px rgb(13 31 53 / 0.18);
   --shadow-lift: 0 2px 4px rgb(13 31 53 / 0.08), 0 24px 48px -16px rgb(13 31 53 / 0.28);
   --shadow-glow: 0 0 0 1px rgb(14 165 233 / 0.35), 0 12px 40px -8px rgb(14 165 233 / 0.45);

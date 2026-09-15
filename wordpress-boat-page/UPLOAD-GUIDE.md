@@ -1,3 +1,7 @@
+> **SUPERSEDED 2026-09-15.** This static copy is the 09-12 version (old URL `/boat-transport/`, old photos, old sections).
+> The client's final page lives in the Next.js site at `/boat-transport-florida/`. Only regenerate this if the client still
+> wants an interim upload to the old WordPress host — and then it must be rebuilt at `boat-transport-florida/`.
+
 # Boat Transport landing page — add to the OLD WordPress site (Hostinger)
 
 Goal: get `https://mccboundlegends.com/boat-transport/` live on the current WordPress site for Google Ads,

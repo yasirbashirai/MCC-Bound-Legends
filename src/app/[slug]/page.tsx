@@ -15,8 +15,8 @@ import { SpecificPhotoGrid, Timeline } from "@/components/Visual";
 import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards, type TypeCard } from "@/components/Landing";
 
 type Params = { slug: string };
-// /boat-transport/ has its own dedicated page (src/app/boat-transport/) built to the client reference.
-export function generateStaticParams(): Params[] { return pages.filter((p) => p.slug !== "boat-transport").map((p) => ({ slug: p.slug })); }
+// /boat-transport-florida/ has its own dedicated page (src/app/boat-transport-florida/) built to the client reference.
+export function generateStaticParams(): Params[] { return pages.filter((p) => p.slug !== "boat-transport-florida").map((p) => ({ slug: p.slug })); }
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 /** Per-category flavour for the hero right column + type row heading. */
 const FLAVOUR: Record<string, { tag: [string, string]; rowEyebrow: string; rowTitle: string; whyTitle: React.ReactNode }> = {
   "auto-transport": { tag: ["Any car.", "Any state."], rowEyebrow: "We transport all types of vehicles", rowTitle: "Any car. Anywhere.", whyTitle: <>Door to door.<br />Coast to coast.</> },
-  "boat-transport": { tag: ["Florida boats.", "Bigger horizons."], rowEyebrow: "We transport all types of boats", rowTitle: "Any boat. Anywhere.", whyTitle: <>Florida rooted.<br />Nationwide service.</> },
+  "boat-transport-florida": { tag: ["Florida boats.", "Bigger horizons."], rowEyebrow: "We transport all types of boats", rowTitle: "Any boat. Anywhere.", whyTitle: <>Florida rooted.<br />Nationwide service.</> },
   "rv-transport": { tag: ["Home on wheels.", "Moved with care."], rowEyebrow: "We transport all types of RVs", rowTitle: "Any RV. Anywhere.", whyTitle: <>Drive-away or hauled.<br />Your call.</> },
   "commercial-vehicle-transport": { tag: ["Business moves.", "Handled."], rowEyebrow: "We transport all types of commercial vehicles", rowTitle: "Any truck. Any fleet.", whyTitle: <>Built for<br />businesses.</> },
   "motorcycle-transport": { tag: ["Two wheels.", "Zero worries."], rowEyebrow: "We transport all types of powersports", rowTitle: "Any bike. Anywhere.", whyTitle: <>Strapped, chocked,<br />protected.</> },
@@ -54,11 +54,11 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
   const review = reviews.find((r) => r.service.toLowerCase().includes(p.name.split(" ")[0].toLowerCase())) ?? reviews[0];
   const fl = FLAVOUR[cat.slug] ?? FLAVOUR["auto-transport"];
   const heroImg = servicePhoto(p.slug, p.parent ?? p.slug);
-  const slides = cat.slug === "boat-transport" && photo("hero-2") ? [{ src: photo("hero-2")!, alt: "Boat transport on a Florida causeway" }] : heroImg ? [{ src: heroImg, alt: p.name }] : [];
+  const slides = cat.slug === "boat-transport-florida" && photo("hero-2") ? [{ src: photo("hero-2")!, alt: "Boat transport on a Florida causeway" }] : heroImg ? [{ src: heroImg, alt: p.name }] : [];
   const firstSentence = p.intro.split(". ")[0] + ".";
 
   // Type cards: children pages first (real links), then vehicle types from the data (quote anchors)
-  const typeCards: TypeCard[] = cat.slug === "boat-transport" && p.kind === "category" ? BOAT_TYPES : [
+  const typeCards: TypeCard[] = cat.slug === "boat-transport-florida" && p.kind === "category" ? BOAT_TYPES : [
     ...kids.map((k) => ({ href: `/${k.slug}/`, title: k.name, sub: k.short, img: photo(`svc-${k.slug}`), icon: k.icon })),
     ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: null, icon: iconFor(v, p.icon) })),
   ].slice(0, 7);

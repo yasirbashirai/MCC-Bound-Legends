@@ -7,7 +7,7 @@ const redirects301: [string, string][] = [
   ["/services/large-truck-suv-or-van-shipping", "/auto-transport"],
   ["/services/enclosed-car-transport", "/enclosed-auto-transport"],
   ["/services/antique-and-classic-car-shipping", "/enclosed-auto-transport"],
-  ["/services/boat-and-yacht-transport", "/boat-transport"],
+  ["/services/boat-and-yacht-transport", "/boat-transport-florida"],
   ["/services/heavy-equipment-shipping", "/heavy-equipment-transport"],
   ["/services/motorcycle-transport", "/motorcycle-transport"],
   ["/services/atvs-and-utvs-transport", "/motorcycle-transport"],
@@ -24,7 +24,7 @@ const redirects301: [string, string][] = [
 const nextConfig: NextConfig = {
   trailingSlash: true,
   poweredByHeader: false,
-  images: { formats: ["image/avif", "image/webp"] },
+  images: { formats: ["image/avif", "image/webp"], qualities: [75, 78, 82] },
   async redirects() {
     return redirects301.flatMap(([from, to]) => [
       { source: from, destination: `${to}/`, permanent: true },

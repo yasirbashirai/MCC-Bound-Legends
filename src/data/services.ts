@@ -117,7 +117,7 @@ export const pages: ServicePage[] = [
     related: ["box-truck-transport", "work-truck-transport", "semi-truck-transport", "fleet-vehicle-transport"],
   },
   {
-    slug: "boat-transport",
+    slug: "boat-transport-florida",
     kind: "category",
     name: "Boat & Yacht Transport",
     short: "Center consoles, yachts, pontoons, sailboats and PWC",
@@ -182,7 +182,7 @@ export const pages: ServicePage[] = [
       { q: "How far ahead should I book RV transport?", a: "One to two weeks is comfortable. Faster is often possible, especially on busy lanes in and out of Florida, Texas and Arizona." },
     ],
     keywords: ["RV transport", "motorhome transport", "travel trailer transport", "RV shipping quote", "RV transport Florida", "fifth wheel transport"],
-    related: ["boat-transport", "auto-transport", "commercial-vehicle-transport", "motorcycle-transport"],
+    related: ["boat-transport-florida", "auto-transport", "commercial-vehicle-transport", "motorcycle-transport"],
   },
   {
     slug: "motorcycle-transport",
@@ -215,7 +215,7 @@ export const pages: ServicePage[] = [
       { q: "Do you need the bike to be running?", a: "No, but we need to know. Non-running motorcycles are handled with a lift gate, crate or winch." },
     ],
     keywords: ["motorcycle transport", "motorcycle shipping", "ATV transport", "UTV transport", "powersports transport", "golf cart shipping"],
-    related: ["auto-transport", "enclosed-auto-transport", "rv-transport", "boat-transport"],
+    related: ["auto-transport", "enclosed-auto-transport", "rv-transport", "boat-transport-florida"],
   },
   {
     slug: "construction-equipment-transport",
@@ -494,7 +494,7 @@ export const pages: ServicePage[] = [
   {
     slug: "boat-transport-without-trailer",
     kind: "situation",
-    parent: "boat-transport",
+    parent: "boat-transport-florida",
     name: "Boat Transport Without Trailer",
     short: "Marine haulers, hydraulic trailers, lift coordination",
     icon: "boatlift",
@@ -518,12 +518,12 @@ export const pages: ServicePage[] = [
       { q: "What sizes can you handle?", a: "From small runabouts to large cruisers and yachts. Larger vessels need permits and escorts, which we arrange as part of the shipment." },
     ],
     keywords: ["boat transport without trailer", "boat hauling no trailer", "marine transport hydraulic trailer", "boat transport Florida"],
-    related: ["boat-transport", "yacht-transport", "rv-transport", "heavy-equipment-transport"],
+    related: ["boat-transport-florida", "yacht-transport", "rv-transport", "heavy-equipment-transport"],
   },
   {
     slug: "yacht-transport",
     kind: "service",
-    parent: "boat-transport",
+    parent: "boat-transport-florida",
     name: "Yacht Transport",
     short: "Overland yacht and large-vessel moves",
     icon: "yacht",
@@ -547,7 +547,7 @@ export const pages: ServicePage[] = [
       { q: "How long does yacht transport take?", a: "Longer than a standard shipment because of permits, escorts and daylight-only travel rules in some states. We give you a realistic schedule at quote time." },
     ],
     keywords: ["yacht transport", "yacht transport companies", "yacht shipping overland", "yacht hauling"],
-    related: ["boat-transport", "boat-transport-without-trailer", "heavy-equipment-transport", "rv-transport"],
+    related: ["boat-transport-florida", "boat-transport-without-trailer", "heavy-equipment-transport", "rv-transport"],
   },
   {
     slug: "excavator-transport",

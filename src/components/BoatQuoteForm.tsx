@@ -30,12 +30,12 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
     const fd = new FormData(e.currentTarget);
     const body = Object.fromEntries(fd.entries()) as Record<string, string>;
     if (!fd.get("sms_consent")) { setError("Please check the consent box so we can text you about your quote."); return; }
-    const shipType = TRAILER.find(([l]) => l === body.trailer_available)?.[1] ?? (body.ymm?.startsWith("Yacht") ? "yacht" : "boat-trailer");
+    const shipType = TRAILER.find(([l]) => l === body.trailer_available)?.[1] ?? (body.boat_type?.startsWith("Yacht") ? "yacht" : "boat-trailer");
     setLoading(true);
     try {
       const res = await fetch("/api/quote/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, ship_type: shipType, page: path, service: "Boat Transport to Florida (Snowbird)" }) });
       if (!res.ok) throw new Error("bad");
-      trackQuoteSubmit(shipType, path ?? "/boat-transport/");
+      trackQuoteSubmit(shipType, path ?? "/boat-transport-florida/");
       router.push(`/thank-you/?t=${encodeURIComponent(shipType)}`);
     } catch {
       setError("Something went wrong sending your request. Please call (888) 785-0028 and we will quote you right away.");
@@ -52,7 +52,8 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
       <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <select name="ymm" defaultValue="" required aria-label="Boat type" className={select} style={arrow}>
+        <input name="ymm" autoComplete="off" placeholder="Year, Make & Model (e.g. 2019 Boston Whaler 280)" aria-label="Boat year, make and model" className={`${field} sm:col-span-2`} required />
+        <select name="boat_type" defaultValue="" required aria-label="Boat type" className={select} style={arrow}>
           <option value="" disabled>Boat Type</option>
           {BOAT_TYPES.map((t) => <option key={t}>{t}</option>)}
         </select>
@@ -79,7 +80,7 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
       <button type="submit" disabled={loading} className="btn-orange font-display mt-3 w-full py-3 text-[18px] font-bold tracking-wide disabled:opacity-70">
         {loading ? "Sending…" : "Get My Free Boat Shipping Quote"} <Arrow className="h-5 w-5" />
       </button>
-      <p className="mt-2 flex items-center justify-center gap-1 text-center text-[10.5px] text-muted"><Lock className="h-3 w-3" /> Your information is secure &nbsp;|&nbsp; No deposit required &nbsp;|&nbsp; We respond within 2 hours</p>
+      <p className="mt-2 flex items-center justify-center gap-1 text-center text-[10px] text-muted"><Lock className="h-3 w-3" /> Your information is secure &nbsp;|&nbsp; No deposit required &nbsp;|&nbsp; We respond within 2 hours</p>
     </form>
   );
 }

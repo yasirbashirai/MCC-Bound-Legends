@@ -52,8 +52,9 @@ One H1 per page · unique title/meta (absolute, no template doubling) · canonic
 - [ ] Submit a live test quote on production → confirm email/SMS arrives → confirm conversion shows in Ads
 - [ ] Point domain DNS to Vercel; confirm HTTPS
 - [ ] Verify Search Console (DNS record), submit `https://mccboundlegends.com/sitemap.xml`
-- [ ] Run PageSpeed on `/`, `/boat-transport/`, `/excavator-transport/` (mobile)
-- [ ] Test old URLs redirect (e.g. `/services/boat-and-yacht-transport/` → `/boat-transport/`)
+- [ ] Run PageSpeed on `/`, `/boat-transport-florida/`, `/excavator-transport/` (mobile) — client wants > 70 mobile + screenshot
+- [ ] Test old URLs redirect (e.g. `/services/boat-and-yacht-transport/` → `/boat-transport-florida/`). `/boat-transport/` itself is gone on purpose (client: no 301 needed, it had no traffic)
+- [ ] GTM: import `docs/gtm/mcc-gtm-sitewide-conversions.json`, paste the two Google Ads conversion labels, Preview-test, publish (see `docs/gtm/README.md`)
 - [ ] Real photos from client → `public/images/`, swap into hero/category cards (slots designed for it)
 - [ ] Client confirms: BBB status (currently NOT shown anywhere), military discount (not claimed), HI/AK coverage
 
@@ -71,3 +72,27 @@ npm run build && npm start
 - New photo slots (placeholders cropped from the mockup, replace with same names): `boat-type-speedboat`, `boat-type-cabin-cruiser`, `boat-type-no-trailer`, `boat-band-semi-yacht`, `boat-opt-open`, `boat-opt-enclosed`, `boat-opt-oversize`, `boat-cta-boat`.
 - Heading blue token `--color-royal` (#1e63d6) added for reference-style blue headings.
 - `wordpress-boat-page/boat-transport/` = the same page as one static HTML file for dropping into the old WordPress host as an interim Ads page (see `wordpress-boat-page/UPLOAD-GUIDE.md`).
+
+## 2026-09-15 — Client revision round (boat page)
+- **URL moved** to `/boat-transport-florida/` (client: all Ads point here; exact match required). Folder `src/app/boat-transport-florida/`,
+  data slug `boat-transport-florida` (category slug renamed everywhere: services.ts, [slug] route, footer/mega-menu derive from it,
+  photo files `cat-`/`thumb-boat-transport-florida.webp`). Old `/boat-transport/` deleted, no redirect (client decision). Old-site
+  redirect `/services/boat-and-yacht-transport/` now → new URL.
+- Title: `Boat Shipping to Florida — Free Quote | MCC Bound Legends` (client message; their docx says "Boat Transport to Florida — Free Quote…" — confirm which).
+  Canonical `https://mccboundlegends.com/boat-transport-florida/`.
+- Boat-type photos replaced with the client's 7 new photos (`type-*` / `boat-type-*`), cards are 3:2 = photo ratio (no crop/zoom).
+  "Boats Without Trailers" → "Boats With Trailers" (`boat-type-with-trailer.webp` = crop of hero photo, no client photo for it yet).
+  All 8 type cards, 8 route cards and 3 price tiers scroll to `#quote` (no subpages until Month 2, per client dev guide).
+- Quote form: new required `Year, Make & Model` field (`ymm`) above Boat Type (`boat_type`) + Length; both land in the lead email.
+- Sections rebuilt to the client's 2026-09-15 reference: Shipping Options | How Boat Shipping Works (4 steps) → 4-review row →
+  2-column FAQ accordion (8 client FAQs verbatim, also in FAQPage schema). Sidebar map card dropped (not in the new reference).
+- Reviews on the boat page = 4 REAL boat reviews: Christopher Smith (Google), Malik / Anna Carlson / Emmanuel Rosario (Trustpilot).
+  The mockup's "Melissa R. / James T. / Karen L." do not exist — not used. Source label is truthful per card.
+- Route names now `text-royal` (dark blue). Footer description = client's paragraph verbatim (includes "BBB Accredited" — still unverified).
+- Site-wide: `--container-7xl: 100rem` (1600px) — client asked for a wider layout. Header logo enlarged (188×116 desktop).
+- Hero / big-boats band: photo placed in the gap between copy and form/cards with a soft mask, so the truck+boat are fully visible
+  and the form no longer covers them. Band + CTA + shipping-option images are still low-res mockup crops → need client originals.
+- GTM: `docs/gtm/` = importable container (Conversion Linker, 2 Google Ads conversion tags, GA4) on sitewide custom events
+  `quote_submit` + `phone_click` (all forms, all tel links, every page).
+- Verified locally: title/canonical, 1 H1, 25 `#quote` anchors → form exists, 8 accordions, single tel target, phone_click pushed to
+  dataLayer, boat form POST → 200 → `/thank-you/` with YMM + boat type in the lead.

@@ -32,7 +32,7 @@ export function Footer() {
             <span className="display text-2xl text-white">MCC <span className="text-blue">Bound</span> Legends</span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed">
-            {site.legalName} is a licensed and bonded freight broker coordinating vehicle, marine, RV, commercial and heavy-equipment transportation throughout the United States. Vetted motor carriers perform the physical transport.
+            {site.legalName} is a licensed and bonded transport company — coordinating vehicle, marine, RV, commercial, and heavy equipment transport nationwide. No deposit required. Every shipment fully insured. Free quote in 60 seconds. Vetted motor carriers perform the physical transport. BBB Accredited. 5-Star Rated on Google and Trustpilot.
           </p>
           <ul className="mt-5 space-y-2.5 text-sm">
             <li className="flex items-start gap-2.5"><Pin className="mt-0.5 h-4 w-4 shrink-0 text-blue" /><span>{site.legalName}<br />{site.address.street}<br />{site.address.city}, {site.address.state} {site.address.zip}</span></li>

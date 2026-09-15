@@ -10,7 +10,7 @@ import { site } from "@/data/site";
  *   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, LEAD_TO_SMS
  *   CRM_WEBHOOK_URL (optional: JSON POST of the full lead to any CRM/Zapier/Make endpoint)
  */
-const FIELDS = ["ship_type","pickup_zip","delivery_zip","pickup_date","operable","year","make","model","ymm","length","width","height","weight","trailer_available","loading_equipment","attachments","name","phone","email","notes","sms_consent","page","service"] as const;
+const FIELDS = ["ship_type","pickup_zip","delivery_zip","pickup_date","operable","year","make","model","ymm","boat_type","length","width","height","weight","trailer_available","loading_equipment","attachments","name","phone","email","notes","sms_consent","page","service"] as const;
 
 export async function POST(req: Request) {
   let data: Record<string, string>;
