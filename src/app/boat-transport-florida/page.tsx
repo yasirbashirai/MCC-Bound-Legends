@@ -49,7 +49,7 @@ const STEPS = [
 const OPTIONS = [
   ["Open Shipping", "boat-opt-open", ["Cost-effective option", "Safe and reliable", "Ideal for most boats"]],
   ["Enclosed Shipping", "boat-opt-enclosed", ["Maximum protection", "Ideal for high-value boats", "Protects from weather", "Road-ready and secure"]],
-  ["Oversize & Specialized", "boat-opt-oversize", ["For large boats and yachts", "Permits and escorts if required", "Experienced carriers", "Nationwide service"]],
+  ["Oversize & Specialized", "boat-opt-oversize-yacht", ["For large boats and yachts", "Permits and escorts if required", "Experienced carriers", "Nationwide service"]],
 ] as const;
 
 /* Client-supplied FAQ copy (2026-09-15), verbatim. */
@@ -111,15 +111,22 @@ export default function BoatTransportFloridaPage() {
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-navy text-white">
-        {/* Photo sits in the gap between the copy and the quote card (mockup: truck + boat fully visible, not behind the form) */}
+        {/* Desktop: photo sits in the gap between the copy and the quote card, shown whole and pulled back
+            (client 2026-09-16: "zoom out") — contained, anchored bottom-right, edges faded into the navy. */}
         {hero && (
-          <div className="absolute inset-0 lg:right-[24%] lg:[mask-image:linear-gradient(90deg,black_80%,transparent)]" aria-hidden="true">
-            <Image src={hero} alt="" fill priority sizes="(max-width:1024px) 100vw, 80vw" className="object-cover object-[0%_62%]" />
+          <div className="absolute bottom-0 left-[17%] right-[27%] top-[25%] hidden lg:block lg:[mask-image:linear-gradient(180deg,transparent,black_30%),linear-gradient(90deg,transparent,black_8%)] lg:[mask-composite:intersect]" aria-hidden="true">
+            <Image src={hero} alt="" fill priority sizes="70vw" className="object-contain object-[100%_100%]" />
           </div>
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.86)_0%,rgba(13,31,53,.7)_22%,rgba(13,31,53,.3)_42%,rgba(13,31,53,0)_56%)] max-lg:bg-[linear-gradient(180deg,rgba(13,31,53,.95),rgba(13,31,53,.85))]" aria-hidden="true" />
+        <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.75)_0%,rgba(13,31,53,.4)_24%,rgba(13,31,53,.1)_40%,rgba(13,31,53,0)_50%)] lg:block" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="flex flex-col pb-5 lg:pt-[136px]">
+            {/* Mobile/tablet: the same photo as a full, uncropped block so nothing is zoomed or hidden behind the overlay */}
+            {hero && (
+              <span className="relative -mx-5 -mt-6 mb-5 block aspect-[1800/947] sm:-mx-8 lg:hidden">
+                <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover" />
+              </span>
+            )}
             <span className="mb-3.5 w-max rounded-full bg-orange px-4 py-1.5 text-[14px] font-semibold">Snowbird Boat Transport Specialists — Florida</span>
             <h1 className="font-display max-w-[600px] text-[36px] font-extrabold leading-[1.05] drop-shadow-[0_2px_14px_rgba(0,0,0,.55)] sm:text-[48px]">Boat Transport to Florida — Snowbird Season Specialists</h1>
             <p className="mb-5 mt-3.5 max-w-[440px] text-[16px] leading-[1.55] text-white/95 drop-shadow-[0_1px_8px_rgba(0,0,0,.6)]">Shipping your boat south for winter? MCC Bound Legends coordinates seasonal boat transport to Florida from New York, New Jersey, Michigan, Ohio, Massachusetts and all northern states. Door-to-door. No deposit to book. Get your free boat shipping quote in 60 seconds.</p>
@@ -212,12 +219,18 @@ export default function BoatTransportFloridaPage() {
       {/* ── BIG BOATS BAND ───────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-navy text-white">
         {band && (
-          <div className="absolute inset-0 lg:left-[17%] lg:right-[20%] lg:[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]" aria-hidden="true">
-            <Image src={band} alt="" fill sizes="(max-width:1024px) 100vw, 63vw" className="object-cover object-[50%_62%] max-sm:opacity-35" />
+          <div className="absolute inset-0 hidden lg:left-[17%] lg:right-[20%] lg:block lg:[mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]" aria-hidden="true">
+            <Image src={band} alt="" fill sizes="63vw" className="object-cover object-[50%_62%]" />
           </div>
         )}
         <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.98)_0%,rgba(13,31,53,.85)_18%,rgba(13,31,53,0)_30%,rgba(13,31,53,0)_70%,rgba(13,31,53,.85)_82%,rgba(13,31,53,1)_100%)] lg:block" aria-hidden="true" />
         <div className="relative mx-auto grid min-h-[300px] max-w-7xl items-center gap-5 px-5 py-8 sm:px-8 lg:grid-cols-[280px_1fr_260px]">
+          {/* Mobile/tablet: full uncropped photo instead of the faded background */}
+          {band && (
+            <span className="relative -mx-5 -mt-8 block aspect-[2/1] sm:-mx-8 lg:hidden">
+              <Image src={band} alt="Oversize semi hauling a yacht" fill sizes="100vw" className="object-cover" />
+            </span>
+          )}
           <div>
             <h2 className="font-display text-[32px] font-extrabold leading-none"><span className="block">BIG BOATS.</span><span className="block">LONG DISTANCES.</span><span className="block text-blue">NO PROBLEM.</span></h2>
             <p className="mb-3.5 mt-2.5 max-w-[270px] text-[13.5px] leading-[1.45] text-white/95">From coastal moves to cross-country shipping, we handle boat transport so you can focus on what matters — the journey ahead.</p>
@@ -328,6 +341,12 @@ export default function BoatTransportFloridaPage() {
           </div>
         )}
         <div className="relative mx-auto grid min-h-[170px] max-w-7xl items-center gap-6 px-5 py-7 text-center sm:px-8 lg:grid-cols-[1fr_auto]">
+          {/* Mobile/tablet: the photo shows as a full block above the copy (client: must be visible on mobile) */}
+          {cta && (
+            <span className="relative -mx-5 -mt-7 block aspect-[3/1] sm:-mx-8 lg:hidden">
+              <Image src={cta} alt="Boat on a trailer ready for transport" fill sizes="100vw" className="object-cover" />
+            </span>
+          )}
           <div className="lg:pl-[38%]">
             <h2 className="font-display text-[31px] font-extrabold leading-tight">Safe Boats. Happier Destinations.</h2>
             <p className="mt-0.5 text-[16px]">Get your free boat shipping quote to Florida today.</p>
