@@ -231,8 +231,8 @@ export default function BoatTransportFloridaPage() {
             </span>
           )}
           <div>
-            <h2 className="font-display text-[32px] font-extrabold leading-none"><span className="block">BIG BOATS.</span><span className="block">LONG DISTANCES.</span><span className="block text-blue">NO PROBLEM.</span></h2>
-            <p className="mb-3.5 mt-2.5 max-w-[270px] text-[13.5px] leading-[1.45] text-white/95">From coastal moves to cross-country shipping, we handle boat transport so you can focus on what matters — the journey ahead.</p>
+            <h2 className="font-display text-[44px] font-extrabold leading-none lg:text-[32px]"><span className="block">BIG BOATS.</span><span className="block">LONG DISTANCES.</span><span className="block text-blue">NO PROBLEM.</span></h2>
+            <p className="mb-3.5 mt-2.5 max-w-[270px] text-[13.5px] leading-[1.45] text-white/95 max-lg:mt-3.5 max-lg:max-w-none max-lg:text-[16px]">From coastal moves to cross-country shipping, we handle boat transport so you can focus on what matters — the journey ahead.</p>
             <a href="#quote" className="btn-orange font-display px-4.5 py-2.5 text-[17px] font-bold tracking-wide">Get a Quote <Arrow className="h-4 w-4" /></a>
           </div>
           <div className="hidden lg:block" />
