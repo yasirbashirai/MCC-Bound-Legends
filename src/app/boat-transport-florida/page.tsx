@@ -111,14 +111,13 @@ export default function BoatTransportFloridaPage() {
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-navy text-white">
-        {/* Desktop: photo sits in the gap between the copy and the quote card, shown whole and pulled back
-            (client 2026-09-16: "zoom out") — contained, anchored bottom-right, edges faded into the navy. */}
+        {/* Desktop: full-bleed cover photo behind the copy, fading out under the quote card (2026-09-18: back to cover) */}
         {hero && (
-          <div className="absolute bottom-0 left-[17%] right-[27%] top-[25%] hidden lg:block lg:[mask-image:linear-gradient(180deg,transparent,black_30%),linear-gradient(90deg,transparent,black_8%)] lg:[mask-composite:intersect]" aria-hidden="true">
-            <Image src={hero} alt="" fill priority sizes="70vw" className="object-contain object-[100%_100%]" />
+          <div className="absolute inset-0 hidden lg:block lg:[mask-image:linear-gradient(90deg,black_72%,transparent_96%)]" aria-hidden="true">
+            <Image src={hero} alt="" fill priority sizes="100vw" className="object-cover object-[50%_70%]" />
           </div>
         )}
-        <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.75)_0%,rgba(13,31,53,.4)_24%,rgba(13,31,53,.1)_40%,rgba(13,31,53,0)_50%)] lg:block" aria-hidden="true" />
+        <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.86)_0%,rgba(13,31,53,.7)_22%,rgba(13,31,53,.3)_42%,rgba(13,31,53,0)_56%)] lg:block" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="flex flex-col pb-5 lg:pt-[136px]">
             {/* Mobile/tablet: the same photo as a full, uncropped block so nothing is zoomed or hidden behind the overlay */}
