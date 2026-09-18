@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Barlow_Condensed, Inter, Kaushan_Script } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { site } from "@/data/site";
@@ -13,6 +13,8 @@ import { organizationSchema } from "@/lib/schema";
 
 const barlow = Barlow_Condensed({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-barlow", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Brush script used only for the "Putting Trust in Motion" tagline in the footer (client reference).
+const script = Kaushan_Script({ subsets: ["latin"], weight: "400", variable: "--font-script", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -27,7 +29,7 @@ export const viewport: Viewport = { themeColor: "#0d1f35", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const gtm = site.gtmId;
   return (
-    <html lang="en" className={`${barlow.variable} ${inter.variable}`}>
+    <html lang="en" className={`${barlow.variable} ${inter.variable} ${script.variable}`}>
       <body className="min-h-screen pb-[72px] lg:pb-0">
         {gtm && (
           <>
