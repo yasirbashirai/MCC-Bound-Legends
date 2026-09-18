@@ -3,7 +3,7 @@
  * Builds a self-contained static copy of /boat-transport-florida/ for the OLD WordPress site
  * (Hostinger). Run with the Next.js dev server up:
  *
- *   node wordpress-boat-page/build.js http://localhost:3088
+ *   node wordpress-boat-page/build.js http://localhost:3000   (whatever port `npm run dev` prints)
  *
  * Output: wordpress-boat-page/boat-transport-florida/  (index.html + images/ + thank-you/)
  *         wordpress-boat-page/boat-transport-florida-upload.zip
@@ -38,6 +38,18 @@ const LINKS = {
   "/privacy-policy/": `${SITE}/privacy-policy/`,
   "/terms-and-conditions/": `${SITE}/terms-and-condition/`,
   "/boat-transport-florida/": `${SITE}/boat-transport-florida/`,
+  "/sitemap.xml": `${SITE}/sitemap.xml`,
+  "/rv-transport/": `${SITE}/services/rv-transport/`,
+  "/construction-equipment-transport/": `${SITE}/services/heavy-equipment-shipping/`,
+  "/excavator-transport/": `${SITE}/services/heavy-equipment-shipping/`,
+  "/skid-steer-transport/": `${SITE}/services/heavy-equipment-shipping/`,
+  "/bulldozer-transport/": `${SITE}/services/heavy-equipment-shipping/`,
+  "/forklift-transport/": `${SITE}/services/heavy-equipment-shipping/`,
+  "/box-truck-transport/": `${SITE}/services/large-truck-suv-or-van-shipping/`,
+  "/work-truck-transport/": `${SITE}/services/large-truck-suv-or-van-shipping/`,
+  "/semi-truck-transport/": `${SITE}/services/large-truck-suv-or-van-shipping/`,
+  "/fleet-vehicle-transport/": `${SITE}/services/large-truck-suv-or-van-shipping/`,
+  "/non-running-vehicle-transport/": `${SITE}/services/car-shipping/`,
   "/auto-transport/": `${SITE}/services/car-shipping/`,
   "/enclosed-auto-transport/": `${SITE}/services/enclosed-car-transport/`,
   "/heavy-equipment-transport/": `${SITE}/services/heavy-equipment-shipping/`,
@@ -56,7 +68,7 @@ async function main() {
   for (const h of cssHrefs) css += (await (await fetch(ORIGIN + h)).text()) + "\n";
   // next/font @font-face blocks point at /_next/static/media → drop them, Google Fonts is linked instead
   css = css.replace(/@font-face\s*{[^}]*(\/_next\/|\/media\/)[^}]*}/g, "");
-  css += `\n/* fonts (Google) */\n:root{--font-barlow:"Barlow Condensed","Arial Narrow",sans-serif;--font-inter:"Inter",system-ui,sans-serif}\n`;
+  css += `\n/* fonts (Google) */\n:root{--font-barlow:"Barlow Condensed","Arial Narrow",sans-serif;--font-inter:"Inter",system-ui,sans-serif;--font-script:"Kaushan Script","Brush Script MT",cursive}\n`;
   css += `.wp-drawer{position:fixed;inset:0;z-index:60;display:none}.wp-drawer.open{display:block}.wp-drawer .bg{position:absolute;inset:0;background:rgba(8,19,31,.7)}.wp-drawer .panel{position:absolute;right:0;top:0;height:100%;width:86%;max-width:360px;background:#fff;padding:20px;overflow:auto;box-shadow:-10px 0 40px rgba(0,0,0,.3)}.wp-drawer .panel a{display:block;padding:14px 0;border-bottom:1px solid #dbe3ee;font-weight:600;color:#1e63d6;text-decoration:none}.wp-drawer .close{float:right;border:0;background:#eef2f7;border-radius:8px;width:40px;height:40px;font-size:22px;cursor:pointer}\n`;
 
   const images = new Set();
@@ -84,7 +96,7 @@ async function main() {
   out = out.replace(/<next-route-announcer[^>]*>[\s\S]*?<\/next-route-announcer>/g, "");
   const head = `
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Kaushan+Script&display=swap" rel="stylesheet">
 <style>${css}</style>
 <!-- Google Tag Manager (same container as the rest of the site) -->
 <script>window.dataLayer=window.dataLayer||[];(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM}');</script>
@@ -104,7 +116,7 @@ async function main() {
   // ── header: hamburger → simple drawer; drop BackToTop button ──────────
   out = out.replace(/<button class="[^"]*lg:hidden" aria-label="Open menu">/, '<button class="grid h-11 w-11 place-items-center rounded-lg text-navy lg:hidden" aria-label="Open menu" onclick="document.getElementById(\'wpDrawer\').classList.add(\'open\')">');
   const drawer = `<div id="wpDrawer" class="wp-drawer"><div class="bg" onclick="this.parentNode.classList.remove('open')"></div><div class="panel"><button class="close" aria-label="Close menu" onclick="document.getElementById('wpDrawer').classList.remove('open')">×</button><p style="font-family:var(--font-barlow);font-weight:800;font-size:22px;color:#0d1f35;margin:6px 0 10px">MCC Bound Legends</p>
-<a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/how-does-it-work/">How It Works</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/faq/">FAQ</a><a href="${SITE}/contact-us/">Contact</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">Get a Free Boat Quote →</a></div></div>`;
+<a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/faq/">FAQ</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/contact-us/">Contact</a><a href="${SITE}/how-does-it-work/">How It Works</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">Get a Free Boat Quote →</a></div></div>`;
 
   // ── form → FormSubmit ─────────────────────────────────────────────────
   out = out.replace(/<form id="quote"(?: noValidate="")? class="([^"]*)">/, (m, c) => `<form id="quote" action="https://formsubmit.co/${LEAD_EMAIL}" method="POST" class="${c}">

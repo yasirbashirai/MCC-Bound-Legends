@@ -3,14 +3,18 @@
 Goal: get `https://mccboundlegends.com/boat-transport-florida/` live on the current WordPress site for Google Ads,
 without touching WordPress, the theme or any plugin. It is a plain HTML folder that sits next to WordPress.
 
-Built from the Next.js page by `node wordpress-boat-page/build.js http://localhost:3088` (re-run after any page change).
+Built from the Next.js page by `node wordpress-boat-page/build.js http://localhost:<dev port>` (re-run after any page change).
+
+**2026-09-19 rebuild:** includes the client's approved header (top bar + brand block + trust icons + nav), the new boat hero
+(uncropped truck/yacht photo, Coast-to-Coast callout, feature strip) and the new site-wide footer (CTA banner, link columns,
+truck/yacht visual, trust badges, mobile accordions). Header and footer are part of the page itself, not the WordPress theme.
 
 ## What's in this folder
 ```
 boat-transport-florida-upload.zip     ← upload this
 boat-transport-florida/
   index.html            the landing page (CSS + JS inline, identical to the new site's page)
-  images/               15 webp images (logo, hero, 8 boat types, 3 options, band, CTA)
+  images/               23 webp images (logo, hero, 8 boat types, 3 options, band, CTA, footer backgrounds + 4 badges)
   thank-you/index.html  form success page = Google Ads conversion page
 ```
 
@@ -44,7 +48,7 @@ If it shows a WordPress 404 instead: hPanel → Advanced → **LiteSpeed cache p
 
 ## Links
 Header/footer links point to the OLD site's real pages (`/how-does-it-work/`, `/contact-us/`, `/services/car-shipping/` …).
-Pages that only exist on the new site fall back to `/services/`.
+Pages that only exist on the new site fall back to the closest old service page or `/services/`. Footer "Sitemap" → `/sitemap.xml`.
 
 ## Before Jeff points ads at it
 - [ ] Test the form once, click the FormSubmit activation email, confirm the lead lands in Jeff's inbox (check spam).
