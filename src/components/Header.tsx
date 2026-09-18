@@ -5,16 +5,25 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/data/site";
 import { categories, childrenOf, situations } from "@/data/services";
-import { Arrow, Chevron, Clock, Facebook, Instagram, Menu, Phone, Pin, Shield, TikTok, VehicleIcon, X, YouTube } from "./Icons";
+import { Arrow, Chevron, Clock, Facebook, Group, Headset, Instagram, Mail, Menu, Phone, Pin, Shield, TikTok, Truck, TruckSolid, VehicleIcon, X, YouTube } from "./Icons";
 import { PhoneLink } from "./PhoneLink";
 
+/* Nav order per the client header reference (2026-09-19). How It Works stays reachable from the footer. */
 const NAV = [
+  { href: "/", label: "Home" },
   { href: "/services/", label: "Services", mega: true },
-  { href: "/how-it-works/", label: "How It Works" },
   { href: "/about-us/", label: "About Us" },
-  { href: "/testimonials/", label: "Reviews" },
   { href: "/faq/", label: "FAQ" },
+  { href: "/testimonials/", label: "Reviews" },
   { href: "/contact/", label: "Contact" },
+];
+
+/* Mini trust icons between the brand block and the nav (client header reference). */
+const TRUST = [
+  { icon: Shield, label: <>Licensed &amp;<br />Insured</> },
+  { icon: Group, label: <>Vetted<br />Carriers</> },
+  { icon: Truck, label: <>Door-to-Door<br />Service</> },
+  { icon: Headset, label: <>Real People<br />Real Support</> },
 ];
 
 export function Header() {
@@ -22,6 +31,11 @@ export function Header() {
   const [mega, setMega] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const path = usePathname();
+  // The boat Ads page carries the client's boat-specific brand line; everything else stays generic.
+  const boat = path === "/boat-transport-florida/" || path === "/boat-transport-florida";
+  const brand = boat
+    ? { l1: "Nationwide", l2: "Boat Shipping", sub: "Safe boats. Happier destinations.", where: "Nationwide Boat Shipping" }
+    : { l1: "Nationwide", l2: "Vehicle Shipping", sub: "Putting trust in motion.", where: "Nationwide Vehicle Shipping" };
 
   // Close menus on navigation (deferred so it is not a synchronous set-state in the effect)
   useEffect(() => { const t = window.setTimeout(() => { setOpen(false); setMega(false); }, 0); return () => window.clearTimeout(t); }, [path]);
@@ -35,67 +49,83 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top info bar */}
-      <div className="hidden bg-navy-900 text-[13px] text-white/80 lg:block">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-2">
-          <div className="flex items-center gap-6">
-            <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex"><Pin className="h-4 w-4 text-blue" />{site.address.full}</span>
-            <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Shield className="h-4 w-4 text-blue" />USDOT {site.usdot} <span className="text-white/30">|</span> MC {site.mc} <span className="text-white/30">|</span> Licensed &amp; Bonded</span>
+      {/* Top info bar — client header reference: contact · coverage · credentials · hours · socials · tagline */}
+      <div className="bg-navy text-[13px] text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:py-2 xl:px-8">
+          <div className="flex min-w-0 items-center gap-3 lg:gap-0 lg:divide-x lg:divide-white/30">
+            <PhoneLink location="topbar" className="inline-flex items-center gap-1.5 whitespace-nowrap font-medium hover:text-blue-300 lg:pr-4"><Phone className="h-[15px] w-[15px] text-white" />{site.phone}</PhoneLink>
+            <a href={`mailto:${site.email}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-blue-300 min-[420px]:inline-flex lg:px-4"><Mail className="h-[15px] w-[15px]" />{site.email}</a>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap md:inline-flex lg:px-4"><Pin className="h-[15px] w-[15px]" />{brand.where}</span>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex xl:px-4"><TruckSolid className="h-[15px] w-[15px]" />USDOT {site.usdot} <span className="px-1 text-white/40">|</span> MC {site.mc}</span>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap min-[1400px]:inline-flex min-[1400px]:px-4"><Shield className="h-[15px] w-[15px]" />Licensed &amp; Bonded</span>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap min-[1750px]:inline-flex min-[1750px]:px-4"><Clock className="h-[15px] w-[15px]" />{site.hours}</span>
           </div>
-          <div className="flex items-center gap-5 pl-6">
-            <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Clock className="h-4 w-4 text-blue" />{site.hours}</span>
-            <span className="flex items-center gap-3 text-white/70">
-              <a href={site.social.facebook} target="_blank" rel="noopener" aria-label="Facebook" className="hover:text-blue"><Facebook className="h-4 w-4" /></a>
-              <a href={site.social.instagram} target="_blank" rel="noopener" aria-label="Instagram" className="hover:text-blue"><Instagram className="h-4 w-4" /></a>
-              <a href={site.social.tiktok} target="_blank" rel="noopener" aria-label="TikTok" className="hover:text-blue"><TikTok className="h-4 w-4" /></a>
-              <a href={site.social.youtube} target="_blank" rel="noopener" aria-label="YouTube" className="hover:text-blue"><YouTube className="h-4 w-4" /></a>
+          <div className="flex shrink-0 items-center gap-4 lg:gap-0 lg:divide-x lg:divide-white/30">
+            <span className="flex items-center gap-3.5 text-white lg:pr-4">
+              <a href={site.social.facebook} target="_blank" rel="noopener" aria-label="Facebook" className="hover:text-blue-300"><Facebook className="h-4 w-4" /></a>
+              <a href={site.social.instagram} target="_blank" rel="noopener" aria-label="Instagram" className="hover:text-blue-300"><Instagram className="h-4 w-4" /></a>
+              <a href={site.social.tiktok} target="_blank" rel="noopener" aria-label="TikTok" className="hover:text-blue-300"><TikTok className="h-4 w-4" /></a>
+              <a href={site.social.youtube} target="_blank" rel="noopener" aria-label="YouTube" className="hover:text-blue-300"><YouTube className="h-4 w-4" /></a>
             </span>
-            <span className="eyebrow hidden whitespace-nowrap text-blue-300 2xl:inline">{site.tagline}</span>
+            <span className="eyebrow hidden whitespace-nowrap text-blue-300 lg:inline lg:pl-4">{site.tagline}™</span>
           </div>
         </div>
       </div>
 
-      {/* Main nav */}
+      {/* Main bar — logo plate · brand block · mini trust icons · nav · CTA + phone */}
       <div className={`relative bg-white transition-shadow duration-500 ${scrolled ? "shadow-[0_8px_30px_-12px_rgb(13_31_53/0.35)]" : "shadow-[0_1px_0_#dbe3ee]"}`}>
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-2 sm:px-8 lg:py-2.5">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 sm:px-6 lg:gap-4 lg:py-2.5 xl:px-8">
           <Link href="/" className="relative flex shrink-0 items-center" aria-label={`${site.name} home`}>
-            {/* Shield plate: overhangs the hero on desktop, like the reference */}
-            <span className={`logo-plate relative block bg-white px-3 pb-2 pt-1 lg:absolute lg:-top-2.5 lg:left-0 lg:z-[60] lg:rounded-b-[28px] lg:px-5 lg:pb-4 lg:pt-3 lg:shadow-[0_18px_40px_-16px_rgb(13_31_53/0.55)] ${scrolled ? "lg:!rounded-b-2xl lg:!pb-2 lg:!pt-2" : ""}`}>
-              <span className={`relative block h-16 w-16 transition-all duration-500 sm:h-[76px] sm:w-[76px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[150px] lg:w-[160px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="160px" className="object-contain" priority /></span>
+            {/* Shield plate: overhangs the hero, like the reference */}
+            <span className={`logo-plate relative block bg-white px-2 pb-1 pt-1 sm:px-3 sm:pb-2 lg:absolute lg:-top-2.5 lg:left-0 lg:z-[60] lg:rounded-b-[28px] lg:px-4 lg:pb-3 lg:pt-3 lg:shadow-[0_18px_40px_-16px_rgb(13_31_53/0.55)] ${scrolled ? "lg:!rounded-b-2xl lg:!pb-2 lg:!pt-2" : ""}`}>
+              <span className={`relative block h-[68px] w-[72px] transition-all duration-500 sm:h-[84px] sm:w-[90px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[148px] lg:w-[158px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="160px" className="object-contain" priority /></span>
             </span>
-            <span className="hidden lg:block lg:w-[228px]" aria-hidden="true" />
+            <span className={`hidden lg:block transition-all duration-500 ${scrolled ? "lg:w-[110px]" : "lg:w-[196px]"}`} aria-hidden="true" />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+          {/* Brand block */}
+          <div className="hidden min-w-0 min-[440px]:block lg:border-r lg:border-line lg:pr-4">
+            <p className="display-md whitespace-nowrap text-[17px] leading-[1.05] text-navy sm:text-[21px] xl:text-[22px]">{brand.l1}<br /><span className="text-blue">{brand.l2}</span></p>
+            <p className="display-md mt-1 whitespace-nowrap text-[9px] tracking-[0.08em] text-navy sm:text-[10.5px]">{brand.sub}</p>
+          </div>
+
+          {/* Mini trust icons */}
+          <ul className="hidden items-center gap-3 md:flex lg:hidden hd:flex hd:gap-4 hd:border-r hd:border-line hd:pr-4">
+            {TRUST.map(({ icon: Icon, label }, i) => (
+              <li key={i} className="flex flex-col items-center gap-1 text-center">
+                <Icon className="h-7 w-7 text-navy" />
+                <span className="display-md whitespace-nowrap text-[9.5px] leading-[1.15] tracking-[0.04em] text-navy">{label}</span>
+              </li>
+            ))}
+          </ul>
+
+          <nav className="hidden flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1" aria-label="Primary">
             {NAV.map((n) =>
               n.mega ? (
                 <div key={n.href} className="relative" onMouseEnter={() => setMega(true)} onMouseLeave={() => setMega(false)}>
-                  <Link href={n.href} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path?.startsWith("/services") || mega ? "text-blue" : "text-royal"}`} aria-expanded={mega}>
+                  <Link href={n.href} className={`display-md inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-2 text-[15px] tracking-[0.03em] hover:text-blue xl:px-2.5 xl:text-[16px] ${path?.startsWith("/services") || mega ? "text-blue" : "text-navy"}`} aria-expanded={mega}>
                     {n.label} <Chevron className="h-4 w-4 opacity-70" />
                   </Link>
                   {mega && <MegaMenu />}
                 </div>
               ) : (
-                <Link key={n.href} href={n.href} className={`whitespace-nowrap rounded-md px-2.5 py-2 text-[15px] font-semibold hover:text-blue ${path === n.href ? "text-blue underline decoration-blue decoration-2 underline-offset-8" : "text-royal"}`}>
+                <Link key={n.href} href={n.href} className={`display-md whitespace-nowrap rounded-md px-2 py-2 text-[15px] tracking-[0.03em] hover:text-blue xl:px-2.5 xl:text-[16px] ${path === n.href ? "text-blue" : "text-navy"}`}>
                   {n.label}
                 </Link>
               )
             )}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            <PhoneLink location="header" className="hidden items-center gap-2 whitespace-nowrap text-royal md:flex">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-blue-100 text-blue"><Phone className="h-5 w-5" /></span>
-              <span className="leading-tight">
-                <span className="block font-display text-[22px] font-bold tracking-wide">{site.phone}</span>
-                <span className="hidden text-[11px] text-royal/80 xl:block">Talk to a transport specialist</span>
-              </span>
-            </PhoneLink>
-            <Link href="/get-a-quote/" className="btn-orange display-md whitespace-nowrap px-4 py-2.5 text-[15px] tracking-wide sm:px-6 sm:py-3 sm:text-lg">
+          <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0 lg:flex-col lg:items-center lg:gap-1.5 lg:border-l lg:border-line lg:pl-4 xl:pl-5">
+            <Link href="/get-a-quote/" className="btn-orange display-md whitespace-nowrap rounded-lg px-3.5 py-2.5 text-[15px] tracking-[0.04em] sm:px-5 sm:py-3 sm:text-[17px] lg:px-6 lg:text-[19px]">
               Get a Quote <Arrow className="h-4 w-4" />
             </Link>
+            <PhoneLink location="header" className="hidden items-center gap-1.5 whitespace-nowrap text-navy lg:inline-flex">
+              <Phone className="h-5 w-5" />
+              <span className="font-display text-[21px] font-bold tracking-wide">{site.phone}</span>
+            </PhoneLink>
             <button className="grid h-11 w-11 place-items-center rounded-lg text-navy lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">
-              <Menu className="h-6 w-6" />
+              <Menu className="h-7 w-7" />
             </button>
           </div>
         </div>

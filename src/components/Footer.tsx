@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/data/site";
 import { categories, pages } from "@/data/services";
-import { Facebook, Instagram, Mail, Phone, Pin, Clock, Shield, TikTok, YouTube, Chevron } from "./Icons";
+import { Facebook, Instagram, Mail, Phone, Pin, Clock, Shield, TikTok, YouTube, Chevron, Truck, Usa, LinkIcon, Gear, Flag } from "./Icons";
 import { PhoneLink } from "./PhoneLink";
 
 /**
@@ -280,53 +280,5 @@ function BadgeRow({ mobile = false }: { mobile?: boolean }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-/* ── Local icons (not needed elsewhere on the site) ─────────────────────── */
-type P = { className?: string };
-const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-
-/** Delivery truck with motion lines (Vetted Carriers). */
-function Truck({ className = "" }: P) {
-  return (
-    <svg viewBox="0 0 32 32" className={className} {...stroke} aria-hidden="true">
-      <path d="M9 9h12v13H9zM21 13h5l3 4v5h-8z" /><circle cx="13" cy="24" r="2.5" /><circle cx="24" cy="24" r="2.5" />
-      <path d="M2 12h5M3 16h4M4 20h3" strokeWidth="1.6" />
-    </svg>
-  );
-}
-/** Simplified contiguous USA silhouette (Nationwide Coverage). */
-function Usa({ className = "" }: P) {
-  return (
-    <svg viewBox="0 0 64 40" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M3 9l2-3 12 1 8-2 10 1 8-3 8 2 5-2 4 3-1 6 2 5-3 5-3 4-2 6 3 6-4 1-3-6-3-4-6-1-5 3-6-1-4 3-4 4-4-4-1-6-4-4-4-1-2-6z" />
-    </svg>
-  );
-}
-/** Chain link (Quick Links accordion). */
-function LinkIcon({ className = "" }: P) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" /><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
-    </svg>
-  );
-}
-/** Gear (What We Coordinate accordion). */
-function Gear({ className = "" }: P) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm9.4 5.2l-2-.4a7.7 7.7 0 0 0 0-1.6l2-.4.2-.2-.8-3-.3-.1-1.9.7a7.6 7.6 0 0 0-1.1-1.1l.7-1.9-.1-.3-3-.8-.2.2-.4 2a7.7 7.7 0 0 0-1.6 0l-.4-2-.2-.2-3 .8-.1.3.7 1.9a7.6 7.6 0 0 0-1.1 1.1l-1.9-.7-.3.1-.8 3 .2.2 2 .4a7.7 7.7 0 0 0 0 1.6l-2 .4-.2.2.8 3 .3.1 1.9-.7a7.6 7.6 0 0 0 1.1 1.1l-.7 1.9.1.3 3 .8.2-.2.4-2a7.7 7.7 0 0 0 1.6 0l.4 2 .2.2 3-.8.1-.3-.7-1.9a7.6 7.6 0 0 0 1.1-1.1l1.9.7.3-.1.8-3-.2-.2zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
-    </svg>
-  );
-}
-/** Small US flag for the legal bar. */
-function Flag({ className = "" }: P) {
-  return (
-    <svg viewBox="0 0 34 22" className={className} aria-hidden="true">
-      {Array.from({ length: 13 }).map((_, i) => <rect key={i} x="0" y={i * (22 / 13)} width="34" height={22 / 13 + 0.2} fill={i % 2 ? "#fff" : "#b22234"} />)}
-      <rect x="0" y="0" width="14" height="11.9" fill="#3c3b6e" />
-      {Array.from({ length: 15 }).map((_, i) => <circle key={i} cx={2 + (i % 5) * 2.6} cy={2 + Math.floor(i / 5) * 3.6} r=".7" fill="#fff" />)}
-    </svg>
   );
 }

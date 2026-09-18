@@ -10,7 +10,7 @@ import { photo } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { PhoneLink } from "@/components/PhoneLink";
 import { BoatQuoteForm } from "@/components/BoatQuoteForm";
-import { Arrow, Check, Phone, Star, Users } from "@/components/Icons";
+import { Arrow, Boat, Check, Phone, Shield, Snowflake, Star, Sun, Usa, Users, Waves } from "@/components/Icons";
 
 /**
  * /boat-transport-florida/ — Google-Ads landing page built 1:1 to the client's reference
@@ -27,7 +27,14 @@ export const metadata: Metadata = meta(
   PATH,
 );
 
-const TRUST = ["No Deposit Required", "5-Star Rated on Google & Trustpilot", "BBB Accredited", "Fully Insured", `USDOT ${site.usdot}`, "All 50 States"];
+/* Hero feature strip + checklist (client hero reference, 2026-09-19) */
+const STRIP = [
+  { icon: Snowflake, color: "text-blue-400", label: <>Snowbird<br />Season Specialists</> },
+  { icon: Sun, color: "text-[#FDB913]", label: <>Florida<br />Destinations</> },
+  { icon: Boat, color: "text-white", label: <>All Boat Types<br />&amp; Sizes</> },
+  { icon: Shield, color: "text-white", label: <>On Time<br />&amp; Done Right</> },
+];
+const CHECKS = ["No Deposit to Book", "Licensed & Insured Carriers", "Fast, Reliable Service"];
 
 /* Every type card scrolls to the quote form (client: no subpages until Month 2). */
 const TYPES = [
@@ -109,35 +116,73 @@ export default function BoatTransportFloridaPage() {
     <>
       <JsonLd data={[breadcrumbSchema(crumbs), serviceSchema("Boat Shipping to Florida", metadata.description as string, "boat-transport-florida"), faqSchema(FAQS)]} />
 
-      {/* ── HERO ─────────────────────────────────────────────────────── */}
+      {/* ── HERO — client reference 01_DESKTOP_REFERENCE_FINAL / 02_MOBILE_REFERENCE_FINAL (2026-09-19) ── */}
       <section className="relative overflow-hidden bg-navy text-white">
-        {/* Desktop: full-bleed cover photo behind the copy, fading out under the quote card (2026-09-18: back to cover) */}
+        {/* Desktop photo band: the full photo, uncropped (client rule), left-aligned, with a blurred copy filling the rest of the band */}
         {hero && (
-          <div className="absolute inset-0 hidden lg:block lg:[mask-image:linear-gradient(90deg,black_72%,transparent_96%)]" aria-hidden="true">
-            <Image src={hero} alt="" fill priority sizes="100vw" className="object-cover object-[50%_70%]" />
+          <div className="absolute inset-x-0 top-0 hidden h-[var(--hero-h)] xl:block" aria-hidden="true">
+            <Image src={hero} alt="" fill sizes="100vw" className="scale-110 object-cover blur-2xl" />
+            <div className="absolute inset-0 bg-navy/25" />
+            <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-contain object-left" />
           </div>
         )}
-        <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(13,31,53,.86)_0%,rgba(13,31,53,.7)_22%,rgba(13,31,53,.3)_42%,rgba(13,31,53,0)_56%)] lg:block" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
-          <div className="flex flex-col pb-5 lg:pt-[136px]">
-            {/* Mobile/tablet: the same photo as a full, uncropped block so nothing is zoomed or hidden behind the overlay */}
-            {hero && (
-              <span className="relative -mx-5 -mt-6 mb-5 block aspect-[1800/947] sm:-mx-8 lg:hidden">
-                <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover" />
-              </span>
-            )}
-            <span className="mb-3.5 w-max rounded-full bg-orange px-4 py-1.5 text-[14px] font-semibold">Snowbird Boat Transport Specialists — Florida</span>
-            <h1 className="font-display max-w-[600px] text-[36px] font-extrabold leading-[1.05] drop-shadow-[0_2px_14px_rgba(0,0,0,.55)] sm:text-[48px]">Boat Transport to Florida — Snowbird Season Specialists</h1>
-            <p className="mb-5 mt-3.5 max-w-[440px] text-[16px] leading-[1.55] text-white/95 drop-shadow-[0_1px_8px_rgba(0,0,0,.6)]">Shipping your boat south for winter? MCC Bound Legends coordinates seasonal boat transport to Florida from New York, New Jersey, Michigan, Ohio, Massachusetts and all northern states. Door-to-door. No deposit to book. Get your free boat shipping quote in 60 seconds.</p>
-            <div className="flex flex-wrap gap-3">
-              <a href="#quote" className="btn-orange font-display px-5 py-3 text-[19px] font-bold tracking-wide">Get My Free Boat Quote <Arrow className="h-5 w-5" /></a>
-              <PhoneLink location="hero" className="btn-ghost font-display border-white/75 bg-navy/40 px-5 py-3 text-[19px] font-bold tracking-wide backdrop-blur-sm"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
+        {/* Feature strip band (full-bleed, under the photo) */}
+        <div className="absolute inset-x-0 top-[var(--hero-h)] hidden h-[66px] bg-[#0b2a4c] xl:block" aria-hidden="true" />
+
+        <div className="relative mx-auto grid max-w-7xl xl:grid-cols-[minmax(0,1fr)_410px] xl:gap-x-8 xl:px-8">
+          <div className="min-w-0">
+            {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
+            <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
+              {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
+              {/* Coast-to-coast callout */}
+              <div className="absolute right-3 top-3 flex items-center gap-2.5 rounded-lg border border-white/35 bg-navy/55 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:right-5 sm:top-5 sm:gap-3.5 sm:rounded-xl sm:px-5 sm:py-3 xl:right-4 xl:top-8 xl:right-6">
+                <Usa className="h-7 w-11 sm:h-10 sm:w-16" />
+                <span className="border-l border-white/40 pl-2.5 sm:pl-3.5">
+                  <span className="display-md block text-[13px] leading-[1.15] tracking-[0.04em] sm:text-[18px] xl:text-[20px]">Coast to Coast<br />Boat Shipping</span>
+                  <Waves className="mt-1 h-2 w-7 sm:h-2.5 sm:w-9" />
+                </span>
+              </div>
             </div>
-            <ul className="mt-auto flex flex-wrap gap-x-5 gap-y-2.5 pt-7 text-[13.5px] font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,.7)]">
-              {TRUST.map((t) => <li key={t} className="flex items-center gap-1.5"><CheckDot className="h-[17px] w-[17px]" />{t}</li>)}
+
+            {/* Feature strip */}
+            <ul className="grid grid-cols-2 bg-[#0b2a4c] sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
+              {STRIP.map(({ icon: Icon, color, label }, i) => (
+                <li key={i} className={`flex items-center gap-3 px-4 py-3 sm:justify-center sm:px-3 xl:justify-start xl:py-0 xl:pl-4 hd:pl-6 ${i % 2 ? "border-l border-white/25" : ""} ${i > 1 ? "border-t border-white/25 sm:border-t-0" : ""} ${i > 0 ? "sm:border-l sm:border-white/25" : ""}`}>
+                  <Icon className={`h-8 w-8 shrink-0 sm:h-9 sm:w-9 hd:h-10 hd:w-10 ${color} ${Icon === Boat ? "!w-12 hd:!w-14" : ""}`} />
+                  <span className="display-md whitespace-nowrap text-[13px] leading-[1.15] tracking-[0.05em] sm:text-[14px] xl:text-[13.5px] hd:text-[15px]">{label}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* Copy */}
+            <div className="px-5 pb-8 pt-7 sm:px-8 xl:grid xl:grid-cols-[minmax(0,1.18fr)_minmax(0,0.82fr)] xl:gap-x-8 hd:gap-x-10 xl:px-0 xl:pb-9 xl:pt-8">
+              <div>
+                <p className="eyebrow text-[12px] tracking-[0.32em] text-blue-300 sm:text-[13px]">Snowbird Boat Transport <span className="text-white">Specialists</span> — Florida</p>
+                <h1 className="mt-3 text-[34px] font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_14px_rgba(0,0,0,.45)] sm:text-[44px] xl:text-[34px] xl:tracking-[-0.025em] hd:text-[41px]">Boat Transport to Florida –<br className="hidden hd:block" /> Snowbird Season Specialists</h1>
+                <div className="mt-6 hidden flex-wrap gap-3 xl:mt-7 xl:flex">
+                  <a href="#quote" className="btn-orange font-display px-5 py-3 text-[19px] font-bold tracking-wide hd:px-6 hd:py-3.5 hd:text-[22px]">Get My Free Boat Quote <Arrow className="h-5 w-5" /></a>
+                  <PhoneLink location="hero" className="btn-ghost font-display border-white/75 bg-navy/40 px-5 py-3 text-[19px] font-bold tracking-wide backdrop-blur-sm hd:px-6 hd:py-3.5 hd:text-[22px]"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
+                </div>
+              </div>
+              <p className="mt-4 text-[16px] leading-[1.55] text-white/95 xl:mt-8 xl:text-[16.5px]">Shipping your boat south for winter? MCC Bound Legends coordinates seasonal boat transport to Florida from New York, New Jersey, Michigan, Ohio, Massachusetts and all northern states. Door-to-door. No deposit to book. Get your free boat shipping quote in 60 seconds.</p>
+              <div className="mt-6 flex flex-wrap gap-3 xl:hidden">
+                <a href="#quote" className="btn-orange font-display px-6 py-3.5 text-[20px] font-bold tracking-wide max-sm:w-full sm:text-[22px]">Get My Free Boat Quote <Arrow className="h-5 w-5" /></a>
+                <PhoneLink location="hero" className="btn-ghost font-display border-white/75 bg-navy/40 px-6 py-3.5 text-[20px] font-bold tracking-wide backdrop-blur-sm max-sm:w-full sm:text-[22px]"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
+              </div>
+              {/* Checklist: inline on mobile; on desktop it moves under the form (right column) */}
+              <ul className="mt-6 space-y-2 text-[15.5px] xl:hidden">
+                {CHECKS.map((t) => <li key={t} className="flex items-center gap-2.5"><CheckDot className="h-5 w-5" color="bg-blue" />{t}</li>)}
+              </ul>
+            </div>
+          </div>
+
+          {/* Quote form (+ desktop checklist) */}
+          <div className="px-5 pb-8 sm:px-8 xl:flex xl:flex-col xl:px-0 xl:pb-9 xl:pt-5">
+            <BoatQuoteForm />
+            <ul className="mt-7 hidden space-y-2.5 text-[16px] xl:mt-auto xl:block xl:pl-8 xl:pt-6">
+              {CHECKS.map((t) => <li key={t} className="flex items-center gap-3"><CheckDot className="h-[22px] w-[22px]" color="bg-blue" />{t}</li>)}
             </ul>
           </div>
-          <div className="pb-5 lg:pb-5"><BoatQuoteForm /></div>
         </div>
       </section>
 

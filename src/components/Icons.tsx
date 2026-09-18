@@ -242,3 +242,77 @@ export const Facebook = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" cla
 export const Instagram = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>);
 export const TikTok = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true"><path d="M16.5 3c.3 2.3 1.7 3.8 4 4v3.3c-1.5 0-2.9-.5-4-1.3v6.3a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v3.4a2.4 2.4 0 1 0 1.5 2.2V3h3.3z" /></svg>);
 export const YouTube = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true"><path d="M22 8.2c-.2-1.5-1-2.4-2.5-2.6C17.5 5.3 12 5.3 12 5.3s-5.5 0-7.5.3C3 5.8 2.2 6.7 2 8.2 1.8 9.7 1.8 12 1.8 12s0 2.3.2 3.8c.2 1.5 1 2.4 2.5 2.6 2 .3 7.5.3 7.5.3s5.5 0 7.5-.3c1.5-.2 2.3-1.1 2.5-2.6.2-1.5.2-3.8.2-3.8s0-2.3-.2-3.8zM10 15V9l5.2 3z" /></svg>);
+
+/* ── Header / boat-hero glyphs (client header + hero references, 2026-09-19) ── */
+/** Delivery truck with motion lines. */
+export const Truck = ({ className = "" }: P) => (
+  <svg viewBox="0 0 32 32" className={className} {...stroke} aria-hidden="true">
+    <path d="M9 9h12v13H9zM21 13h5l3 4v5h-8z" /><circle cx="13" cy="24" r="2.5" /><circle cx="24" cy="24" r="2.5" />
+    <path d="M2 12h5M3 16h4M4 20h3" strokeWidth="1.6" />
+  </svg>
+);
+/** Solid delivery truck (used small in the top bar). */
+export const TruckSolid = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true"><path d="M20 8h-3V4H3a2 2 0 0 0-2 2v11h2a3 3 0 0 0 6 0h6a3 3 0 0 0 6 0h2v-5l-3-4zM7 18.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm12 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM17 12V9.5h2.5l2 2.5H17z" /></svg>
+);
+/** Simplified contiguous USA silhouette. */
+export const Usa = ({ className = "" }: P) => (
+  <svg viewBox="0 0 64 40" className={className} fill="currentColor" aria-hidden="true">
+    <path d="M3 9l2-3 12 1 8-2 10 1 8-3 8 2 5-2 4 3-1 6 2 5-3 5-3 4-2 6 3 6-4 1-3-6-3-4-6-1-5 3-6-1-4 3-4 4-4-4-1-6-4-4-4-1-2-6z" />
+  </svg>
+);
+/** Group of people (Vetted Carriers). */
+export const Group = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+    <circle cx="12" cy="6.5" r="3" /><circle cx="5" cy="8.5" r="2.3" /><circle cx="19" cy="8.5" r="2.3" />
+    <path d="M12 11c-3 0-5.5 2-5.5 4.5V18h11v-2.5C17.5 13 15 11 12 11zM5 12.5c-2.2 0-4 1.4-4 3.2V17h4.3v-1.5c0-1.2.5-2.3 1.3-3.2A4.5 4.5 0 0 0 5 12.5zm14 0c-.6 0-1.1.1-1.6.3.8.9 1.3 2 1.3 3.2V17H23v-1.3c0-1.8-1.8-3.2-4-3.2z" />
+  </svg>
+);
+/** Headset (Real People, Real Support). */
+export const Headset = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+    <path d="M12 2a8 8 0 0 0-8 8v6a3 3 0 0 0 3 3h1v-7H6v-2a6 6 0 0 1 12 0v2h-2v7h1.2A3 3 0 0 0 20 16.5V10a8 8 0 0 0-8-8z" /><path d="M14 19.5h-3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2z" />
+  </svg>
+);
+/** Snowflake (Snowbird Season Specialists). */
+export const Snowflake = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} strokeWidth={1.8} aria-hidden="true">
+    <path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9L4.9 19.1" /><path d="M12 2l-2.5 2.5M12 2l2.5 2.5M12 22l-2.5-2.5M12 22l2.5-2.5M2 12l2.5-2.5M2 12l2.5 2.5M22 12l-2.5-2.5M22 12l-2.5 2.5" />
+  </svg>
+);
+/** Sun (Florida Destinations). */
+export const Sun = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" fill="currentColor" /><g {...stroke} strokeWidth={2}><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" /></g>
+  </svg>
+);
+/** Speedboat outline (All Boat Types & Sizes). */
+export const Boat = ({ className = "" }: P) => (
+  <svg viewBox="0 0 40 24" className={className} {...stroke} strokeWidth={1.8} aria-hidden="true">
+    <path d="M3 14h33l-5 6H8z" /><path d="M9 14c0-3 3-6 8-6h6l3 2 5 1-1 3" /><path d="M20 8V4h2" /><path d="M2 22c2 0 2-1.5 4-1.5S8 22 10 22s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5" opacity=".7" />
+  </svg>
+);
+/** Small wave glyph (Coast to Coast callout). */
+export const Waves = ({ className = "" }: P) => (
+  <svg viewBox="0 0 40 12" className={className} {...stroke} strokeWidth={2} aria-hidden="true"><path d="M2 4c3 0 3-2 6-2s3 2 6 2 3-2 6-2 3 2 6 2 3-2 6-2 3 2 6 2M2 10c3 0 3-2 6-2s3 2 6 2 3-2 6-2 3 2 6 2 3-2 6-2 3 2 6 2" /></svg>
+);
+/** Chain link (Quick Links accordion). */
+export const LinkIcon = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" /><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
+  </svg>
+);
+/** Gear (What We Coordinate accordion). */
+export const Gear = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+    <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm9.4 5.2l-2-.4a7.7 7.7 0 0 0 0-1.6l2-.4.2-.2-.8-3-.3-.1-1.9.7a7.6 7.6 0 0 0-1.1-1.1l.7-1.9-.1-.3-3-.8-.2.2-.4 2a7.7 7.7 0 0 0-1.6 0l-.4-2-.2-.2-3 .8-.1.3.7 1.9a7.6 7.6 0 0 0-1.1 1.1l-1.9-.7-.3.1-.8 3 .2.2 2 .4a7.7 7.7 0 0 0 0 1.6l-2 .4-.2.2.8 3 .3.1 1.9-.7a7.6 7.6 0 0 0 1.1 1.1l-.7 1.9.1.3 3 .8.2-.2.4-2a7.7 7.7 0 0 0 1.6 0l.4 2 .2.2 3-.8.1-.3-.7-1.9a7.6 7.6 0 0 0 1.1-1.1l1.9.7.3-.1.8-3-.2-.2zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
+  </svg>
+);
+/** Small US flag. */
+export const Flag = ({ className = "" }: P) => (
+  <svg viewBox="0 0 34 22" className={className} aria-hidden="true">
+    {Array.from({ length: 13 }).map((_, i) => <rect key={i} x="0" y={i * (22 / 13)} width="34" height={22 / 13 + 0.2} fill={i % 2 ? "#fff" : "#b22234"} />)}
+    <rect x="0" y="0" width="14" height="11.9" fill="#3c3b6e" />
+    {Array.from({ length: 15 }).map((_, i) => <circle key={i} cx={2 + (i % 5) * 2.6} cy={2 + Math.floor(i / 5) * 3.6} r=".7" fill="#fff" />)}
+  </svg>
+);

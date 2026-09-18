@@ -116,6 +116,11 @@ details[open] .chev { transform: rotate(180deg); }
 .footer-wrap { --fp: clamp(20px, 4.4vw, 88px); max-width: 124rem; margin-inline: auto; padding-inline: var(--fp); }
 @media (min-width: 1280px) { .footer-bleed-right { margin-right: calc(-1 * (max(0px, (100vw - 124rem) / 2) + var(--fp))); } }
 
+/* Boat landing hero: desktop photo band height (client hero reference) */
+/* Band height = the photo (1800x947) scaled so its right edge lands on the quote form:
+   width = container left offset + left column (container - 32 pad - 410 form - 32 gap). */
+@media (min-width: 1280px) { :root { --hero-h: min(640px, calc((min(100vw, 100rem) - 474px + max(0px, (100vw - 100rem) / 2)) * 0.526)); } }
+
 /* Selection */
 ::selection { background: #0ea5e9; color: white; }
 
