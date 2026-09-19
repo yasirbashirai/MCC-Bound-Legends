@@ -144,6 +144,10 @@ export default function BoatTransportFloridaPage() {
                   <Waves className="mt-0.5 h-1.5 w-5 sm:mt-1 sm:h-2 sm:w-7" />
                 </span>
               </div>
+              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20) */}
+              <p className="display absolute bottom-3 left-4 text-[17px] leading-[1.02] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] sm:bottom-6 sm:left-7 sm:text-[30px] xl:bottom-7 xl:left-8 xl:text-[34px] hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
+                North to South.<br />Coast to Coast.<br /><span className="text-blue">Your Boat Moves With Us.</span>
+              </p>
             </div>
 
             {/* Feature strip */}
