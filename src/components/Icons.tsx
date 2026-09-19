@@ -256,6 +256,12 @@ export const Trailer = ({ className = "" }: P) => (
 export const Note = ({ className = "" }: P) => (
   <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M4 4h16v12l-4 4H4z" /><path d="M16 20v-4h4M8 9h8M8 13h5" /></svg>
 );
+export const BoatSm = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M3 15h18l-3 4H6z" /><path d="M6 15c0-3 2-5 6-5h3l2 1.5 3 .5-1 3" /><path d="M13 10V6h2" /></svg>
+);
+export const NoDeposit = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M14.5 9.2c-.4-.8-1.3-1.2-2.3-1.2-1.5 0-2.5.8-2.5 1.9 0 2.4 5 1.4 5 3.9 0 1.1-1 1.9-2.6 1.9-1.1 0-2-.5-2.5-1.3M12 6.5V8m0 8v1.5" /><path d="M5 19L19 5" strokeWidth="2.5" /></svg>
+);
 export const Weight = ({ className = "" }: P) => (
   <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M6 8h12l3 12H3z" /><circle cx="12" cy="5" r="2.5" /><path d="M10 8V6.5M14 8V6.5" /></svg>
 );

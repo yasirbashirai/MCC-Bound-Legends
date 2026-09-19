@@ -5,16 +5,15 @@ import type { ShipType } from "@/data/services";
 import { getShipOption, shipGroups, shipOptions, smsConsent } from "@/data/quote";
 import { trackQuoteSubmit } from "@/lib/analytics";
 import Link from "next/link";
-import { Arrow, Calendar, Check, Layers, Lock, Mail, Note, Phone, Pin, Ruler, Tag, Trailer, User, Weight } from "./Icons";
+import { Arrow, Calendar, Gear, Layers, Mail, Note, Phone, Pin, Ruler, Tag, Trailer, User, Weight } from "./Icons";
+import { Field, TrustStrip } from "./FormBits";
 
-/** Label + leading-icon wrapper — same look as BoatQuoteForm (shared .label / .field / .field-icon in globals.css). */
-const Field = ({ id, label, icon: Icon, className = "", children }: { id?: string; label: string; icon?: React.ComponentType<{ className?: string }>; className?: string; children: React.ReactNode }) => (
-  <div className={className}>
-    <label className="label" htmlFor={id}>{label}</label>
-    {Icon ? <div className="field-icon"><Icon />{children}</div> : children}
-  </div>
-);
-
+/**
+ * Main quote / contact form. Same visual system as the boat page card (client form
+ * reference 2026-09-19): placeholder-only fields with a navy leading icon, custom
+ * selects, big consent checkbox, orange CTA, grey trust strip. Conditional
+ * dimension / trailer / attachment fields per ship type (src/data/quote.ts).
+ */
 type Props = {
   defaultType?: ShipType;
   serviceName?: string;      // e.g. "Excavator Transport" -> heading + hidden field
@@ -31,16 +30,12 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   const router = useRouter();
   const path = usePathname();
   const [type, setType] = useState<ShipType>(defaultType);
-  const [operable, setOperable] = useState("yes");
-  const [trailer, setTrailer] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [dateType, setDateType] = useState<"text" | "date">("text");
   const opt = useMemo(() => getShipOption(type), [type]);
   const has = (g: string) => opt?.fields.includes(g as never) ?? false;
   const dark = variant === "card";
-
-  const label = "label";
-  const field = "field";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,21 +55,27 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
     }
   }
 
+  const shell = dark
+    ? "form-dark rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6"
+    : variant === "white"
+      ? "rounded-2xl bg-white p-5 shadow-[0_30px_60px_-20px_rgb(13_31_53/0.55)] ring-1 ring-line sm:p-6"
+      : "card p-6 sm:p-8";
+
   return (
-    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "form-dark rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : variant === "white" ? "rounded-2xl bg-white p-5 shadow-[0_30px_60px_-20px_rgb(13_31_53/0.55)] ring-1 ring-line sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
+    <form id="quote" onSubmit={onSubmit} className={`@container scroll-mt-28 ${shell}`} noValidate>
       <div className="mb-5">
-        <h2 className={`display-md ${minimal ? "text-[26px]" : "text-2xl"} ${dark ? "text-white" : "text-navy"}`}>
+        <h2 className={`font-display text-[26px] font-extrabold leading-[1.08] sm:text-[28px] ${dark ? "text-white" : "text-navy"}`}>
           {title ?? (serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote")}
         </h2>
-        <p className={`mt-1 text-sm ${dark ? "text-white/65" : "text-slate"}`}>{minimal ? "Fast. Free. No obligation. No deposit to book." : "Fast. Free. No deposit to book. A real person reviews every request."}</p>
+        <p className={`mt-2 text-[15px] ${dark ? "text-white/70" : "text-slate"}`}>Get a fast, free quote in 60 seconds — no deposit, no obligation.</p>
       </div>
 
       {/* Honeypot */}
       <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-        <Field className="sm:col-span-2" id={`type-${variant}`} label="What are you shipping?" icon={Layers}>
-          <select id={`type-${variant}`} name="ship_type" value={type} onChange={(e) => setType(e.target.value as ShipType)} className={field} required>
+      <div className="grid grid-cols-1 gap-3 @min-[420px]:grid-cols-2">
+        <Field icon={Layers} className="@min-[420px]:col-span-2">
+          <select name="ship_type" value={type} onChange={(e) => setType(e.target.value as ShipType)} aria-label="What are you shipping?" className="field" required>
             {shipGroups.map((g) => (
               <optgroup key={g} label={g}>
                 {shipOptions.filter((o) => o.group === g).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -83,110 +84,90 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
           </select>
         </Field>
 
-        <Field id={`pz-${variant}`} label="Pickup ZIP Code" icon={Pin}>
-          <input id={`pz-${variant}`} name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 32701" className={field} required />
-        </Field>
-        <Field id={`dz-${variant}`} label="Delivery ZIP Code" icon={Pin}>
-          <input id={`dz-${variant}`} name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 10001" className={field} required />
-        </Field>
+        <Field icon={Pin}><input name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Pick-up ZIP Code" aria-label="Pick-up ZIP code" className="field" required /></Field>
+        <Field icon={Pin}><input name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Drop-off ZIP Code" aria-label="Drop-off ZIP code" className="field" required /></Field>
 
         {!minimal && (<>
-        <Field id={`date-${variant}`} label="Preferred pickup date" icon={Calendar}>
-          <input id={`date-${variant}`} name="pickup_date" type="date" className={field} min={new Date().toISOString().slice(0, 10)} data-empty="true" onChange={(e) => { e.currentTarget.dataset.empty = e.currentTarget.value ? "false" : "true"; }} />
-        </Field>
-        <div>
-          <label className={label}>Runs &amp; drives?</label>
-          <div className={`grid h-[46px] grid-cols-2 gap-1 rounded-lg border p-1 ${dark ? "border-white/15 bg-white/10" : "border-[#cfd9e6] bg-mist"}`}>
-            {[["yes", "Operational"], ["no", "Non-running"]].map(([v, l]) => (
-              <label key={v} className={`flex cursor-pointer items-center justify-center rounded-md text-center text-sm font-semibold transition ${operable === v ? "bg-blue text-white shadow" : dark ? "text-white/70" : "text-slate"}`}>
-                <input type="radio" name="operable" value={v} checked={operable === v} onChange={() => setOperable(v)} className="sr-only" />{l}
-              </label>
-            ))}
-          </div>
-        </div>
+          <Field icon={Calendar}>
+            <input name="pickup_date" type={dateType} onFocus={() => setDateType("date")} onBlur={(e) => { if (!e.currentTarget.value) setDateType("text"); }} min={new Date().toISOString().slice(0, 10)} placeholder="Preferred Pick-up Date" aria-label="Preferred pick-up date" className="field" />
+          </Field>
+          <Field icon={Gear}>
+            <select name="operable" defaultValue="yes" aria-label="Does it run and drive?" className="field">
+              <option value="yes">Runs &amp; drives</option>
+              <option value="no">Non-running</option>
+            </select>
+          </Field>
         </>)}
 
         {/* Vehicle identity */}
-        {has("vehicle") && !compact && (
-          <>
-            <Field id={`year-${variant}`} label="Year" icon={Calendar}>
-              <select id={`year-${variant}`} name="year" className={field} defaultValue=""><option value="">Select year</option>{years.map((y) => <option key={y}>{y}</option>)}</select>
-            </Field>
-            <div className="grid grid-cols-2 gap-3.5">
-              <Field id={`make-${variant}`} label="Make" icon={Tag}><input id={`make-${variant}`} name="make" placeholder="e.g. Ford" className={field} /></Field>
-              <Field id={`model-${variant}`} label="Model"><input id={`model-${variant}`} name="model" placeholder="e.g. F-350" className={field} /></Field>
-            </div>
-          </>
-        )}
+        {has("vehicle") && !compact && (<>
+          <Field icon={Calendar}>
+            <select name="year" defaultValue="" aria-label="Year" className="field"><option value="">Year</option>{years.map((y) => <option key={y}>{y}</option>)}</select>
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field icon={Tag}><input name="make" placeholder="Make" aria-label="Make" className="field" /></Field>
+            <Field><input name="model" placeholder="Model" aria-label="Model" className="field" /></Field>
+          </div>
+        </>)}
         {compact && !minimal && (
-          <Field className="sm:col-span-2" id={`ymm-${variant}`} label="Year / Make / Model" icon={Tag}>
-            <input id={`ymm-${variant}`} name="ymm" placeholder="e.g. 2019 Ford F-350 or 2015 Sea Ray 310" className={field} />
+          <Field icon={Tag} className="@min-[420px]:col-span-2">
+            <input name="ymm" placeholder="Year, Make & Model (e.g. 2019 Ford F-350)" aria-label="Year, make and model" className="field" />
           </Field>
         )}
 
         {/* Conditional: dimensions (commercial, marine, RV, equipment) */}
         {has("dimensions") && !minimal && (
-          <fieldset className={`sm:col-span-2 rounded-xl border p-3.5 ${dark ? "border-blue/30 bg-blue/10" : "border-blue/30 bg-blue-100/40"}`}>
+          <fieldset className={`@min-[420px]:col-span-2 rounded-xl border p-3.5 ${dark ? "border-blue/30 bg-blue/10" : "border-blue/30 bg-blue-100/40"}`}>
             <legend className={`px-1.5 text-xs font-bold uppercase tracking-wider ${dark ? "text-blue-300" : "text-blue"}`}>Dimensions help us match the right trailer</legend>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[["length", "Length (ft)", Ruler, "e.g. 28"], ["width", "Width (ft)", Ruler, "e.g. 8.5"], ["height", "Height (ft)", Ruler, "e.g. 10"], ["weight", "Weight (lbs)", Weight, "e.g. 9,000"]].map(([n, l, I, ph]) => (
-                <Field key={n as string} id={`${n}-${variant}`} label={l as string} icon={I as React.ComponentType<{ className?: string }>}><input id={`${n}-${variant}`} name={n as string} inputMode="decimal" placeholder={ph as string} className={field} /></Field>
+            <div className="grid grid-cols-2 gap-3 @min-[640px]:grid-cols-4">
+              {([["length", "Length (ft)", Ruler], ["width", "Width (ft)", Ruler], ["height", "Height (ft)", Ruler], ["weight", "Weight (lbs)", Weight]] as const).map(([n, l, I]) => (
+                <Field key={n} icon={I}><input name={n} inputMode="decimal" placeholder={l} aria-label={l} className="field" /></Field>
               ))}
             </div>
             {(has("trailer") || type.startsWith("boat") || type === "yacht") && (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Field id={`trailer-${variant}`} label="Trailer available?" icon={Trailer}>
-                  <select id={`trailer-${variant}`} name="trailer_available" value={trailer} onChange={(e) => setTrailer(e.target.value)} className={field}>
-                    <option value="">Select an option</option><option>Yes, road-worthy</option><option>Yes, not road-worthy</option><option>No trailer</option>
+              <div className="mt-3 grid gap-3 @min-[420px]:grid-cols-2">
+                <Field icon={Trailer}>
+                  <select name="trailer_available" defaultValue="" aria-label="Trailer available?" className="field">
+                    <option value="" disabled>Trailer available?</option><option>Yes, road-worthy</option><option>Yes, not road-worthy</option><option>No trailer</option>
                   </select>
                 </Field>
                 {has("loading") && (
-                  <Field id={`load-${variant}`} label="Loading equipment on site?" icon={Layers}>
-                    <select id={`load-${variant}`} name="loading_equipment" className={field} defaultValue="">
-                      <option value="">Select an option</option><option>Ramp / dock available</option><option>Forklift or loader available</option><option>Crane / travel lift available</option><option>None, please arrange</option><option>Not sure</option>
+                  <Field icon={Layers}>
+                    <select name="loading_equipment" defaultValue="" aria-label="Loading equipment on site?" className="field">
+                      <option value="" disabled>Loading equipment on site?</option><option>Ramp / dock available</option><option>Forklift or loader available</option><option>Crane / travel lift available</option><option>None, please arrange</option><option>Not sure</option>
                     </select>
                   </Field>
                 )}
               </div>
             )}
             {has("attachments") && (
-              <Field className="mt-3" id={`att-${variant}`} label="Attachments included" icon={Note}><input id={`att-${variant}`} name="attachments" placeholder="e.g. 2 buckets, hydraulic hammer, forks" className={field} /></Field>
+              <Field icon={Note} className="mt-3"><input name="attachments" placeholder="Attachments included (e.g. 2 buckets, hydraulic hammer, forks)" aria-label="Attachments included" className="field" /></Field>
             )}
           </fieldset>
         )}
 
-        <div className={`sm:col-span-2 grid gap-3.5 ${minimal ? "" : "sm:grid-cols-3"}`}>
-          <Field id={`name-${variant}`} label="Your name" icon={User}><input id={`name-${variant}`} name="name" autoComplete="name" placeholder="Full name" className={field} required /></Field>
-          <Field id={`phone-${variant}`} label="Phone number" icon={Phone}><input id={`phone-${variant}`} name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" className={field} required /></Field>
-          <Field id={`email-${variant}`} label="Email address" icon={Mail}><input id={`email-${variant}`} name="email" type="email" autoComplete="email" placeholder="you@email.com" className={field} required /></Field>
+        <div className={`@min-[420px]:col-span-2 grid gap-3 ${minimal ? "" : "@min-[420px]:grid-cols-2 @min-[640px]:grid-cols-3"}`}>
+          <Field icon={User}><input name="name" autoComplete="name" placeholder="Your Name" aria-label="Your name" className="field" required /></Field>
+          <Field icon={Phone}><input name="phone" type="tel" autoComplete="tel" placeholder="Phone Number" aria-label="Phone number" className="field" required /></Field>
+          <Field icon={Mail} className={minimal ? "" : "@min-[420px]:col-span-2 @min-[640px]:col-span-1"}><input name="email" type="email" autoComplete="email" placeholder="Email Address" aria-label="Email address" className="field" required /></Field>
         </div>
 
         {!compact && (
-          <Field className="sm:col-span-2" id={`notes-${variant}`} label="Additional details (optional)"><textarea id={`notes-${variant}`} name="notes" rows={3} placeholder="Modifications, deadlines, auction lot number, marina name, anything that helps us plan." className={field} /></Field>
+          <Field className="@min-[420px]:col-span-2"><textarea name="notes" rows={3} placeholder="Additional details (optional) — modifications, deadlines, auction lot number, marina name, anything that helps us plan." aria-label="Additional details" className="field" /></Field>
         )}
 
-        <label className={`sm:col-span-2 mt-1 flex items-start gap-2.5 text-[12px] leading-snug ${dark ? "text-white/60" : "text-slate"}`}>
-          <input type="checkbox" name="sms_consent" value="yes" className="mt-0.5 h-4 w-4 shrink-0 rounded border-line accent-blue" />
-          <span>{smsConsent} Please review our <Link href="/privacy-policy/" className="underline">Privacy Policy</Link> and <Link href="/terms-and-conditions/" className="underline">Terms &amp; Conditions</Link>.</span>
+        <label className={`@min-[420px]:col-span-2 mt-1 flex items-start gap-3 text-[13px] leading-[1.45] ${dark ? "text-white/70" : "text-slate"}`}>
+          <input type="checkbox" name="sms_consent" value="yes" className="consent-box" />
+          <span>{smsConsent} Please review our <Link href="/privacy-policy/" className={`underline ${dark ? "text-cyan" : "text-royal"}`}>Privacy Policy</Link> and <Link href="/terms-and-conditions/" className={`underline ${dark ? "text-cyan" : "text-royal"}`}>Terms &amp; Conditions</Link>.</span>
         </label>
       </div>
 
       {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
 
-      <button type="submit" disabled={loading} className={`btn-orange font-display mt-4 w-full py-3.5 text-[18px] font-bold tracking-wide disabled:opacity-70`}>
+      <button type="submit" disabled={loading} className="btn-orange font-display mt-4 w-full rounded-xl py-4 text-[19px] font-bold tracking-wide disabled:opacity-70">
         {loading ? "Sending…" : minimal ? "Get My Free Quote" : "Get My Free Quote Now"} <Arrow className="h-5 w-5" />
       </button>
-
-      {minimal ? (
-        <p className={`mt-3 flex items-center justify-center gap-1.5 text-[12px] ${dark ? "text-white/60" : "text-muted"}`}><Lock className="h-3.5 w-3.5" /> Your information is safe and secure.</p>
-      ) : (
-      <ul className={`mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-[12px] ${dark ? "text-white/60" : "text-muted"}`}>
-        {["No deposit to book", "Carrier insurance verified", "Response within business hours"].map((t) => (
-          <li key={t} className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-success" />{t}</li>
-        ))}
-        <li className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" />Your information is safe</li>
-      </ul>
-      )}
+      <TrustStrip dark={dark} />
     </form>
   );
 }

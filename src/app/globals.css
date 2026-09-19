@@ -86,24 +86,32 @@ body { background: var(--color-cloud); color: var(--color-ink); font-family: var
 .card { @apply rounded-2xl border border-line bg-white shadow-[var(--shadow-card)] transition-all duration-300; }
 .card-hover { @apply hover:-translate-y-1 hover:border-blue/60 hover:shadow-[var(--shadow-lift)]; }
 
-/* ── Form system (all quote / contact forms share these) ──────────────────
-   label above every field · 46px controls · leading icon · custom select chevron
-   · one blue focus ring. Keeps every form on the site looking like one product. */
+/* ── Form system — client reference 2026-09-19 (client-docs/form-reference-2026-09-19.png) ──
+   placeholder-only fields · 50px controls · big navy leading icon · rounded-xl · custom
+   chevron · one blue focus ring · grey trust strip. Every quote / contact form uses this. */
 .label { @apply mb-1.5 block whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.08em] text-slate; }
-.field { @apply h-[46px] w-full rounded-lg border border-[#cfd9e6] bg-white px-3.5 text-[15px] font-medium text-ink shadow-[inset_0_1px_2px_rgb(13_31_53/0.05)] transition placeholder:font-normal placeholder:text-muted/75 hover:border-[#9fb3cc] focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15; }
-.field:where(textarea) { @apply h-auto py-3 leading-[1.5]; }
-.field:where(select) { @apply cursor-pointer appearance-none pr-10 bg-no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-position: right 12px center; background-size: 16px; }
-.field:where(select:invalid), .field:where(select):has(> option[value=""]:checked), .field[data-empty="true"] { @apply font-normal text-muted/75; }
+.field { @apply h-[50px] w-full rounded-xl border border-[#cfd8e3] bg-white px-4 text-[15.5px] font-medium text-ink shadow-[inset_0_1px_2px_rgb(13_31_53/0.04)] transition placeholder:font-normal placeholder:text-slate/80 hover:border-[#9fb3cc] focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15; }
+.field:where(textarea) { @apply h-auto py-3.5 leading-[1.5]; }
+.field:where(select) { @apply cursor-pointer appearance-none pr-11 bg-no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d1f35' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-position: right 14px center; background-size: 18px; }
+/* empty select / empty date read like a placeholder */
+.field:where(select:invalid), .field:where(select):has(> option[value=""]:checked), .field[data-empty="true"] { @apply font-normal text-slate/80; }
 .field:where(input[type="date"]) { @apply appearance-none; }
 .field::-webkit-date-and-time-value { text-align: left; }
 .field::-webkit-calendar-picker-indicator { @apply cursor-pointer opacity-60; }
 /* leading icon: wrap the control in .field-icon and put the svg first */
 .field-icon { @apply relative; }
-.field-icon > svg { @apply pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-blue; }
-.field-icon > .field { @apply pl-[42px]; }
-.field-icon:focus-within > svg { @apply text-royal; }
+.field-icon > svg { @apply pointer-events-none absolute left-4 top-1/2 h-[22px] w-[22px] -translate-y-1/2 text-navy; }
+.field-icon > .field { @apply pl-[52px]; }
+.field-icon:focus-within > svg { @apply text-blue; }
+/* consent checkbox — big rounded box like the reference */
+.consent-box { @apply mt-0.5 h-[22px] w-[22px] shrink-0 cursor-pointer appearance-none rounded-md border-2 border-[#9fb3cc] bg-white transition checked:border-blue checked:bg-blue; }
+.consent-box:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); background-size: 16px; background-position: center; background-repeat: no-repeat; }
+/* compact variant for the narrow hero card (boat page): slightly smaller controls + icons */
+.form-compact .field { @apply h-[46px] px-3.5 text-[14px]; }
+.form-compact .field:where(select) { @apply pr-9; background-position: right 10px center; background-size: 16px; }
+.form-compact .field-icon > svg { @apply left-3.5 h-5 w-5; }
+.form-compact .field-icon > .field { @apply pl-[44px]; }
 /* dark (navy card) variant */
-.form-dark .label { @apply text-white/70; }
 .form-dark .field { @apply border-white/15 bg-white/95; }
 
 /* Marquee */
@@ -135,7 +143,7 @@ details[open] .chev { transform: rotate(180deg); }
 /* Boat landing hero: desktop photo band height (client hero reference) */
 /* Band height = the photo (1800x947) scaled so its right edge lands on the quote form:
    width = container left offset + left column (container - 32 pad - 410 form - 32 gap). */
-@media (min-width: 1280px) { :root { --hero-h: min(640px, calc((min(100vw, 100rem) - 474px + max(0px, (100vw - 100rem) / 2)) * 0.526)); } }
+@media (min-width: 1280px) { :root { --hero-h: min(640px, calc((min(100vw, 100rem) - 544px + max(0px, (100vw - 100rem) / 2)) * 0.526)); } }
 
 /* Selection */
 ::selection { background: #0ea5e9; color: white; }

@@ -129,7 +129,7 @@ export default function BoatTransportFloridaPage() {
         {/* Feature strip band (full-bleed, under the photo) */}
         <div className="absolute inset-x-0 top-[var(--hero-h)] hidden h-[66px] bg-[#0b2a4c] xl:block" aria-hidden="true" />
 
-        <div className="relative mx-auto grid max-w-7xl xl:grid-cols-[minmax(0,1fr)_410px] xl:gap-x-8 xl:px-8">
+        <div className="relative mx-auto grid max-w-7xl xl:grid-cols-[minmax(0,1fr)_480px] xl:gap-x-8 xl:px-8">
           <div className="min-w-0">
             {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
             <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
