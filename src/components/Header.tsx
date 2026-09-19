@@ -76,11 +76,8 @@ export function Header() {
       <div className={`relative bg-white transition-shadow duration-500 ${scrolled ? "shadow-[0_8px_30px_-12px_rgb(13_31_53/0.35)]" : "shadow-[0_1px_0_#dbe3ee]"}`}>
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 sm:px-6 lg:gap-4 lg:py-2.5 xl:px-8">
           <Link href="/" className="relative flex shrink-0 items-center" aria-label={`${site.name} home`}>
-            {/* Shield plate: overhangs the hero, like the reference */}
-            <span className={`logo-plate relative block bg-white px-2 pb-1 pt-1 sm:px-3 sm:pb-2 lg:absolute lg:-top-2.5 lg:left-0 lg:z-[60] lg:rounded-b-[28px] lg:px-4 lg:pb-3 lg:pt-3 lg:shadow-[0_18px_40px_-16px_rgb(13_31_53/0.55)] ${scrolled ? "lg:!rounded-b-2xl lg:!pb-2 lg:!pt-2" : ""}`}>
-              <span className={`relative block h-[68px] w-[72px] transition-all duration-500 sm:h-[84px] sm:w-[90px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[148px] lg:w-[158px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="160px" className="object-contain" priority /></span>
-            </span>
-            <span className={`hidden lg:block transition-all duration-500 ${scrolled ? "lg:w-[110px]" : "lg:w-[196px]"}`} aria-hidden="true" />
+            {/* Shield logo on a transparent background, inside the white bar (client 2026-09-20: no white plate / overhang) */}
+            <span className={`relative block h-[68px] w-[72px] transition-all duration-500 sm:h-[84px] sm:w-[90px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[92px] lg:w-[100px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="100px" className="object-contain" priority /></span>
           </Link>
 
           {/* Brand block */}
