@@ -135,12 +135,12 @@ export default function BoatTransportFloridaPage() {
             <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
               {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
               {/* Coast-to-coast callout — smaller and pulled left (client 2026-09-19) so it never covers the
-                  blue street sign at the right edge of the photo. `right-[22%]` of the photo width keeps it clear
+                  blue street sign at the right edge of the photo. `right-[17.5%]` of the photo width sits just left of the sign
                   of the sign at every viewport because the photo is always shown uncropped. */}
-              <div className="absolute right-[22%] top-2.5 flex items-center gap-2 rounded-lg border border-white/35 bg-navy/55 px-2.5 py-1.5 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-2.5 xl:top-6">
-                <Usa className="h-5 w-8 sm:h-7 sm:w-11 xl:h-8 xl:w-[52px]" />
+              <div className="absolute right-[17.5%] top-2.5 flex items-center gap-2 rounded-lg border border-white/35 bg-navy/55 px-2.5 py-1.5 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-2.5 xl:top-6">
+                <Usa className="h-5 w-8 sm:h-6 sm:w-10 xl:h-7 xl:w-11" />
                 <span className="border-l border-white/40 pl-2 sm:pl-3">
-                  <span className="display-md block text-[10.5px] leading-[1.15] tracking-[0.04em] sm:text-[14px] xl:text-[15px] hd:text-[16px]">Coast to Coast<br />Boat Shipping</span>
+                  <span className="display-md block text-[10.5px] leading-[1.15] tracking-[0.04em] sm:text-[13px] xl:text-[14px] hd:text-[15px]">Coast to Coast<br />Boat Shipping</span>
                   <Waves className="mt-0.5 h-1.5 w-5 sm:mt-1 sm:h-2 sm:w-7" />
                 </span>
               </div>
