@@ -108,7 +108,7 @@ export function Footer() {
       </div>
 
       {/* ── 3. Main footer ───────────────────────────────────────────────── */}
-      <div className="footer-wrap pt-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,3fr)_minmax(0,1.7fr)] xl:gap-x-6 xl:pt-0 hd:grid-cols-[minmax(0,1.7fr)_minmax(0,3fr)_minmax(0,2fr)] hd:gap-x-8 2xl:gap-x-12">
+      <div className="footer-wrap pt-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,3.3fr)_minmax(0,1.4fr)] xl:gap-x-6 xl:pt-0 hd:grid-cols-[minmax(0,1.7fr)_minmax(0,3fr)_minmax(0,2fr)] hd:gap-x-8 2xl:gap-x-12">
         {/* Company / contact ------------------------------------------------ */}
         <div className="min-w-0 xl:pb-7 xl:pt-8">
           {/* desktop: big logo + one-line wordmark */}
@@ -161,12 +161,14 @@ export function Footer() {
         </div>
 
         {/* Link columns (desktop) + badge row ------------------------------- */}
-        <div className="hidden min-w-0 xl:grid xl:grid-cols-[0.75fr_1.05fr_1.15fr] xl:grid-rows-[auto_1fr] xl:gap-x-4 xl:pb-7 xl:pt-8 hd:gap-x-5 2xl:gap-x-8">
+        {/* columns size to their content and the leftover space is split evenly between them,
+            so the three gaps are always equal (client 2026-09-19: "even out the spacing") */}
+        <div className="hidden min-w-0 xl:grid xl:grid-cols-[auto_auto_auto] xl:grid-rows-[auto_1fr] xl:justify-between xl:gap-x-6 xl:pb-7 xl:pt-8 hd:gap-x-10">
           {columns.map((col) => (
             <div key={col.title} className="min-w-0">
               <h3 className="display-md text-[16px] tracking-[0.14em] text-cyan hd:text-[18px] 2xl:text-[19px]">{col.title}</h3>
               <span className="mt-2.5 block h-[3px] w-9 rounded-full bg-cyan" />
-              <ul className="mt-4 space-y-[5px] text-[14.5px] leading-tight text-white hd:whitespace-nowrap hd:text-[16px]">
+              <ul className="mt-4 space-y-[5px] whitespace-nowrap text-[14px] leading-tight text-white hd:text-[16px]">
                 {col.items.map(([l, h]) => <li key={h}><Link href={h} className="transition hover:text-cyan">{l}</Link></li>)}
               </ul>
             </div>
@@ -230,7 +232,7 @@ export function Footer() {
           </p>
           <p className="mt-4 leading-[1.6] text-white/85 xl:mt-0 xl:whitespace-nowrap xl:border-l xl:border-white/25 xl:px-3 xl:text-center hd:px-8 2xl:px-12">
             © {new Date().getFullYear()} {site.legalName}. All rights reserved.<br />
-            Licensed &amp; bonded freight broker, USDOT {site.usdot}, MC {site.mc}.
+            Licensed &amp; bonded. <span className="whitespace-nowrap">USDOT {site.usdot} &nbsp;•&nbsp; MC {site.mc}.</span>
           </p>
           <ul className="mt-4 flex flex-wrap items-center justify-center xl:mt-0 xl:shrink-0 xl:border-l xl:border-white/25 xl:pl-2 hd:pl-4">
             {legal.map(([l, h]) => (

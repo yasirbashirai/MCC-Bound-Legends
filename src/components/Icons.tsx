@@ -237,6 +237,32 @@ export const Bolt = ({ className = "" }: P) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg>
 );
 
+/* ── Form field glyphs (quote / contact forms) ──────────────────────────── */
+export const User = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>
+);
+export const Calendar = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+);
+export const Anchor = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><circle cx="12" cy="5" r="2.5" /><path d="M12 7.5V21M5 12H2a10 10 0 0 0 20 0h-3M8.5 12h7" /></svg>
+);
+export const Tag = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg>
+);
+export const Trailer = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M2 16h3M5 8h13v8H5zM18 16h4" /><circle cx="9" cy="18.5" r="2" /><circle cx="15" cy="18.5" r="2" /></svg>
+);
+export const Note = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M4 4h16v12l-4 4H4z" /><path d="M16 20v-4h4M8 9h8M8 13h5" /></svg>
+);
+export const Weight = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M6 8h12l3 12H3z" /><circle cx="12" cy="5" r="2.5" /><path d="M10 8V6.5M14 8V6.5" /></svg>
+);
+export const Layers = ({ className = "" }: P) => (
+  <svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z" /><path d="M3 13l9 5 9-5M3 17l9 5 9-5" /></svg>
+);
+
 /* Social */
 export const Facebook = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4.5 1.7-4.5 4.5V11H7v4h2.5v7h4v-7h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z" /></svg>);
 export const Instagram = ({ className = "" }: P) => (<svg viewBox="0 0 24 24" className={className} {...stroke} aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>);

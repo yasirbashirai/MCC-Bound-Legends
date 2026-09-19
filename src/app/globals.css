@@ -86,9 +86,25 @@ body { background: var(--color-cloud); color: var(--color-ink); font-family: var
 .card { @apply rounded-2xl border border-line bg-white shadow-[var(--shadow-card)] transition-all duration-300; }
 .card-hover { @apply hover:-translate-y-1 hover:border-blue/60 hover:shadow-[var(--shadow-lift)]; }
 
-/* Form fields */
-.field { @apply w-full rounded-lg border border-line bg-white px-3.5 py-3 text-[15px] text-ink placeholder:text-muted/70 focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15 transition; }
-.label { @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate; }
+/* ── Form system (all quote / contact forms share these) ──────────────────
+   label above every field · 46px controls · leading icon · custom select chevron
+   · one blue focus ring. Keeps every form on the site looking like one product. */
+.label { @apply mb-1.5 block whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.08em] text-slate; }
+.field { @apply h-[46px] w-full rounded-lg border border-[#cfd9e6] bg-white px-3.5 text-[15px] font-medium text-ink shadow-[inset_0_1px_2px_rgb(13_31_53/0.05)] transition placeholder:font-normal placeholder:text-muted/75 hover:border-[#9fb3cc] focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15; }
+.field:where(textarea) { @apply h-auto py-3 leading-[1.5]; }
+.field:where(select) { @apply cursor-pointer appearance-none pr-10 bg-no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-position: right 12px center; background-size: 16px; }
+.field:where(select:invalid), .field:where(select):has(> option[value=""]:checked), .field[data-empty="true"] { @apply font-normal text-muted/75; }
+.field:where(input[type="date"]) { @apply appearance-none; }
+.field::-webkit-date-and-time-value { text-align: left; }
+.field::-webkit-calendar-picker-indicator { @apply cursor-pointer opacity-60; }
+/* leading icon: wrap the control in .field-icon and put the svg first */
+.field-icon { @apply relative; }
+.field-icon > svg { @apply pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-blue; }
+.field-icon > .field { @apply pl-[42px]; }
+.field-icon:focus-within > svg { @apply text-royal; }
+/* dark (navy card) variant */
+.form-dark .label { @apply text-white/70; }
+.form-dark .field { @apply border-white/15 bg-white/95; }
 
 /* Marquee */
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }

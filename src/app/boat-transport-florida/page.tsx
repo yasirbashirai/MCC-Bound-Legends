@@ -134,12 +134,14 @@ export default function BoatTransportFloridaPage() {
             {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
             <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
               {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
-              {/* Coast-to-coast callout */}
-              <div className="absolute right-3 top-3 flex items-center gap-2.5 rounded-lg border border-white/35 bg-navy/55 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:right-5 sm:top-5 sm:gap-3.5 sm:rounded-xl sm:px-5 sm:py-3 xl:right-4 xl:top-8 xl:right-6">
-                <Usa className="h-7 w-11 sm:h-10 sm:w-16" />
-                <span className="border-l border-white/40 pl-2.5 sm:pl-3.5">
-                  <span className="display-md block text-[13px] leading-[1.15] tracking-[0.04em] sm:text-[18px] xl:text-[20px]">Coast to Coast<br />Boat Shipping</span>
-                  <Waves className="mt-1 h-2 w-7 sm:h-2.5 sm:w-9" />
+              {/* Coast-to-coast callout — smaller and pulled left (client 2026-09-19) so it never covers the
+                  blue street sign at the right edge of the photo. `right-[22%]` of the photo width keeps it clear
+                  of the sign at every viewport because the photo is always shown uncropped. */}
+              <div className="absolute right-[22%] top-2.5 flex items-center gap-2 rounded-lg border border-white/35 bg-navy/55 px-2.5 py-1.5 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-2.5 xl:top-6">
+                <Usa className="h-5 w-8 sm:h-7 sm:w-11 xl:h-8 xl:w-[52px]" />
+                <span className="border-l border-white/40 pl-2 sm:pl-3">
+                  <span className="display-md block text-[10.5px] leading-[1.15] tracking-[0.04em] sm:text-[14px] xl:text-[15px] hd:text-[16px]">Coast to Coast<br />Boat Shipping</span>
+                  <Waves className="mt-0.5 h-1.5 w-5 sm:mt-1 sm:h-2 sm:w-7" />
                 </span>
               </div>
             </div>

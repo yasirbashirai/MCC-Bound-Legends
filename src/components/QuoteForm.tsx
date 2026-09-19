@@ -5,7 +5,15 @@ import type { ShipType } from "@/data/services";
 import { getShipOption, shipGroups, shipOptions, smsConsent } from "@/data/quote";
 import { trackQuoteSubmit } from "@/lib/analytics";
 import Link from "next/link";
-import { Arrow, Check, Lock } from "./Icons";
+import { Arrow, Calendar, Check, Layers, Lock, Mail, Note, Phone, Pin, Ruler, Tag, Trailer, User, Weight } from "./Icons";
+
+/** Label + leading-icon wrapper — same look as BoatQuoteForm (shared .label / .field / .field-icon in globals.css). */
+const Field = ({ id, label, icon: Icon, className = "", children }: { id?: string; label: string; icon?: React.ComponentType<{ className?: string }>; className?: string; children: React.ReactNode }) => (
+  <div className={className}>
+    <label className="label" htmlFor={id}>{label}</label>
+    {Icon ? <div className="field-icon"><Icon />{children}</div> : children}
+  </div>
+);
 
 type Props = {
   defaultType?: ShipType;
@@ -31,8 +39,8 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   const has = (g: string) => opt?.fields.includes(g as never) ?? false;
   const dark = variant === "card";
 
-  const label = dark ? "label text-white/60" : "label";
-  const field = dark ? "field border-white/10 bg-white/95" : "field";
+  const label = "label";
+  const field = "field";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,7 +61,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   }
 
   return (
-    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : variant === "white" ? "rounded-2xl bg-white p-5 shadow-[0_30px_60px_-20px_rgb(13_31_53/0.55)] ring-1 ring-line sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
+    <form id="quote" onSubmit={onSubmit} className={`scroll-mt-28 ${dark ? "form-dark rounded-2xl border border-white/15 bg-navy-800/75 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl sm:p-6" : variant === "white" ? "rounded-2xl bg-white p-5 shadow-[0_30px_60px_-20px_rgb(13_31_53/0.55)] ring-1 ring-line sm:p-6" : "card p-6 sm:p-8"}`} noValidate>
       <div className="mb-5">
         <h2 className={`display-md ${minimal ? "text-[26px]" : "text-2xl"} ${dark ? "text-white" : "text-navy"}`}>
           {title ?? (serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote")}
@@ -65,8 +73,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
       <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <label className={label} htmlFor={`type-${variant}`}>What are you shipping?</label>
+        <Field className="sm:col-span-2" id={`type-${variant}`} label="What are you shipping?" icon={Layers}>
           <select id={`type-${variant}`} name="ship_type" value={type} onChange={(e) => setType(e.target.value as ShipType)} className={field} required>
             {shipGroups.map((g) => (
               <optgroup key={g} label={g}>
@@ -74,27 +81,24 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
               </optgroup>
             ))}
           </select>
-        </div>
+        </Field>
 
-        <div>
-          <label className={label} htmlFor={`pz-${variant}`}>Pickup ZIP</label>
+        <Field id={`pz-${variant}`} label="Pickup ZIP Code" icon={Pin}>
           <input id={`pz-${variant}`} name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 32701" className={field} required />
-        </div>
-        <div>
-          <label className={label} htmlFor={`dz-${variant}`}>Delivery ZIP</label>
+        </Field>
+        <Field id={`dz-${variant}`} label="Delivery ZIP Code" icon={Pin}>
           <input id={`dz-${variant}`} name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 10001" className={field} required />
-        </div>
+        </Field>
 
         {!minimal && (<>
-        <div>
-          <label className={label} htmlFor={`date-${variant}`}>Preferred pickup date</label>
-          <input id={`date-${variant}`} name="pickup_date" type="date" className={field} min={new Date().toISOString().slice(0, 10)} />
-        </div>
+        <Field id={`date-${variant}`} label="Preferred pickup date" icon={Calendar}>
+          <input id={`date-${variant}`} name="pickup_date" type="date" className={field} min={new Date().toISOString().slice(0, 10)} data-empty="true" onChange={(e) => { e.currentTarget.dataset.empty = e.currentTarget.value ? "false" : "true"; }} />
+        </Field>
         <div>
           <label className={label}>Runs &amp; drives?</label>
-          <div className={`grid grid-cols-2 gap-1 rounded-lg p-1 ${dark ? "bg-white/10" : "bg-mist"}`}>
+          <div className={`grid h-[46px] grid-cols-2 gap-1 rounded-lg border p-1 ${dark ? "border-white/15 bg-white/10" : "border-[#cfd9e6] bg-mist"}`}>
             {[["yes", "Operational"], ["no", "Non-running"]].map(([v, l]) => (
-              <label key={v} className={`cursor-pointer rounded-md py-2 text-center text-sm font-semibold transition ${operable === v ? "bg-blue text-white shadow" : dark ? "text-white/70" : "text-slate"}`}>
+              <label key={v} className={`flex cursor-pointer items-center justify-center rounded-md text-center text-sm font-semibold transition ${operable === v ? "bg-blue text-white shadow" : dark ? "text-white/70" : "text-slate"}`}>
                 <input type="radio" name="operable" value={v} checked={operable === v} onChange={() => setOperable(v)} className="sr-only" />{l}
               </label>
             ))}
@@ -105,21 +109,19 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
         {/* Vehicle identity */}
         {has("vehicle") && !compact && (
           <>
-            <div>
-              <label className={label} htmlFor={`year-${variant}`}>Year</label>
-              <select id={`year-${variant}`} name="year" className={field} defaultValue=""><option value="">Year</option>{years.map((y) => <option key={y}>{y}</option>)}</select>
-            </div>
+            <Field id={`year-${variant}`} label="Year" icon={Calendar}>
+              <select id={`year-${variant}`} name="year" className={field} defaultValue=""><option value="">Select year</option>{years.map((y) => <option key={y}>{y}</option>)}</select>
+            </Field>
             <div className="grid grid-cols-2 gap-3.5">
-              <div><label className={label} htmlFor={`make-${variant}`}>Make</label><input id={`make-${variant}`} name="make" placeholder="Make" className={field} /></div>
-              <div><label className={label} htmlFor={`model-${variant}`}>Model</label><input id={`model-${variant}`} name="model" placeholder="Model" className={field} /></div>
+              <Field id={`make-${variant}`} label="Make" icon={Tag}><input id={`make-${variant}`} name="make" placeholder="e.g. Ford" className={field} /></Field>
+              <Field id={`model-${variant}`} label="Model"><input id={`model-${variant}`} name="model" placeholder="e.g. F-350" className={field} /></Field>
             </div>
           </>
         )}
         {compact && !minimal && (
-          <div className="sm:col-span-2">
-            <label className={label} htmlFor={`ymm-${variant}`}>Year / Make / Model</label>
+          <Field className="sm:col-span-2" id={`ymm-${variant}`} label="Year / Make / Model" icon={Tag}>
             <input id={`ymm-${variant}`} name="ymm" placeholder="e.g. 2019 Ford F-350 or 2015 Sea Ray 310" className={field} />
-          </div>
+          </Field>
         )}
 
         {/* Conditional: dimensions (commercial, marine, RV, equipment) */}
@@ -127,45 +129,43 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
           <fieldset className={`sm:col-span-2 rounded-xl border p-3.5 ${dark ? "border-blue/30 bg-blue/10" : "border-blue/30 bg-blue-100/40"}`}>
             <legend className={`px-1.5 text-xs font-bold uppercase tracking-wider ${dark ? "text-blue-300" : "text-blue"}`}>Dimensions help us match the right trailer</legend>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[["length", "Length (ft)"], ["width", "Width (ft)"], ["height", "Height (ft)"], ["weight", "Weight (lbs)"]].map(([n, l]) => (
-                <div key={n}><label className={label} htmlFor={`${n}-${variant}`}>{l}</label><input id={`${n}-${variant}`} name={n} inputMode="decimal" placeholder="—" className={field} /></div>
+              {[["length", "Length (ft)", Ruler, "e.g. 28"], ["width", "Width (ft)", Ruler, "e.g. 8.5"], ["height", "Height (ft)", Ruler, "e.g. 10"], ["weight", "Weight (lbs)", Weight, "e.g. 9,000"]].map(([n, l, I, ph]) => (
+                <Field key={n as string} id={`${n}-${variant}`} label={l as string} icon={I as React.ComponentType<{ className?: string }>}><input id={`${n}-${variant}`} name={n as string} inputMode="decimal" placeholder={ph as string} className={field} /></Field>
               ))}
             </div>
             {(has("trailer") || type.startsWith("boat") || type === "yacht") && (
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className={label} htmlFor={`trailer-${variant}`}>Trailer available?</label>
+                <Field id={`trailer-${variant}`} label="Trailer available?" icon={Trailer}>
                   <select id={`trailer-${variant}`} name="trailer_available" value={trailer} onChange={(e) => setTrailer(e.target.value)} className={field}>
-                    <option value="">Select</option><option>Yes, road-worthy</option><option>Yes, not road-worthy</option><option>No trailer</option>
+                    <option value="">Select an option</option><option>Yes, road-worthy</option><option>Yes, not road-worthy</option><option>No trailer</option>
                   </select>
-                </div>
+                </Field>
                 {has("loading") && (
-                  <div>
-                    <label className={label} htmlFor={`load-${variant}`}>Loading equipment on site?</label>
+                  <Field id={`load-${variant}`} label="Loading equipment on site?" icon={Layers}>
                     <select id={`load-${variant}`} name="loading_equipment" className={field} defaultValue="">
-                      <option value="">Select</option><option>Ramp / dock available</option><option>Forklift or loader available</option><option>Crane / travel lift available</option><option>None, please arrange</option><option>Not sure</option>
+                      <option value="">Select an option</option><option>Ramp / dock available</option><option>Forklift or loader available</option><option>Crane / travel lift available</option><option>None, please arrange</option><option>Not sure</option>
                     </select>
-                  </div>
+                  </Field>
                 )}
               </div>
             )}
             {has("attachments") && (
-              <div className="mt-3"><label className={label} htmlFor={`att-${variant}`}>Attachments included</label><input id={`att-${variant}`} name="attachments" placeholder="e.g. 2 buckets, hydraulic hammer, forks" className={field} /></div>
+              <Field className="mt-3" id={`att-${variant}`} label="Attachments included" icon={Note}><input id={`att-${variant}`} name="attachments" placeholder="e.g. 2 buckets, hydraulic hammer, forks" className={field} /></Field>
             )}
           </fieldset>
         )}
 
         <div className={`sm:col-span-2 grid gap-3.5 ${minimal ? "" : "sm:grid-cols-3"}`}>
-          <div><label className={label} htmlFor={`name-${variant}`}>Your name</label><input id={`name-${variant}`} name="name" autoComplete="name" placeholder="Full name" className={field} required /></div>
-          <div><label className={label} htmlFor={`phone-${variant}`}>Phone</label><input id={`phone-${variant}`} name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" className={field} required /></div>
-          <div><label className={label} htmlFor={`email-${variant}`}>Email</label><input id={`email-${variant}`} name="email" type="email" autoComplete="email" placeholder="you@email.com" className={field} required /></div>
+          <Field id={`name-${variant}`} label="Your name" icon={User}><input id={`name-${variant}`} name="name" autoComplete="name" placeholder="Full name" className={field} required /></Field>
+          <Field id={`phone-${variant}`} label="Phone number" icon={Phone}><input id={`phone-${variant}`} name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" className={field} required /></Field>
+          <Field id={`email-${variant}`} label="Email address" icon={Mail}><input id={`email-${variant}`} name="email" type="email" autoComplete="email" placeholder="you@email.com" className={field} required /></Field>
         </div>
 
         {!compact && (
-          <div className="sm:col-span-2"><label className={label} htmlFor={`notes-${variant}`}>Additional details</label><textarea id={`notes-${variant}`} name="notes" rows={3} placeholder="Modifications, deadlines, auction lot number, marina name, anything that helps us plan." className={field} /></div>
+          <Field className="sm:col-span-2" id={`notes-${variant}`} label="Additional details (optional)"><textarea id={`notes-${variant}`} name="notes" rows={3} placeholder="Modifications, deadlines, auction lot number, marina name, anything that helps us plan." className={field} /></Field>
         )}
 
-        <label className={`sm:col-span-2 flex items-start gap-2.5 text-[11.5px] leading-snug ${dark ? "text-white/60" : "text-slate"}`}>
+        <label className={`sm:col-span-2 mt-1 flex items-start gap-2.5 text-[12px] leading-snug ${dark ? "text-white/60" : "text-slate"}`}>
           <input type="checkbox" name="sms_consent" value="yes" className="mt-0.5 h-4 w-4 shrink-0 rounded border-line accent-blue" />
           <span>{smsConsent} Please review our <Link href="/privacy-policy/" className="underline">Privacy Policy</Link> and <Link href="/terms-and-conditions/" className="underline">Terms &amp; Conditions</Link>.</span>
         </label>
@@ -173,7 +173,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
 
       {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
 
-      <button type="submit" disabled={loading} className={`btn-orange mt-4 w-full py-4 text-lg disabled:opacity-70 ${minimal ? "display-md tracking-wide" : ""}`}>
+      <button type="submit" disabled={loading} className={`btn-orange font-display mt-4 w-full py-3.5 text-[18px] font-bold tracking-wide disabled:opacity-70`}>
         {loading ? "Sending…" : minimal ? "Get My Free Quote" : "Get My Free Quote Now"} <Arrow className="h-5 w-5" />
       </button>
 

@@ -3,26 +3,32 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { trackQuoteSubmit } from "@/lib/analytics";
-import { Arrow, Lock } from "./Icons";
+import { Anchor, Arrow, Calendar, Check, Lock, Mail, Phone, Pin, Ruler, Tag, Trailer, User } from "./Icons";
 
 /**
- * Boat landing-page quote card (client reference: white card, placeholder-labelled
- * fields, two columns). Posts to the same /api/quote/ endpoint as the main form;
- * the trailer answer decides the ship_type so the lead email reads correctly.
+ * Boat landing-page quote card. Client revision 2026-09-19: the placeholder-only
+ * card "looked unprofessional", so every field now has a label above it, a leading
+ * icon and the shared 46px control style from globals.css (.label / .field /
+ * .field-icon). Posts to the same /api/quote/ endpoint as the main form; the
+ * trailer answer decides the ship_type so the lead email reads correctly.
  */
 const BOAT_TYPES = ["Center Console", "Sailboat", "Yacht / Mega Yacht", "Pontoon Boat", "Fishing Boat", "Speedboat", "Cabin Cruiser", "Jet Ski / PWC", "Other"];
 const TRAILER = [["Yes, road-worthy", "boat-trailer"], ["Yes, not road-worthy", "boat-no-trailer"], ["No trailer", "boat-no-trailer"], ["Not sure", "boat-trailer"]] as const;
 
-const field = "h-10 w-full rounded-md border border-line bg-white px-2.5 text-[12.5px] font-medium text-ink placeholder:text-muted focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15";
-const select = `${field} appearance-none pl-2.5 pr-5 text-[12px]`;
-const arrow = { backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231e63d6'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center", backgroundSize: "14px" } as const;
+type FieldProps = { id: string; label: string; icon: React.ComponentType<{ className?: string }>; span?: boolean; children: React.ReactNode };
+const Field = ({ id, label, icon: Icon, span, children }: FieldProps) => (
+  <div className={span ? "sm:col-span-2" : ""}>
+    <label htmlFor={id} className="label">{label}</label>
+    <div className="field-icon"><Icon />{children}</div>
+  </div>
+);
 
 export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat to Florida?" }: { title?: string }) {
   const router = useRouter();
   const path = usePathname();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [dateType, setDateType] = useState<"text" | "date">("text");
+  const today = new Date().toISOString().slice(0, 10);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,43 +50,66 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
   }
 
   return (
-    <form id="quote" onSubmit={onSubmit} noValidate className="scroll-mt-28 rounded-xl bg-white p-4 pb-3 text-ink shadow-[0_24px_60px_-16px_rgb(0_0_0/0.55)] ring-1 ring-line">
+    <form id="quote" onSubmit={onSubmit} noValidate className="scroll-mt-28 rounded-2xl bg-white p-5 text-ink shadow-[0_24px_60px_-16px_rgb(0_0_0/0.55)] ring-1 ring-line sm:p-6 xl:p-5 hd:p-6">
       <h2 className="font-display text-[24px] font-extrabold leading-[1.08] text-royal">{title}</h2>
-      <p className="mb-3 mt-1 text-[13px] text-slate">Find out in 60 seconds — free, no deposit, no obligation.</p>
+      <p className="mt-1.5 text-[14px] text-slate">Find out in 60 seconds — free, no deposit, no obligation.</p>
 
       {/* Honeypot */}
       <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <input name="ymm" autoComplete="off" placeholder="Year, Make & Model (e.g. 2019 Boston Whaler 280)" aria-label="Boat year, make and model" className={`${field} sm:col-span-2`} required />
-        <select name="boat_type" defaultValue="" required aria-label="Boat type" className={select} style={arrow}>
-          <option value="" disabled>Boat Type</option>
-          {BOAT_TYPES.map((t) => <option key={t}>{t}</option>)}
-        </select>
-        <input name="length" type="number" min={1} max={250} inputMode="numeric" placeholder="Boat Length (ft)" aria-label="Boat length in feet" className={field} required />
-        <input name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Pick-up ZIP Code" aria-label="Pick-up ZIP code" className={field} required />
-        <input name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Drop-off ZIP Code" aria-label="Drop-off ZIP code" className={field} required />
-        <select name="trailer_available" defaultValue="" required aria-label="Do you have a trailer?" className={select} style={arrow}>
-          <option value="" disabled>Do you have a trailer?</option>
-          {TRAILER.map(([l]) => <option key={l}>{l}</option>)}
-        </select>
-        <input name="pickup_date" type={dateType} onFocus={() => setDateType("date")} onBlur={(e) => { if (!e.currentTarget.value) setDateType("text"); }} min={new Date().toISOString().slice(0, 10)} placeholder="Preferred Pick-up Date" aria-label="Preferred pick-up date" className={field} />
-        <input name="name" autoComplete="name" placeholder="Your Name" aria-label="Your name" className={field} required />
-        <input name="phone" type="tel" autoComplete="tel" placeholder="Phone Number" aria-label="Phone number" className={field} required />
-        <input name="email" type="email" autoComplete="email" placeholder="Email Address" aria-label="Email address" className={`${field} sm:col-span-2`} required />
+      <div className="mt-4 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
+        <Field id="bq-ymm" label="Year, Make & Model" icon={Tag} span>
+          <input id="bq-ymm" name="ymm" autoComplete="off" placeholder="e.g. 2019 Boston Whaler 280" className="field" required />
+        </Field>
+        <Field id="bq-type" label="Boat Type" icon={Anchor}>
+          <select id="bq-type" name="boat_type" defaultValue="" required className="field">
+            <option value="" disabled>Select type</option>
+            {BOAT_TYPES.map((t) => <option key={t}>{t}</option>)}
+          </select>
+        </Field>
+        <Field id="bq-length" label="Length (ft)" icon={Ruler}>
+          <input id="bq-length" name="length" type="number" min={1} max={250} inputMode="numeric" placeholder="e.g. 28" className="field" required />
+        </Field>
+        <Field id="bq-pz" label="Pick-up ZIP" icon={Pin}>
+          <input id="bq-pz" name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 10001" className="field" required />
+        </Field>
+        <Field id="bq-dz" label="Drop-off ZIP" icon={Pin}>
+          <input id="bq-dz" name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="e.g. 33101" className="field" required />
+        </Field>
+        <Field id="bq-trailer" label="Trailer Available?" icon={Trailer}>
+          <select id="bq-trailer" name="trailer_available" defaultValue="" required className="field">
+            <option value="" disabled>Select</option>
+            {TRAILER.map(([l]) => <option key={l}>{l}</option>)}
+          </select>
+        </Field>
+        <Field id="bq-date" label="Pick-up Date" icon={Calendar}>
+          <input id="bq-date" name="pickup_date" type="date" min={today} className="field" data-empty="true" onChange={(e) => { e.currentTarget.dataset.empty = e.currentTarget.value ? "false" : "true"; }} />
+        </Field>
+        <Field id="bq-name" label="Your Name" icon={User}>
+          <input id="bq-name" name="name" autoComplete="name" placeholder="Full name" className="field" required />
+        </Field>
+        <Field id="bq-phone" label="Phone" icon={Phone}>
+          <input id="bq-phone" name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" className="field" required />
+        </Field>
+        <Field id="bq-email" label="Email Address" icon={Mail} span>
+          <input id="bq-email" name="email" type="email" autoComplete="email" placeholder="you@email.com" className="field" required />
+        </Field>
       </div>
 
-      <label className="mt-2.5 flex items-start gap-2 text-[11px] leading-snug text-slate">
+      <label className="mt-4 flex items-start gap-2.5 text-[12px] leading-snug text-slate">
         <input type="checkbox" name="sms_consent" value="yes" className="mt-0.5 h-4 w-4 shrink-0 rounded border-line accent-blue" />
         <span>I consent to receive SMS messages from MCC Bound Legends LLC. Reply STOP to opt out. See <Link href="/privacy-policy/" className="underline">Privacy Policy</Link>.</span>
       </label>
 
-      {error && <p role="alert" className="mt-2 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
+      {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-orange font-display mt-3 w-full py-3 text-[18px] font-bold tracking-wide disabled:opacity-70">
+      <button type="submit" disabled={loading} className="btn-orange font-display mt-4 w-full py-3.5 text-[18px] font-bold tracking-wide disabled:opacity-70">
         {loading ? "Sending…" : "Get My Free Boat Shipping Quote"} <Arrow className="h-5 w-5" />
       </button>
-      <p className="mt-2 flex items-center justify-center gap-1 text-center text-[10px] text-muted"><Lock className="h-3 w-3" /> Your information is secure &nbsp;|&nbsp; No deposit required &nbsp;|&nbsp; We respond within 2 hours</p>
+      <ul className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[12px] text-muted">
+        {["No deposit required", "Response within 2 hours"].map((t) => <li key={t} className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-success" />{t}</li>)}
+        <li className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" />Your info is secure</li>
+      </ul>
     </form>
   );
 }
