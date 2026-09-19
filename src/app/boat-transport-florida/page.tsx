@@ -117,11 +117,11 @@ export default function BoatTransportFloridaPage() {
       <JsonLd data={[breadcrumbSchema(crumbs), serviceSchema("Boat Shipping to Florida", metadata.description as string, "boat-transport-florida"), faqSchema(FAQS)]} />
 
       {/* ── HERO — client reference 01_DESKTOP_REFERENCE_FINAL / 02_MOBILE_REFERENCE_FINAL (2026-09-19) ── */}
-      <section className="relative overflow-hidden bg-navy text-white">
+      <section className="relative overflow-hidden bg-[#0c2a4c] text-white">
         {/* Desktop photo band: the full photo, uncropped (client rule), left-aligned; the rest of the band
-            (behind the quote card) is solid navy #0D1F35 — client 2026-09-20, was a blurred grey photo fill */}
+            (behind the quote card) is #0c2a4c — client 2026-09-20 (matches the feature strip), was a blurred grey photo fill */}
         {hero && (
-          <div className="absolute inset-x-0 top-0 hidden h-[var(--hero-h)] bg-navy xl:block" aria-hidden="true">
+          <div className="absolute inset-x-0 top-0 hidden h-[var(--hero-h)] bg-[#0c2a4c] xl:block" aria-hidden="true">
             <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-contain object-left" />
           </div>
         )}
