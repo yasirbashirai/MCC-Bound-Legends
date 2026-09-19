@@ -31,12 +31,13 @@ const trust = [
   { label: <>On-Time<br />Delivery</>, icon: Clock },
 ];
 
-// Badge heights: phone / xl desktop / hd desktop (reference proportions)
+// Badge heights: phone / xl desktop / hd desktop — ~30% smaller than the reference (client 2026-09-19:
+// "too big and tall") and each one links out to the review profile in a new tab.
 const badges = [
-  { src: "/images/footer/badge-bbb.webp", alt: "BBB Accredited Business", w: 480, h: 195, cls: "h-[56px] xl:h-[60px] hd:h-[80px]" },
-  { src: "/images/footer/badge-google.webp", alt: "Google 5-Star Rated", w: 480, h: 334, cls: "h-[72px] xl:h-[74px] hd:h-[94px]" },
-  { src: "/images/footer/badge-trustpilot.webp", alt: "Trustpilot five stars", w: 480, h: 190, cls: "h-[52px] xl:h-[54px] hd:h-[68px]" },
-  { src: "/images/footer/badge-nationwide.webp", alt: "Nationwide coverage — all 50 states", w: 480, h: 461, cls: "h-[78px] xl:h-[78px] hd:h-[100px]" },
+  { src: "/images/footer/badge-bbb.webp", alt: "BBB Accredited Business — view profile", w: 480, h: 195, cls: "h-[40px] xl:h-[42px] hd:h-[54px]", href: site.reviews.bbb },
+  { src: "/images/footer/badge-google.webp", alt: "Google 5-Star Rated — read our reviews", w: 480, h: 334, cls: "h-[50px] xl:h-[52px] hd:h-[64px]", href: site.reviews.google },
+  { src: "/images/footer/badge-trustpilot.webp", alt: "Trustpilot five stars — read our reviews", w: 480, h: 190, cls: "h-[36px] xl:h-[38px] hd:h-[46px]", href: site.reviews.trustpilot },
+  { src: "/images/footer/badge-nationwide.webp", alt: "Nationwide coverage — all 50 states", w: 480, h: 461, cls: "h-[54px] xl:h-[56px] hd:h-[68px]", href: "/services/" },
 ];
 
 const social = [
@@ -174,7 +175,7 @@ export function Footer() {
             </div>
           ))}
           {/* trust badges: full width under the three link columns */}
-          <div className="col-span-3 self-end border-t border-white/15 pt-5">
+          <div className="col-span-3 self-end border-t border-white/15 pt-4">
             <BadgeRow />
           </div>
         </div>
@@ -278,7 +279,11 @@ function BadgeRow({ mobile = false }: { mobile?: boolean }) {
     <ul className={mobile ? "grid grid-cols-4 items-center gap-2 max-[420px]:grid-cols-2 max-[420px]:gap-y-6" : "flex items-center justify-between gap-3"}>
       {badges.map((b, i) => (
         <li key={b.src} className={`flex min-w-0 items-center justify-center ${mobile ? "border-r border-white/20 px-1 last:border-r-0 max-[420px]:[&:nth-child(2)]:border-r-0" : `border-r border-white/20 px-3 last:border-r-0 last:pr-0 hd:px-4 2xl:px-6 ${i === 0 ? "pl-0" : ""}`}`}>
-          <Image src={b.src} alt={b.alt} width={b.w} height={b.h} className={`w-auto max-w-full ${b.cls}`} />
+          {b.href.startsWith("/") ? (
+            <Link href={b.href} className="transition hover:opacity-80"><Image src={b.src} alt={b.alt} width={b.w} height={b.h} className={`w-auto max-w-full ${b.cls}`} /></Link>
+          ) : (
+            <a href={b.href} target="_blank" rel="noopener" className="transition hover:opacity-80"><Image src={b.src} alt={b.alt} width={b.w} height={b.h} className={`w-auto max-w-full ${b.cls}`} /></a>
+          )}
         </li>
       ))}
     </ul>

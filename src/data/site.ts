@@ -33,6 +33,8 @@ export const site = {
   reviews: {
     google: "https://www.google.com/search?q=MCC+Bound+Legends+LLC+Reviews",
     trustpilot: "https://www.trustpilot.com/review/mccboundlegends.com",
+    /** BBB profile not verified yet — search link until the client sends the real profile URL. */
+    bbb: "https://www.bbb.org/search?find_country=USA&find_text=MCC+Bound+Legends",
     yelp: "https://www.yelp.com/biz/mcc-bound-legends-altamonte-springs-2",
     uship: "https://www.uship.com/service-provider/42830213-mcc-bound-legends-llc",
   },
