@@ -133,6 +133,8 @@ export default function BoatTransportFloridaPage() {
             {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
             <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
               {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
+              {/* Mobile/tablet only: soft navy scrim behind the top-left tagline so it reads over the sky and the boat's white deck (sits under the callout) */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[34%] bg-gradient-to-b from-navy/70 to-transparent xl:hidden" aria-hidden="true" />
               {/* Coast-to-coast callout — compact (client 2026-09-20: smaller again) and parked just left of the
                   blue street sign. `right-[15%]` of the photo width lands beside the sign at every viewport because the
                   photo is always shown uncropped. */}
@@ -144,17 +146,12 @@ export default function BoatTransportFloridaPage() {
                 </span>
               </div>
               {/* Hero tagline, bottom-left of the photo (client design 2026-09-20); last line in deep royal blue — client: sky blue was too light to read.
-                  Desktop only (xl+): below that the photo is small and the words sat on the trailer wheels (client 2026-09-20), so the
-                  tagline moves into its own navy band under the photo instead. */}
-              <p className="display absolute bottom-7 left-8 hidden text-[34px] leading-[1.02] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] xl:block hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
-                North to South.<br />Coast to Coast.<br /><span className="text-royal drop-shadow-[0_2px_6px_rgba(255,255,255,.35)]">Your Boat Moves With Us.</span>
+                  Below xl the photo is short and the words sat on the trailer wheels, so on mobile/tablet the tagline sits top-left
+                  of the photo (over sky/skyline) instead of bottom-left (client 2026-09-20). */}
+              <p className="display absolute left-3 top-2.5 text-[15px] leading-[1.05] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.8)] sm:left-5 sm:top-4 sm:text-[22px] md:text-[26px] xl:bottom-7 xl:left-8 xl:top-auto xl:text-[34px] hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
+                North to South.<br />Coast to Coast.<br /><span className="text-blue xl:text-royal xl:drop-shadow-[0_2px_6px_rgba(255,255,255,.35)]">Your Boat Moves With Us.</span>
               </p>
             </div>
-
-            {/* Tagline band — mobile/tablet only, sits between the photo and the feature strip so nothing overlaps the photo */}
-            <p className="display bg-[#0c2a4c] px-4 pb-1 pt-4 text-[24px] leading-[1.02] tracking-[0.01em] text-white sm:px-6 sm:pt-5 sm:text-[30px] md:text-[34px] xl:hidden" aria-label="North to South. Coast to Coast. Your boat moves with us.">
-              North to South. Coast to Coast.<br /><span className="text-blue">Your Boat Moves With Us.</span>
-            </p>
 
             {/* Feature strip */}
             <ul className="grid grid-cols-2 bg-[#0b2a4c] sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
