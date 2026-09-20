@@ -133,19 +133,19 @@ export default function BoatTransportFloridaPage() {
             {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
             <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
               {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
-              {/* Coast-to-coast callout — smaller and pulled left (client 2026-09-19) so it never covers the
-                  blue street sign at the right edge of the photo. `right-[17.5%]` of the photo width sits just left of the sign
-                  of the sign at every viewport because the photo is always shown uncropped. */}
-              <div className="absolute right-[17.5%] top-2.5 flex items-center gap-2 rounded-lg border border-white/35 bg-navy/55 px-2.5 py-1.5 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-2.5 xl:top-6">
-                <Usa className="h-5 w-8 sm:h-6 sm:w-10 xl:h-7 xl:w-11" />
-                <span className="border-l border-white/40 pl-2 sm:pl-3">
-                  <span className="display-md block text-[10.5px] leading-[1.15] tracking-[0.04em] sm:text-[13px] xl:text-[14px] hd:text-[15px]">Coast to Coast<br />Boat Shipping</span>
-                  <Waves className="mt-0.5 h-1.5 w-5 sm:mt-1 sm:h-2 sm:w-7" />
+              {/* Coast-to-coast callout — compact (client 2026-09-20: smaller again) and parked just left of the
+                  blue street sign. `right-[15%]` of the photo width lands beside the sign at every viewport because the
+                  photo is always shown uncropped. */}
+              <div className="absolute right-[15%] top-2.5 flex items-center gap-1.5 rounded-lg border border-white/35 bg-navy/55 px-2 py-1 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 xl:top-5">
+                <Usa className="h-4 w-6 sm:h-5 sm:w-8 xl:h-6 xl:w-9" />
+                <span className="border-l border-white/40 pl-1.5 sm:pl-2.5">
+                  <span className="display-md block text-[9px] leading-[1.15] tracking-[0.04em] sm:text-[11px] xl:text-[12px] hd:text-[13px]">Coast to Coast<br />Boat Shipping</span>
+                  <Waves className="mt-0.5 h-1.5 w-4 sm:h-[7px] sm:w-6" />
                 </span>
               </div>
-              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20) */}
+              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20); last line in deep royal blue — client: sky blue was too light to read */}
               <p className="display absolute bottom-3 left-4 text-[17px] leading-[1.02] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] sm:bottom-6 sm:left-7 sm:text-[30px] xl:bottom-7 xl:left-8 xl:text-[34px] hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
-                North to South.<br />Coast to Coast.<br /><span className="text-blue">Your Boat Moves With Us.</span>
+                North to South.<br />Coast to Coast.<br /><span className="text-royal drop-shadow-[0_2px_6px_rgba(255,255,255,.35)]">Your Boat Moves With Us.</span>
               </p>
             </div>
 

@@ -52,9 +52,9 @@ export function Header() {
       {/* Top info bar — client header reference: contact · coverage · credentials · hours · socials · tagline */}
       <div className="bg-navy text-[13px] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:py-2 xl:px-8">
-          <div className="flex min-w-0 items-center gap-3 lg:gap-0 lg:divide-x lg:divide-white/30">
+          <div className="flex min-w-0 items-center gap-3 overflow-hidden lg:gap-0 lg:divide-x lg:divide-white/30">
             <PhoneLink location="topbar" className="inline-flex items-center gap-1.5 whitespace-nowrap font-medium hover:text-blue-300 lg:pr-4"><Phone className="h-[15px] w-[15px] text-white" />{site.phone}</PhoneLink>
-            <a href={`mailto:${site.email}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-blue-300 min-[420px]:inline-flex lg:px-4"><Mail className="h-[15px] w-[15px]" />{site.email}</a>
+            <a href={`mailto:${site.email}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-blue-300 min-[540px]:inline-flex lg:px-4"><Mail className="h-[15px] w-[15px]" />{site.email}</a>
             <span className="hidden items-center gap-1.5 whitespace-nowrap md:inline-flex lg:px-4"><Pin className="h-[15px] w-[15px]" />{brand.where}</span>
             <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex xl:px-4"><TruckSolid className="h-[15px] w-[15px]" />USDOT {site.usdot} <span className="px-1 text-white/40">|</span> MC {site.mc}</span>
             <span className="hidden items-center gap-1.5 whitespace-nowrap min-[1400px]:inline-flex min-[1400px]:px-4"><Shield className="h-[15px] w-[15px]" />Licensed &amp; Bonded</span>
