@@ -143,11 +143,18 @@ export default function BoatTransportFloridaPage() {
                   <Waves className="mt-0.5 h-1.5 w-4 sm:h-[7px] sm:w-6" />
                 </span>
               </div>
-              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20); last line in deep royal blue — client: sky blue was too light to read */}
-              <p className="display absolute bottom-3 left-4 text-[17px] leading-[1.02] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] sm:bottom-6 sm:left-7 sm:text-[30px] xl:bottom-7 xl:left-8 xl:text-[34px] hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
+              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20); last line in deep royal blue — client: sky blue was too light to read.
+                  Desktop only (xl+): below that the photo is small and the words sat on the trailer wheels (client 2026-09-20), so the
+                  tagline moves into its own navy band under the photo instead. */}
+              <p className="display absolute bottom-7 left-8 hidden text-[34px] leading-[1.02] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] xl:block hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
                 North to South.<br />Coast to Coast.<br /><span className="text-royal drop-shadow-[0_2px_6px_rgba(255,255,255,.35)]">Your Boat Moves With Us.</span>
               </p>
             </div>
+
+            {/* Tagline band — mobile/tablet only, sits between the photo and the feature strip so nothing overlaps the photo */}
+            <p className="display bg-[#0c2a4c] px-4 pb-1 pt-4 text-[24px] leading-[1.02] tracking-[0.01em] text-white sm:px-6 sm:pt-5 sm:text-[30px] md:text-[34px] xl:hidden" aria-label="North to South. Coast to Coast. Your boat moves with us.">
+              North to South. Coast to Coast.<br /><span className="text-blue">Your Boat Moves With Us.</span>
+            </p>
 
             {/* Feature strip */}
             <ul className="grid grid-cols-2 bg-[#0b2a4c] sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
