@@ -56,8 +56,9 @@ const LINKS = {
   "/motorcycle-transport/": `${SITE}/services/motorcycle-transport/`,
   "/auction-vehicle-transport/": `${SITE}/services/auction-auto-transport/`,
   "/commercial-vehicle-transport/": `${SITE}/services/large-truck-suv-or-van-shipping/`,
-  "/boat-transport-without-trailer/": `${SITE}/services/boat-and-yacht-transport/`,
-  "/yacht-transport/": `${SITE}/services/boat-and-yacht-transport/`,
+  "/boat-transport-without-trailer/": `${SITE}/boat-transport-florida/`,   // old WP boat page is being retired (client 2026-09-20)
+  "/yacht-transport/": `${SITE}/boat-transport-florida/`,
+  "/boat-transport/": `${SITE}/boat-transport-florida/`,
 };
 const fallbackLink = `${SITE}/services/`;
 
@@ -152,7 +153,9 @@ async function main() {
   fs.writeFileSync(path.join(OUT, "thank-you", "index.html"), thankYou());
   const zip = path.join(__dirname, "boat-transport-florida-upload.zip");
   fs.rmSync(zip, { force: true });
-  execSync(`cd "${__dirname}" && zip -qr "${zip}" boat-transport-florida -x "*.DS_Store"`);
+  // Flat zip (index.html at the root, no wrapper folder): Hostinger's File Manager "Extract" asks for a folder name and
+  // creates it, so the client types `boat-transport-florida` and gets public_html/boat-transport-florida/index.html.
+  execSync(`cd "${__dirname}/boat-transport-florida" && zip -qr "${zip}" . -x "*.DS_Store"`);
   console.log(`built ${OUT}\n  images: ${images.size}\n  zip: ${zip}`);
 }
 

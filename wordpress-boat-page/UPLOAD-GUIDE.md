@@ -21,7 +21,7 @@ boat-transport-florida/
 ## Upload (Hostinger hPanel → Files → File Manager) — 5 minutes
 1. hPanel → Websites → mccboundlegends.com → **File Manager**.
 2. Open `public_html/` (WordPress lives here: wp-admin, wp-content, wp-includes).
-3. Upload `boat-transport-florida-upload.zip` into `public_html/`, right-click it → **Extract**. Delete the zip afterwards.
+3. Upload `boat-transport-florida-upload.zip` into `public_html/`, right-click it → **Extract** → folder name: `boat-transport-florida` (destination = public_html) → Extract. Delete the zip afterwards.
 4. Result must be:
    `public_html/boat-transport-florida/index.html`
    `public_html/boat-transport-florida/images/…`
