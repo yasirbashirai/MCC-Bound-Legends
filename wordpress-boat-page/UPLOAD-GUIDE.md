@@ -4,6 +4,8 @@ Goal: get `https://mccboundlegends.com/boat-transport-florida/` live on the curr
 without touching WordPress, the theme or any plugin. It is a plain HTML folder that sits next to WordPress.
 
 Built from the Next.js page by `node wordpress-boat-page/build.js http://localhost:<dev port>` (re-run after any page change).
+That now delegates to the shared builder in `wordpress-pages/`, which also produces the How It Works and FAQ folders —
+`node wordpress-pages/build.js http://localhost:<dev port>` rebuilds all three. See `wordpress-pages/UPLOAD-GUIDE.md`.
 
 **2026-09-19 rebuild:** includes the client's approved header (top bar + brand block + trust icons + nav), the new boat hero
 (uncropped truck/yacht photo, Coast-to-Coast callout, feature strip) and the new site-wide footer (CTA banner, link columns,
