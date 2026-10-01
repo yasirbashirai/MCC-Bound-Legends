@@ -33,6 +33,8 @@ export function Header() {
   const path = usePathname();
   // The boat Ads page carries the client's boat-specific brand line; everything else stays generic.
   const boat = path === "/boat-transport-florida/" || path === "/boat-transport-florida";
+  // Boat page keeps its approved 1600px header; every other page uses the wide site wrapper
+  const barWrap = boat ? "mx-auto max-w-7xl px-4 sm:px-6 xl:px-8" : "wrap";
   const brand = boat
     ? { l1: "Nationwide", l2: "Boat Shipping", sub: "Safe boats. Happier destinations.", where: "Nationwide Boat Shipping" }
     : { l1: "Nationwide", l2: "Vehicle Shipping", sub: "Putting trust in motion.", where: "Nationwide Vehicle Shipping" };
@@ -51,12 +53,12 @@ export function Header() {
     <header className="sticky top-0 z-50">
       {/* Top info bar — client header reference: contact · coverage · credentials · hours · socials · tagline */}
       <div className="bg-navy text-[13px] text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:py-2 xl:px-8">
+        <div className={`flex items-center justify-between gap-3 py-1.5 lg:py-2 ${barWrap}`}>
           <div className="flex min-w-0 items-center gap-3 overflow-hidden lg:gap-0 lg:divide-x lg:divide-white/30">
-            <PhoneLink location="topbar" className="inline-flex items-center gap-1.5 whitespace-nowrap font-medium hover:text-blue-300 lg:pr-4"><Phone className="h-[15px] w-[15px] text-white" />{site.phone}</PhoneLink>
-            <a href={`mailto:${site.email}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-blue-300 min-[540px]:inline-flex lg:px-4"><Mail className="h-[15px] w-[15px]" />{site.email}</a>
-            <span className="hidden items-center gap-1.5 whitespace-nowrap md:inline-flex lg:px-4"><Pin className="h-[15px] w-[15px]" />{brand.where}</span>
-            <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex xl:px-4"><TruckSolid className="h-[15px] w-[15px]" />USDOT {site.usdot} <span className="px-1 text-white/40">|</span> MC {site.mc}</span>
+            <PhoneLink location="topbar" className="inline-flex items-center gap-1.5 whitespace-nowrap font-medium hover:text-blue-300 lg:pr-3 min-[1400px]:pr-4"><Phone className="h-[15px] w-[15px] text-white" />{site.phone}</PhoneLink>
+            <a href={`mailto:${site.email}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-blue-300 min-[540px]:inline-flex lg:px-3 min-[1400px]:px-4"><Mail className="h-[15px] w-[15px]" />{site.email}</a>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap md:inline-flex lg:px-3 min-[1400px]:px-4"><Pin className="h-[15px] w-[15px]" />{brand.where}</span>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap xl:inline-flex xl:px-3 min-[1400px]:px-4"><TruckSolid className="h-[15px] w-[15px]" />USDOT {site.usdot} <span className="px-1 text-white/40">|</span> MC {site.mc}</span>
             <span className="hidden items-center gap-1.5 whitespace-nowrap min-[1400px]:inline-flex min-[1400px]:px-4"><Shield className="h-[15px] w-[15px]" />Licensed &amp; Bonded</span>
             <span className="hidden items-center gap-1.5 whitespace-nowrap min-[1750px]:inline-flex min-[1750px]:px-4"><Clock className="h-[15px] w-[15px]" />{site.hours}</span>
           </div>
@@ -74,7 +76,7 @@ export function Header() {
 
       {/* Main bar — logo plate · brand block · mini trust icons · nav · CTA + phone */}
       <div className={`relative bg-white transition-shadow duration-500 ${scrolled ? "shadow-[0_8px_30px_-12px_rgb(13_31_53/0.35)]" : "shadow-[0_1px_0_#dbe3ee]"}`}>
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 sm:px-6 lg:gap-4 lg:py-2.5 xl:px-8">
+        <div className={`flex items-center gap-3 py-2 lg:gap-4 lg:py-2.5 ${barWrap}`}>
           <Link href="/" className="relative flex shrink-0 items-center" aria-label={`${site.name} home`}>
             {/* Shield logo on a transparent background, inside the white bar (client 2026-09-20: no white plate / overhang) */}
             <span className={`relative block h-[68px] w-[72px] transition-all duration-500 sm:h-[84px] sm:w-[90px] ${scrolled ? "lg:h-16 lg:w-[70px]" : "lg:h-[92px] lg:w-[100px]"}`}><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="100px" className="object-contain" priority /></span>

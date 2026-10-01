@@ -110,7 +110,7 @@ export function CoverageBand() {
     <section className="relative overflow-hidden bg-navy py-24 text-white">
       {bg && <Image src={bg} alt="" fill sizes="100vw" className="object-cover opacity-30" aria-hidden="true" />}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.97)_0%,rgba(13,31,53,.85)_50%,rgba(13,31,53,.6)_100%)]" />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="wrap relative grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] hd:gap-20">
         <div className="reveal-left">
           <p className="eyebrow mb-3 text-blue-300">Nationwide first, Florida rooted</p>
           <h2 className="display text-5xl sm:text-6xl">Coast to coast.<br /><span className="text-blue-400">Every state.</span></h2>

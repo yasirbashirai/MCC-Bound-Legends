@@ -48,22 +48,22 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
           {fallbackIcon && <VehicleIcon name={fallbackIcon} className="absolute right-[-4%] top-[8%] h-[70%] w-[55%] text-blue/10" />}
         </div>
       )}
-      <div className="relative z-[2] mx-auto grid max-w-7xl items-start gap-8 px-5 pb-10 pt-8 sm:px-8 lg:grid-cols-[1.05fr_400px] lg:pb-12 lg:pt-12 xl:grid-cols-[1fr_400px_170px]">
+      <div className="wrap relative z-[2] grid items-start gap-8 pb-10 pt-8 lg:grid-cols-[1.05fr_400px] lg:pb-12 lg:pt-12 xl:grid-cols-[1fr_400px_170px] hd:grid-cols-[1fr_460px_220px] hd:gap-16 hd:pb-16 hd:pt-14">
         {/* Left: message */}
-        <div className="lg:pt-24">
+        <div className="lg:pt-24 hd:pt-20">
           {crumbs}
           <p className="display-md text-lg tracking-wide text-blue-400 drop-shadow sm:text-xl">{eyebrow}</p>
-          <h1 className="display mt-2 text-[46px] leading-[0.92] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-6xl lg:text-[68px] xl:text-[74px]">
+          <h1 className="display mt-2 text-[46px] leading-[0.92] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-6xl lg:text-[68px] xl:text-[74px] hd:text-[84px] min-[1800px]:text-[96px]">
             {lines.map((l, i) => (
               <span key={i} className={`block ${i === accentLine ? "text-blue-400" : ""}`}><Words text={l} start={i * 160} step={55} /></span>
             ))}
           </h1>
-          <p className="reveal-up mt-5 max-w-xl text-lg font-medium leading-snug text-white drop-shadow sm:text-[21px]" style={{ ["--d" as string]: "600ms" }}>{sub}</p>
-          <div className="reveal-up mt-6 flex flex-col gap-3 sm:flex-row" style={{ ["--d" as string]: "720ms" }}>
+          <p className="reveal-up mt-5 max-w-xl text-lg font-medium leading-snug text-white drop-shadow sm:text-[21px] hd:mt-6 hd:max-w-2xl hd:text-[24px]" style={{ ["--d" as string]: "600ms" }}>{sub}</p>
+          <div className="reveal-up mt-6 flex flex-col gap-3 sm:flex-row hd:mt-8 hd:gap-4" style={{ ["--d" as string]: "720ms" }}>
             <a href="#quote" className="btn-orange display-md px-7 py-4 text-xl tracking-wide">Get a Free Quote <Arrow className="h-5 w-5" /></a>
             <PhoneLink location="hero" className="btn-ghost display-md border-white/70 bg-navy/40 px-7 py-4 text-xl tracking-wide backdrop-blur"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
           </div>
-          <ul className="reveal-up mt-8 flex flex-wrap gap-x-7 gap-y-4" style={{ ["--d" as string]: "860ms" }}>
+          <ul className="reveal-up mt-8 flex flex-wrap gap-x-7 gap-y-4 hd:mt-10 hd:gap-x-10" style={{ ["--d" as string]: "860ms" }}>
             {TRUST.map((b) => (
               <li key={b.t} className="flex items-center gap-3">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-blue text-white shadow-[0_6px_18px_-6px_rgba(14,165,233,.9)]"><b.icon className="h-5 w-5" /></span>
@@ -79,16 +79,16 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
         </div>
 
         {/* Right: badge column (xl only) */}
-        <aside className="reveal-right hidden xl:flex xl:flex-col xl:gap-5 xl:pt-8" style={{ ["--d" as string]: "450ms" }}>
+        <aside className="reveal-right hidden xl:flex xl:flex-col xl:gap-5 xl:pt-8 hd:gap-7 hd:pt-10" style={{ ["--d" as string]: "450ms" }}>
           {BADGES.map((b) => (
             <div key={b.t} className="flex items-center gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-blue/50 bg-navy/60 text-blue-400 backdrop-blur"><b.icon className="h-6 w-6" /></span>
-              <span className="leading-tight"><span className="display-md block text-[15px] tracking-wide">{b.t}</span><span className="block text-[11px] text-white/75">{b.s}</span></span>
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-blue/50 hd:h-14 hd:w-14 bg-navy/60 text-blue-400 backdrop-blur"><b.icon className="h-6 w-6" /></span>
+              <span className="leading-tight"><span className="display-md block text-[15px] tracking-wide hd:text-[18px]">{b.t}</span><span className="block text-[11px] text-white/75 hd:text-[13px]">{b.s}</span></span>
             </div>
           ))}
           <div className="mt-2 border-t-2 border-blue pt-4">
-            <p className="display-md text-[17px] leading-tight tracking-wide text-blue-400">{tagline[0]}</p>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-white/85">{tagline[1]}</p>
+            <p className="display-md text-[17px] leading-tight tracking-wide text-blue-400 hd:text-[20px]">{tagline[0]}</p>
+            <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-white/85 hd:text-[12.5px]">{tagline[1]}</p>
           </div>
         </aside>
       </div>
@@ -142,7 +142,7 @@ export function StatsBand() {
   ];
   return (
     <section className="bg-navy-800 text-white">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-7 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="wrap flex flex-col gap-6 py-7 lg:flex-row hd:py-9 lg:items-center lg:justify-between">
         <ul className="grid flex-1 grid-cols-2 gap-6 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
           {items.map((it, i) => (
             <li key={it.l} className="reveal-up flex items-center gap-4 lg:px-6 lg:first:pl-0" style={{ ["--d" as string]: `${i * 80}ms` }}>
@@ -174,7 +174,7 @@ export function WhyBand({ eyebrow = "Why choose MCC Bound Legends?", title = <>M
     <section className="relative overflow-hidden bg-navy text-white">
       {bg && <Image src={bg} alt="" fill sizes="100vw" className="object-cover opacity-40" aria-hidden="true" />}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.97)_0%,rgba(13,31,53,.9)_40%,rgba(13,31,53,.6)_100%)]" />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(240px,0.9fr)_2.4fr_auto]">
+      <div className="wrap relative grid items-center gap-8 py-10 lg:grid-cols-[minmax(240px,0.9fr)_2.4fr_auto] hd:gap-14 hd:py-12">
         <div className="reveal-left">
           <p className="display-md text-lg tracking-wide text-blue-400">{eyebrow}</p>
           <h2 className="display mt-1 text-4xl sm:text-[40px]">{title}</h2>
