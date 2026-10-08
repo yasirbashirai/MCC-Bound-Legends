@@ -14,29 +14,27 @@ node wordpress-pages/build.js http://localhost:3000  # builds all three pages
 
 | Zip | Extract as | Live URL |
 |---|---|---|
-| `how-does-it-work-upload.zip` | `how-does-it-work` | `https://mccboundlegends.com/how-does-it-work/` |
-| `faq-upload.zip` | `faq` | `https://mccboundlegends.com/faq/` |
+| `how-it-works-upload.zip` | `how-it-works` | `https://mccboundlegends.com/how-it-works/` |
+| `faqs-upload.zip` | `faqs` | `https://mccboundlegends.com/faqs/` |
 
-**These are the URLs the old site already uses.** That is deliberate: the existing menu links and the
-pages Google has already indexed keep working, with no menu edits and no redirects. A real folder in
-`public_html/` is served before the WordPress permalink of the same name, so the new page simply takes
-over the URL.
-
-> The new Next.js site calls the first page `/how-it-works/`. On the old WordPress site it has to stay
-> `/how-does-it-work/` to match the current menu. The builder handles this — every internal link inside
-> both pages already points at the old site's real URLs.
+> **2026-10-09 update.** The first build targeted `/how-does-it-work/` and `/faq/`, but the client uploaded
+> the folders as `how-it-works` and `faqs`. The form's thank-you redirect still pointed at the old folders →
+> 404 after submit ("form not working"). The pages are now built for the live folders, and the form also
+> works out the thank-you URL from whatever folder the page sits in, so a different folder name can't break
+> it again. The old WordPress pages at `/how-does-it-work/` and `/faq/` are still live, so the WP menu
+> links should be pointed at `/how-it-works/` and `/faqs/` (Appearance → Menus → edit the two Custom Links).
 
 ## Upload (Hostinger hPanel → Files → File Manager) — 5 minutes each
 
 1. hPanel → Websites → mccboundlegends.com → **File Manager**.
 2. Open `public_html/` (WordPress lives here: wp-admin, wp-content, wp-includes).
-3. Upload `how-does-it-work-upload.zip` into `public_html/`, right-click → **Extract** → folder name:
-   `how-does-it-work` (destination = `public_html`) → Extract. Delete the zip afterwards.
-4. Repeat with `faq-upload.zip` → folder name `faq`.
+3. Upload `how-it-works-upload.zip` into `public_html/`, right-click → **Extract** → folder name:
+   `how-it-works` (destination = `public_html`) → Extract → **overwrite** the existing files. Delete the zip afterwards.
+4. Repeat with `faqs-upload.zip` → folder name `faqs`.
 5. Result must be:
    ```
-   public_html/how-does-it-work/index.html   + images/  + thank-you/index.html
-   public_html/faq/index.html                + images/  + thank-you/index.html
+   public_html/how-it-works/index.html   + images/  + thank-you/index.html
+   public_html/faqs/index.html           + images/  + thank-you/index.html
    ```
 6. hPanel → Advanced → **LiteSpeed cache purge**, then open both URLs.
 
@@ -73,5 +71,5 @@ If a URL still shows the old WordPress page, it is the cache: purge LiteSpeed ag
 
 ## Rollback
 
-Delete `public_html/how-does-it-work/` and/or `public_html/faq/`. The original WordPress pages come
+Delete `public_html/how-it-works/` and/or `public_html/faqs/`. The original WordPress pages come
 straight back — they were never modified.

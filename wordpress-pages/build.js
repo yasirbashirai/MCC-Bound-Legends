@@ -55,12 +55,12 @@ const PAGES = {
   },
   "how-does-it-work": {
     route: "/how-it-works/",
-    // The old site already has /how-does-it-work/ in its menu and in Google. Publishing the new page
-    // at that same slug keeps the existing nav link and the indexed URL working with no menu edits.
-    slug: "how-does-it-work",
-    outDir: path.join(__dirname, "how-does-it-work"),
-    zip: path.join(__dirname, "how-does-it-work-upload.zip"),
-    subject: "New Quote Request (mccboundlegends.com/how-does-it-work/)",
+    // Live folder chosen by the client on upload (2026-10-09): public_html/how-it-works/.
+    // (Originally built for /how-does-it-work/; the old WP page still lives there.)
+    slug: "how-it-works",
+    outDir: path.join(__dirname, "how-it-works"),
+    zip: path.join(__dirname, "how-it-works-upload.zip"),
+    subject: "New Quote Request (mccboundlegends.com/how-it-works/)",
     service: "How It Works page",
     shipField: "ship_type",
     shipFallback: "vehicle",
@@ -73,10 +73,11 @@ const PAGES = {
   },
   faq: {
     route: "/faq/",
-    slug: "faq",
-    outDir: path.join(__dirname, "faq"),
-    zip: path.join(__dirname, "faq-upload.zip"),
-    subject: "New Quote Request (mccboundlegends.com/faq/)",
+    // Live folder chosen by the client on upload (2026-10-09): public_html/faqs/.
+    slug: "faqs",
+    outDir: path.join(__dirname, "faqs"),
+    zip: path.join(__dirname, "faqs-upload.zip"),
+    subject: "New Quote Request (mccboundlegends.com/faqs/)",
     service: "FAQ page",
     shipField: "ship_type",
     shipFallback: "vehicle",
@@ -93,10 +94,10 @@ const PAGES = {
 const LINKS = {
   "/": `${SITE}/`,
   "/services/": `${SITE}/services/`,
-  "/how-it-works/": `${SITE}/how-does-it-work/`,
+  "/how-it-works/": `${SITE}/how-it-works/`,
   "/about-us/": `${SITE}/about-us/`,
   "/testimonials/": `${SITE}/testimonials/`,
-  "/faq/": `${SITE}/faq/`,
+  "/faq/": `${SITE}/faqs/`,
   "/contact/": `${SITE}/contact-us/`,
   "/get-a-quote/": "#quote",
   "/privacy-policy/": `${SITE}/privacy-policy/`,
@@ -161,6 +162,8 @@ async function buildPage(key, cfg) {
   out = out.replace(/<html lang="en" class="[^"]*">/, '<html lang="en">');
   // canonical must point at the OLD site's URL for this page, not the new-site route
   out = out.replace(/<link rel="canonical" href="[^"]*"\/?>/, `<link rel="canonical" href="${SITE}/${cfg.slug}/"/>`);
+  // og:url + breadcrumb JSON-LD carry the new-site route too → point them at the live folder
+  if (cfg.route !== `/${cfg.slug}/`) out = out.split(`${SITE}${cfg.route}"`).join(`${SITE}/${cfg.slug}/"`);
   // Next scripts (dev hmr, hydration payloads) — keep only JSON-LD
   out = out.replace(/<script(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?<\/script>/g, "");
   out = out.replace(/<template[^>]*>[\s\S]*?<\/template>/g, "");
@@ -187,7 +190,7 @@ async function buildPage(key, cfg) {
   // ── header: hamburger → simple drawer; drop BackToTop button ──────────
   out = out.replace(/<button class="[^"]*lg:hidden" aria-label="Open menu">/, '<button class="grid h-11 w-11 place-items-center rounded-lg text-navy lg:hidden" aria-label="Open menu" onclick="document.getElementById(\'wpDrawer\').classList.add(\'open\')">');
   const drawer = `<div id="wpDrawer" class="wp-drawer"><div class="bg" onclick="this.parentNode.classList.remove('open')"></div><div class="panel"><button class="close" aria-label="Close menu" onclick="document.getElementById('wpDrawer').classList.remove('open')">×</button><p style="font-family:var(--font-barlow);font-weight:800;font-size:22px;color:#0d1f35;margin:6px 0 10px">MCC Bound Legends</p>
-<a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/faq/">FAQ</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/contact-us/">Contact</a><a href="${SITE}/how-does-it-work/">How It Works</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">${cfg.drawerCta}</a></div></div>`;
+<a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/faqs/">FAQ</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/contact-us/">Contact</a><a href="${SITE}/how-it-works/">How It Works</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">${cfg.drawerCta}</a></div></div>`;
 
   // ── form → FormSubmit ─────────────────────────────────────────────────
   // Match on the id only: React renders the other attributes in no guaranteed order.
@@ -216,6 +219,8 @@ async function buildPage(key, cfg) {
   var dl=window.dataLayer=window.dataLayer||[];
   document.querySelectorAll('a[href^="tel:"]').forEach(function(a){a.addEventListener('click',function(){dl.push({event:'phone_click',click_location:a.closest('header')?'header':a.closest('form')?'form':'page'});});});
   var f=document.getElementById('quote');
+  // Folder-proof: send the visitor to <this folder>/thank-you/ wherever the page was uploaded
+  if(f&&f._next){var pth=location.pathname;if(pth.slice(-5)==='.html')pth=pth.slice(0,pth.lastIndexOf('/')+1);if(pth.slice(-1)!=='/')pth+='/';f._next.value=location.origin+pth+'thank-you/';if(f.page)f.page.value=pth;}
   if(f){f.addEventListener('submit',function(){dl.push({event:'quote_submit',ship_type:(f.querySelector('[name=${cfg.shipField}]')||{}).value||'${cfg.shipFallback}',page_path:'/${cfg.slug}/'});});}
   document.querySelectorAll('a[href="#quote"]').forEach(function(a){a.addEventListener('click',function(e){var q=document.getElementById('quote');if(q){e.preventDefault();q.scrollIntoView({behavior:'smooth',block:'start'});var first=q.querySelector('input:not([type=hidden])');if(first)setTimeout(function(){first.focus({preventScroll:true})},500);}});});
 })();
