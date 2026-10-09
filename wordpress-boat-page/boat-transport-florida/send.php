@@ -11,13 +11,13 @@
  * 4. Sends the visitor to ./thank-you/ (the Google Ads conversion page).
  */
 
-const LEAD_TO   = 'Jeff.c@mccboundlegends.com';
-const MAIL_FROM = 'Jeff.c@mccboundlegends.com';   // must be a real mailbox on mccboundlegends.com or Hostinger rejects it
-const SUBJECT   = 'New Boat Transport Quote (mccboundlegends.com/boat-transport-florida/)';
-const SERVICE   = 'Boat Transport to Florida (Snowbird)';
+const MCC_LEAD_TO   = 'Jeff.c@mccboundlegends.com';
+const MCC_MAIL_FROM = 'Jeff.c@mccboundlegends.com';   // must be a real mailbox on mccboundlegends.com or Hostinger rejects it
+const MCC_SUBJECT   = 'New Boat Transport Quote (mccboundlegends.com/boat-transport-florida/)';
+const MCC_SERVICE   = 'Boat Transport to Florida (Snowbird)';
 
 /** Field name → label shown in the email, in this order. Anything else posted is appended after. */
-const LABELS = [
+const MCC_LABELS = [
   'name' => 'Name', 'phone' => 'Phone', 'email' => 'Email',
   'pickup_zip' => 'Pickup ZIP', 'delivery_zip' => 'Delivery ZIP', 'pickup_date' => 'Pickup date',
   'ship_type' => 'Shipping', 'operable' => 'Operable', 'ymm' => 'Year / Make / Model',
@@ -42,16 +42,16 @@ $clean = function ($v) {
 };
 
 $data = [];
-foreach (LABELS as $k => $label) if (isset($_POST[$k]) && $clean($_POST[$k]) !== '') $data[$label] = $clean($_POST[$k]);
+foreach (MCC_LABELS as $k => $label) if (isset($_POST[$k]) && $clean($_POST[$k]) !== '') $data[$label] = $clean($_POST[$k]);
 foreach ($_POST as $k => $v) {
-  if ($k[0] === '_' || isset(LABELS[$k]) || in_array($k, ['service', 'company_website'], true)) continue;
+  if ($k[0] === '_' || isset(MCC_LABELS[$k]) || in_array($k, ['service', 'company_website'], true)) continue;
   if ($clean($v) !== '') $data[ucwords(str_replace('_', ' ', $k))] = $clean($v);
 }
 
 // Nothing to contact them with → back to the form
 if (empty($data['Phone']) && empty($data['Email'])) $back($here . '#quote');
 
-$data = ['Service' => SERVICE] + $data + [
+$data = ['Service' => MCC_SERVICE] + $data + [
   'Submitted' => date('D, M j Y g:i A T'),
   'IP' => $_SERVER['REMOTE_ADDR'] ?? '',
 ];
@@ -69,23 +69,49 @@ foreach ($data as $label => $value) {
     . nl2br(htmlspecialchars($value)) . '</td></tr>';
 }
 $body = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#0f172a">'
-  . '<h2 style="color:#0d1f35;margin:0 0 12px">' . htmlspecialchars(SUBJECT) . '</h2>'
+  . '<h2 style="color:#0d1f35;margin:0 0 12px">' . htmlspecialchars(MCC_SUBJECT) . '</h2>'
   . '<table style="border-collapse:collapse">' . $rows . '</table>'
   . '<p style="color:#64748b;font-size:13px">Hit Reply to answer the customer directly.</p></div>';
 
 $noNewlines = function ($s) { return str_replace(["\r", "\n"], '', $s); };
-$headers = [
-  'MIME-Version: 1.0',
-  'Content-Type: text/html; charset=UTF-8',
-  'From: MCC Bound Legends Website <' . MAIL_FROM . '>',
-];
+$replyTo = '';
 if (!empty($data['Email']) && filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
-  $headers[] = 'Reply-To: ' . $noNewlines($data['Name'] ?? '') . ' <' . $noNewlines($data['Email']) . '>';
+  $replyTo = 'Reply-To: ' . $noNewlines($data['Name'] ?? '') . ' <' . $noNewlines($data['Email']) . '>';
 }
-$subject = SUBJECT . (!empty($data['Name']) ? ' — ' . $noNewlines($data['Name']) : '');
-$sent = @mail(LEAD_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . MAIL_FROM);
+$subject = MCC_SUBJECT . (!empty($data['Name']) ? ' — ' . $noNewlines($data['Name']) : '');
 
-if (!$sent) @file_put_contents($log, '{"MAIL_FAILED":"' . date('c') . "\"}\n", FILE_APPEND | LOCK_EX);
+// Preferred: send through WordPress (public_html/wp-load.php), so the site's WP Mail SMTP plugin delivers it
+// over authenticated SMTP, exactly like the site's own WPForms emails. Hostinger's bare PHP mail() is
+// accepted but silently never delivered (2026-10-09), so it is only the last resort.
+$method = 'mail()';
+$sent = false;
+$wpLoad = dirname(__DIR__) . '/wp-load.php';
+if (is_file($wpLoad)) {
+  ob_start();                                   // WordPress/plugins must not print before our redirect
+  try {
+    // WordPress must load at global scope; keep our variables safe from anything it (or a plugin) sets
+    $__mcc = compact('data', 'body', 'subject', 'replyTo', 'log', 'here', 'back');
+    require_once $wpLoad;
+    extract($__mcc);
+    if (function_exists('wp_mail')) {
+      $method = 'wp_mail';
+      $err = '';
+      add_action('wp_mail_failed', function ($e) use (&$err) { $err = $e->get_error_message(); });
+      $sent = wp_mail(MCC_LEAD_TO, $subject, $body, array_filter(['Content-Type: text/html; charset=UTF-8', $replyTo]));
+      if (!$sent && $err) $method .= ' (' . $err . ')';
+    }
+  } catch (Throwable $e) {
+    $method = 'wp_mail crashed: ' . $e->getMessage();
+  }
+  ob_end_clean();
+}
+if (!$sent && strpos($method, 'wp_mail') !== 0) {
+  $headers = ['MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', 'From: MCC Bound Legends Website <' . MCC_MAIL_FROM . '>'];
+  if ($replyTo) $headers[] = $replyTo;
+  $sent = @mail(MCC_LEAD_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . MCC_MAIL_FROM);
+}
+
+@file_put_contents($log, json_encode(['MAIL' => $sent ? 'sent' : 'FAILED', 'via' => $method, 'at' => date('c')], JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
 
 // ── 3. thank-you page (conversion) ──
 $back($here . 'thank-you/');
