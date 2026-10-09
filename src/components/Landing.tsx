@@ -96,6 +96,38 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
   );
 }
 
+/* ── Homepage hero — client revision brief §4–6 (2026-10-07) ─────────────
+   Clean two columns: LEFT = eyebrow, H1, two supporting lines, two buttons.
+   RIGHT = quote form, pinned to the right edge of the content area.
+   The old trust row, badge column and "Moving America Forward" tagline are gone
+   (no spacer column left behind). Stacks on mobile: copy first, then the form. */
+export function HomeHero({ slides }: { slides: { src: string; alt: string }[] }) {
+  return (
+    <section className="hero-bg relative overflow-hidden text-white">
+      <HeroSlideshow slides={slides} light />
+      <div className="wrap relative z-[2] grid items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
+        <div className="max-w-[720px]">
+          <p className="font-display text-[13px] font-bold uppercase tracking-[0.18em] text-blue-300 drop-shadow sm:text-[14px]">Nationwide Vehicle and Equipment Transport</p>
+          <h1 className="display mt-3 text-[38px] leading-[0.98] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-[48px] xl:text-[54px] hd:text-[56px]">
+            <span className="block"><Words text="Nationwide Car, Boat" step={55} /></span>
+            <span className="block"><Words text="& Equipment Transport" start={160} step={55} /></span>
+          </h1>
+          <p className="reveal-up mt-5 max-w-[640px] text-[17px] font-medium leading-[1.6] text-white drop-shadow sm:text-[18px]" style={{ ["--d" as string]: "450ms" }}>Reliable transportation for cars, commercial vehicles, boats, RVs, motorcycles and heavy equipment across all 50 states.</p>
+          <p className="reveal-up mt-3 max-w-[640px] text-[16px] leading-[1.6] text-white/85 drop-shadow sm:text-[17px]" style={{ ["--d" as string]: "560ms" }}>MCC Bound Legends coordinates your shipment with vetted carriers and equipment matched to your vehicle, dimensions and route.</p>
+          <div className="reveal-up mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row" style={{ ["--d" as string]: "680ms" }}>
+            <a href="#quote" className="btn-orange h-[50px] whitespace-nowrap px-7 text-[16px] font-bold uppercase tracking-[0.04em] lg:self-start xl:self-auto">Get My Free Quote <Arrow className="h-5 w-5" /></a>
+            <PhoneLink location="hero" className="btn-ghost h-[50px] whitespace-nowrap border-white/80 bg-navy/40 px-7 text-[16px] font-bold uppercase tracking-[0.04em] backdrop-blur lg:self-start xl:self-auto"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
+          </div>
+        </div>
+
+        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>
+          <QuoteForm variant="white" minimal title="Get Your Transport Quote" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Row of photo cards with white caption strip (reference style) ────── */
 export type TypeCard = { href: string; title: string; sub: string; img: string | null; icon: IconKey };
 
@@ -115,12 +147,12 @@ export function PhotoCardRow({ cards, cols = 7 }: { cards: TypeCard[]; cols?: 6 
                 </span>
               )}
             </span>
-            <span className="flex flex-1 items-center gap-2 px-3 py-2.5">
+            <span className="flex flex-1 items-start gap-2 px-3.5 py-3">
               <span className="min-w-0 flex-1">
-                <span className="display-md block text-[14px] leading-[1.05] text-navy">{c.title}</span>
-                <span className="mt-0.5 block text-[11px] leading-snug text-slate">{c.sub}</span>
+                <span className="display-md block text-[16px] leading-[1.1] text-navy">{c.title}</span>
+                <span className="mt-1 block text-[13px] leading-snug text-slate">{c.sub}</span>
               </span>
-              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-blue text-white transition group-hover:bg-orange"><Arrow className="h-3 w-3" /></span>
+              <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-blue text-white transition group-hover:bg-orange"><Arrow className="h-3.5 w-3.5" /></span>
             </span>
           </Link>
         </li>
@@ -132,6 +164,22 @@ export function PhotoCardRow({ cards, cols = 7 }: { cards: TypeCard[]; cols?: 6 
 export const categoryCards = (exclude?: string): TypeCard[] =>
   categories.filter((c) => c.slug !== exclude).map((c) => ({ href: `/${c.slug}/`, title: c.name, sub: c.short, img: photo(`thumb-${c.slug}`) ?? photo(`cat-${c.slug}`), icon: c.icon }));
 
+/** Homepage service cards: exact titles + descriptions from the client revision brief §7 (2026-10-07). */
+const HOME_CARD_COPY: Record<string, [string, string]> = {
+  "auto-transport": ["Auto Transport", "Cars, SUVs, pickups, classics and luxury vehicles"],
+  "commercial-vehicle-transport": ["Commercial Vehicle Transport", "Box trucks, work trucks, vans, buses and fleets"],
+  "boat-transport-florida": ["Boat & Yacht Transport", "Center consoles, yachts, pontoons, sailboats and PWC"],
+  "rv-transport": ["RV & Motorhome Transport", "Class A, B and C motorhomes, travel trailers and RVs"],
+  "motorcycle-transport": ["Motorcycle & Powersports", "Motorcycles, ATVs, UTVs and side-by-sides"],
+  "construction-equipment-transport": ["Construction Equipment", "Excavators, skid steers, bulldozers and forklifts"],
+  "heavy-equipment-transport": ["Heavy Equipment", "Oversized and specialized machinery"],
+};
+export const homeCategoryCards = (): TypeCard[] =>
+  categoryCards().map((c) => {
+    const copy = HOME_CARD_COPY[c.href.slice(1, -1)];
+    return copy ? { ...c, title: copy[0], sub: copy[1] } : c;
+  });
+
 /* ── Stats band: REAL numbers only ────────────────────────────────────── */
 export function StatsBand() {
   const items = [
@@ -142,20 +190,20 @@ export function StatsBand() {
   ];
   return (
     <section className="bg-navy-800 text-white">
-      <div className="wrap flex flex-col gap-6 py-7 lg:flex-row hd:py-9 lg:items-center lg:justify-between">
-        <ul className="grid flex-1 grid-cols-2 gap-6 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
+      <div className="wrap flex min-h-[104px] flex-col justify-center gap-6 py-6 lg:flex-row lg:items-center lg:justify-between lg:py-4">
+        <ul className="grid flex-1 grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-white/10">
           {items.map((it, i) => (
-            <li key={it.l} className="reveal-up flex items-center gap-4 lg:px-6 lg:first:pl-0" style={{ ["--d" as string]: `${i * 80}ms` }}>
-              <it.icon className="h-10 w-10 shrink-0 text-blue" />
+            <li key={it.l} className="reveal-up flex items-center gap-3.5 lg:justify-center lg:px-4 lg:first:justify-start lg:first:pl-0 xl:px-6" style={{ ["--d" as string]: `${i * 80}ms` }}>
+              <it.icon className="h-9 w-9 shrink-0 text-blue" />
               <span className="leading-tight">
-                <span className="display block text-4xl text-blue-400 sm:text-[44px]">{it.big}</span>
-                <span className="block whitespace-nowrap text-[15px] font-semibold">{it.l}</span>
-                <span className="block text-[12px] text-white/55">{it.s}</span>
+                <span className="display block text-[30px] leading-none text-blue-400 sm:text-[34px]">{it.big}</span>
+                <span className="mt-1 block text-[14px] font-semibold sm:text-[15px] lg:whitespace-nowrap">{it.l}</span>
+                <span className="block text-[13px] text-white/65 lg:whitespace-nowrap">{it.s}</span>
               </span>
             </li>
           ))}
         </ul>
-        <p className="display-md shrink-0 border-l-0 text-xl tracking-[0.2em] text-white lg:border-l lg:border-white/10 lg:pl-8">Safe. Reliable. <span className="text-blue-400">Nationwide.</span><span className="mt-2 block h-1 w-14 bg-blue" /></p>
+        <p className="display-md shrink-0 text-[20px] tracking-[0.16em] text-white lg:border-l lg:border-white/10 lg:pl-8">Safe. Reliable. <span className="text-blue-400">Nationwide.</span><span className="mt-2 block h-1 w-14 bg-blue" /></p>
       </div>
     </section>
   );
@@ -174,20 +222,22 @@ export function WhyBand({ eyebrow = "Why choose MCC Bound Legends?", title = <>M
     <section className="relative overflow-hidden bg-navy text-white">
       {bg && <Image src={bg} alt="" fill sizes="100vw" className="object-cover opacity-40" aria-hidden="true" />}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.97)_0%,rgba(13,31,53,.9)_40%,rgba(13,31,53,.6)_100%)]" />
-      <div className="wrap relative grid items-center gap-8 py-10 lg:grid-cols-[minmax(240px,0.9fr)_2.4fr_auto] hd:gap-14 hd:py-12">
-        <div className="reveal-left">
-          <p className="display-md text-lg tracking-wide text-blue-400">{eyebrow}</p>
-          <h2 className="display mt-1 text-4xl sm:text-[40px]">{title}</h2>
+      <div className="wrap relative py-14 lg:py-16">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="reveal-left">
+            <p className="font-display text-[14px] font-bold uppercase tracking-[0.16em] text-blue-400">{eyebrow}</p>
+            <h2 className="display mt-2 text-[34px] leading-[1] sm:text-[40px]">{title}</h2>
+          </div>
+          <Link href="/get-a-quote/" className="btn-orange reveal-right h-[50px] shrink-0 self-start px-7 text-[16px] font-bold uppercase tracking-[0.04em] lg:self-auto">Get a Free Quote <Arrow className="h-5 w-5" /></Link>
         </div>
-        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-1 gap-x-8 gap-y-7 sm:grid-cols-2 xl:grid-cols-4">
           {pts.map((p, i) => (
-            <li key={p.t} className="reveal-up flex items-start gap-3" style={{ ["--d" as string]: `${i * 80}ms` }}>
+            <li key={p.t} className="reveal-up flex items-start gap-4 border-t border-white/15 pt-6" style={{ ["--d" as string]: `${i * 80}ms` }}>
               <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 border-blue/70 bg-navy/60 text-blue-400"><p.icon className="h-6 w-6" /></span>
-              <span className="leading-snug"><span className="display-md block text-[15px] tracking-wide">{p.t}</span><span className="block text-[13px] text-white/80">{p.s}</span></span>
+              <span className="leading-snug"><span className="block text-[16px] font-bold">{p.t}</span><span className="mt-1 block text-[14px] leading-relaxed text-white/80">{p.s}</span></span>
             </li>
           ))}
         </ul>
-        <Link href="/get-a-quote/" className="btn-orange display-md reveal-right px-7 py-4 text-xl tracking-wide">Get a Quote <Arrow className="h-5 w-5" /></Link>
       </div>
     </section>
   );

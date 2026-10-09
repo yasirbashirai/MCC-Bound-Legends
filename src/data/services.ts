@@ -683,6 +683,19 @@ export const futurePages = [
   "Agricultural Equipment Transport",
 ];
 
+/** Where each "also coordinated" item links until it gets its own page (closest live service page). */
+export const futurePageLinks: Record<string, string> = {
+  "Cargo Van Transport": "/commercial-vehicle-transport/",
+  "Bus Transport": "/commercial-vehicle-transport/",
+  "Travel Trailer Transport": "/rv-transport/",
+  "Fifth Wheel Transport": "/rv-transport/",
+  "ATV & UTV Transport": "/motorcycle-transport/",
+  "Backhoe Transport": "/construction-equipment-transport/",
+  "Wheel Loader Transport": "/construction-equipment-transport/",
+  "Industrial Machinery Transport": "/heavy-equipment-transport/",
+  "Agricultural Equipment Transport": "/heavy-equipment-transport/",
+};
+
 /** Best-fit silhouette for a free-text vehicle/equipment label. */
 export function iconFor(label: string, fallback: IconKey): IconKey {
   const l = label.toLowerCase();

@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { categories, pages } from "@/data/services";
 import { Facebook, Instagram, Mail, Phone, Pin, Clock, Shield, TikTok, YouTube, Chevron, Truck, Usa, LinkIcon, Gear, Flag } from "./Icons";
 import { PhoneLink } from "./PhoneLink";
+import { BoatOnly } from "./BoatOnly";
 
 /**
  * Site footer — built 1:1 from the client's approved footer handoff (2026-09-18):
@@ -55,7 +56,8 @@ export function Footer() {
 
   return (
     <footer className="bg-marine text-frost">
-      {/* ── 1. CTA banner (skyline / water) ─────────────────────────────── */}
+      {/* ── 1. CTA banner (skyline / water) — boat page only (brief §21) ── */}
+      <BoatOnly>
       <section className="relative overflow-hidden">
         <Image src="/images/footer/cta-desktop.webp" alt="" fill sizes="100vw" className="hidden object-cover object-[50%_35%] md:block" />
         <Image src="/images/footer/cta-mobile.webp" alt="" fill sizes="100vw" className="object-cover object-[50%_20%] md:hidden" />
@@ -92,6 +94,7 @@ export function Footer() {
           <Tagline className="hidden xl:block xl:ml-auto xl:mt-2 hd:mr-4" />
         </div>
       </section>
+      </BoatOnly>
 
       {/* ── 2. Mobile / tablet trust strip ───────────────────────────────── */}
       <div className="border-b border-white/10 bg-marine xl:hidden">
@@ -117,7 +120,7 @@ export function Footer() {
             <span className="relative block h-[80px] w-[80px] shrink-0 hd:h-[112px] hd:w-[112px] 2xl:h-[124px] 2xl:w-[124px]"><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="124px" className="object-contain" /></span>
             <span className="min-w-0">
               <span className="display block whitespace-nowrap text-[24px] leading-none text-white hd:text-[34px] 2xl:text-[38px]">MCC <span className="text-cyan">Bound</span> Legends</span>
-              <span className="display-md mt-1.5 block whitespace-nowrap text-[10.5px] tracking-[0.2em] text-cyan hd:text-[13px] hd:tracking-[0.3em] 2xl:text-[14px]">Nationwide Vehicle Shipping</span>
+              <span className="display-md mt-1.5 block whitespace-nowrap text-[12px] tracking-[0.2em] text-cyan hd:text-[13px] hd:tracking-[0.3em] 2xl:text-[14px]">Nationwide Transportation</span>
             </span>
           </Link>
           <p className="mt-5 hidden max-w-[470px] text-[14.5px] leading-[1.5] xl:block hd:text-[16px]">
@@ -129,7 +132,7 @@ export function Footer() {
             <Link href="/" className="relative block h-[96px] w-[96px] shrink-0 sm:h-[128px] sm:w-[128px]"><Image src="/images/logo.webp" alt={`${site.name} logo`} fill sizes="128px" className="object-contain" /></Link>
             <div className="min-w-0 pt-0.5">
               <p className="display whitespace-nowrap text-[24px] leading-none text-white min-[400px]:text-[26px] sm:text-[34px]">MCC <span className="text-cyan">Bound</span> Legends</p>
-              <p className="display-md mt-1.5 whitespace-nowrap text-[10.5px] tracking-[0.2em] text-cyan sm:text-[13px] sm:tracking-[0.28em]">Nationwide Vehicle Shipping</p>
+              <p className="display-md mt-1.5 whitespace-nowrap text-[12px] tracking-[0.2em] text-cyan sm:text-[13px] sm:tracking-[0.28em]">Nationwide Transportation</p>
               <p className="mt-3 text-[15px] leading-[1.5] sm:text-[16px]">
                 Reliable, nationwide transport for vehicles, boats, RVs, commercial equipment and more. Fully insured. No deposits required. Get a free quote in 60 seconds.
               </p>

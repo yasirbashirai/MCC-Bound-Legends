@@ -64,7 +64,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   return (
     <form id="quote" onSubmit={onSubmit} className={`@container scroll-mt-28 ${shell}`} noValidate>
       <div className="mb-5">
-        <h2 className={`font-display text-[26px] font-extrabold leading-[1.08] sm:text-[28px] ${dark ? "text-white" : "text-navy"}`}>
+        <h2 className={`font-display text-[22px] font-extrabold leading-[1.1] sm:text-[24px] ${dark ? "text-white" : "text-navy"}`}>
           {title ?? (serviceName ? `Get Your ${serviceName} Quote` : "Get Your Free Transport Quote")}
         </h2>
         <p className={`mt-2 text-[15px] ${dark ? "text-white/70" : "text-slate"}`}>Get a fast, free quote in 60 seconds — no deposit, no obligation.</p>
@@ -164,7 +164,7 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
 
       {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-orange font-display mt-4 w-full rounded-xl py-4 text-[19px] font-bold tracking-wide disabled:opacity-70">
+      <button type="submit" disabled={loading} className="btn-orange mt-4 h-[52px] w-full rounded-xl text-[16px] font-bold uppercase tracking-[0.04em] disabled:opacity-70">
         {loading ? "Sending…" : minimal ? "Get My Free Quote" : "Get My Free Quote Now"} <Arrow className="h-5 w-5" />
       </button>
       <TrustStrip dark={dark} />

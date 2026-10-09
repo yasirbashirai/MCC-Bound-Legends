@@ -37,3 +37,14 @@ export const generalFaqs: { group: string; items: FAQ[] }[] = [
     ],
   },
 ];
+
+/** Homepage FAQ: the seven topics from the client revision brief §19 (2026-10-07), concise answers. */
+export const homeFaqs: FAQ[] = [
+  { q: "Are you a broker or a carrier?", a: "MCC Bound Legends LLC is a licensed and bonded freight broker (USDOT 4464266, MC 1760960). We plan your shipment and dispatch a vetted motor carrier who performs the transport, with one point of contact the whole way." },
+  { q: "Is there an upfront deposit?", a: "No. You book with no deposit. Payment is arranged once a vetted carrier has been assigned to your shipment." },
+  { q: "Is my shipment insured?", a: "The motor carrier performing the transport carries cargo insurance, and we verify that coverage before dispatch. We can send you the carrier's certificate on request." },
+  { q: "Do you guarantee pickup and delivery dates?", a: "We give you a realistic pickup window and estimated transit time and keep you updated. Exact dates depend on the carrier's route, weather and traffic, so we only promise a date once it is confirmed with the assigned carrier." },
+  { q: "How far in advance should I book?", a: "As early as you can. One to two weeks ahead gives the best carrier options for most vehicles. Boats, RVs, oversized equipment and snowbird-season moves benefit from more lead time. Short-notice requests are often possible, so call us to check your lane." },
+  { q: "Can you transport oversized equipment?", a: "Yes. We coordinate lowboy, RGN and heavy-haul trailers, and arrange the oversize permits, pilot cars and route planning the load requires." },
+  { q: "Can you transport a boat without a trailer?", a: "Yes. We coordinate a marine hauler with the correct cradle or hydraulic trailer and arrange lift-out and lift-in at each end." },
+];

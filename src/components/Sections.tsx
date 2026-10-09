@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { site } from "@/data/site";
-import { categories, pages, type ServicePage } from "@/data/services";
+import { categories, futurePageLinks, pages, type ServicePage } from "@/data/services";
 import { featuredReviews, type Review } from "@/data/reviews";
 import type { FAQ } from "@/data/services";
 import { Arrow, Chat, Check, Chevron, Doc, Phone, Route, Ruler, Shield, Star, Users, VehicleIcon } from "./Icons";
@@ -15,8 +15,8 @@ export function SectionHead({ eyebrow, title, sub, light = false, align = "cente
   return (
     <div className={`reveal mb-10 ${align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}`}>
       <p className={`eyebrow mb-3 ${light ? "text-blue-300" : "text-blue"}`}>{eyebrow}</p>
-      <h2 className={`display text-4xl sm:text-5xl ${light ? "text-white" : "text-navy"}`}>{title}</h2>
-      {sub && <p className={`mt-4 text-lg leading-relaxed ${light ? "text-white/70" : "text-slate"}`}>{sub}</p>}
+      <h2 className={`display text-[32px] sm:text-[40px] ${light ? "text-white" : "text-navy"}`}>{title}</h2>
+      {sub && <p className={`mt-4 text-[17px] leading-relaxed sm:text-[18px] ${light ? "text-white/75" : "text-slate"}`}>{sub}</p>}
     </div>
   );
 }
@@ -67,8 +67,8 @@ export function SpecificGrid({ items, heading }: { items: ServicePage[]; heading
                 <VehicleIcon name={s.icon} className="h-9 w-14" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-semibold text-navy">{s.name}</span>
-                <span className="block truncate text-[13px] text-muted">{s.short}</span>
+                <span className="block text-[16px] font-semibold text-navy">{s.name}</span>
+                <span className="mt-0.5 block text-[14px] leading-snug text-slate">{s.short}</span>
               </span>
               <Arrow className="h-5 w-5 shrink-0 text-blue transition group-hover:translate-x-1" />
             </Link>
@@ -88,13 +88,14 @@ const WHY = [
   { icon: Doc, title: "Permits, lifts and paperwork handled", text: "Oversize permits, escorts, marina lifts and auction releases are arranged as part of the plan, not left for you to figure out." },
   { icon: Users, title: "Built for individuals and businesses", text: "Private owners, dealers, fleet managers, contractors, marinas and auction buyers get the same direct, knowledgeable service." },
 ];
-export function WhyUs() {
+export type WhyItem = { icon: React.ComponentType<{ className?: string }>; title: string; text: string };
+export function WhyUs({ items = WHY }: { items?: WhyItem[] }) {
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {WHY.map((w, i) => (
+      {items.map((w, i) => (
         <div key={w.title} className="card reveal p-6" style={{ transitionDelay: `${i * 60}ms` }}>
           <span className="grid h-12 w-12 place-items-center rounded-xl bg-navy text-blue-400"><w.icon className="h-6 w-6" /></span>
-          <h3 className="mt-4 text-lg font-bold leading-snug text-navy">{w.title}</h3>
+          <h3 className="mt-4 text-[18px] font-bold leading-snug text-navy">{w.title}</h3>
           <p className="mt-2 text-[15px] leading-relaxed text-slate">{w.text}</p>
         </div>
       ))}
@@ -173,13 +174,31 @@ export function Reviews() {
   );
 }
 
+/* ── Dark review cards, three at a time (homepage, brief §18) ─────────── */
+export function ReviewGridDark({ reviews }: { reviews: Review[] }) {
+  return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      {reviews.map((r, i) => (
+        <figure key={r.name} className="reveal-up flex h-full flex-col rounded-2xl border border-white/12 bg-white/[0.06] p-7 backdrop-blur" style={{ ["--d" as string]: `${i * 90}ms` }}>
+          <div className="flex gap-1 text-orange" aria-label="5 out of 5 stars">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="h-5 w-5" />)}</div>
+          <blockquote className="mt-4 flex-1 text-[17px] leading-relaxed text-white">“{r.text}”</blockquote>
+          <figcaption className="mt-6 flex items-center justify-between gap-3 border-t border-white/12 pt-4">
+            <span><span className="block text-[16px] font-semibold text-white">{r.name}</span><span className="text-[14px] text-white/65">{r.service}</span></span>
+            <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[13px] font-semibold text-blue-300">{r.source} review</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
 /* ── FAQ accordion (native details, crawlable) ────────────────────────── */
 export function FaqList({ faqs, light = false }: { faqs: FAQ[]; light?: boolean }) {
   return (
     <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-white">
       {faqs.map((f) => (
         <details key={f.q} className="group">
-          <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-navy hover:bg-cloud">
+          <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-[16px] font-semibold text-navy hover:bg-cloud">
             {f.q}<Chevron className="chev h-5 w-5 shrink-0 text-blue transition" />
           </summary>
           <p className={`px-5 pb-5 text-[15px] leading-relaxed ${light ? "text-slate" : "text-slate"}`}>{f.a}</p>
@@ -227,6 +246,33 @@ export function WhoWeServe() {
   );
 }
 
+/* ── Who we serve, image cards (homepage, brief §17): a relevant photo + a concise list ── */
+const AUDIENCE_CARDS = [
+  { title: "Individuals", img: "hero-2", alt: "Private owner's pickup towing a sport-fishing boat along a Florida causeway", list: ["Relocations", "Snowbirds", "Auction Buyers", "Specialty Vehicle Owners"] },
+  { title: "Businesses", img: "hero-1", alt: "Car hauler loaded with dealership SUVs and pickups", list: ["Dealers", "Fleets", "Contractors", "Marinas", "Equipment Dealers", "Service Departments"] },
+];
+export function WhoWeServeCards() {
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {AUDIENCE_CARDS.map((c, i) => {
+        const src = photo(c.img);
+        return (
+          <div key={c.title} className={`card reveal-up overflow-hidden`} style={{ ["--d" as string]: `${i * 100}ms` }}>
+            <div className="relative aspect-[16/7] bg-navy">
+              {src && <Image src={src} alt={c.alt} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />}
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(13,31,53,.85))]" />
+              <h3 className="display absolute bottom-4 left-6 text-[34px] text-white">{c.title}</h3>
+            </div>
+            <ul className="grid grid-cols-1 gap-x-6 gap-y-3 p-6 text-[16px] font-medium text-navy sm:grid-cols-2">
+              {c.list.map((l) => <li key={l} className="flex items-center gap-2.5"><Check className="h-5 w-5 shrink-0 text-blue" />{l}</li>)}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ── CTA band ─────────────────────────────────────────────────────────── */
 export function CtaBand({ title = "Ready to move it? Get your free quote.", sub = "No deposit to book. Carrier insurance verified before dispatch. A real coordinator on every shipment." }: { title?: string; sub?: string }) {
   const bg = photo("section-cab");
@@ -235,14 +281,14 @@ export function CtaBand({ title = "Ready to move it? Get your free quote.", sub 
       {bg && <Image src={bg} alt="" fill sizes="100vw" className="object-cover opacity-30" aria-hidden="true" />}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.96),rgba(13,31,53,.75))]" aria-hidden="true" />
       <div className="road-grid absolute inset-0" aria-hidden="true" />
-      <Container className="relative flex flex-col items-center gap-6 py-16 text-center lg:flex-row lg:justify-between lg:text-left">
+      <Container className="relative flex flex-col items-center gap-7 py-20 text-center lg:flex-row lg:justify-between lg:py-24 lg:text-left">
         <div>
-          <h2 className="display text-4xl text-white sm:text-5xl">{title}</h2>
-          <p className="mt-3 max-w-xl text-white/70">{sub}</p>
+          <h2 className="display text-[34px] text-white sm:text-[44px]">{title}</h2>
+          {sub && <p className="mt-3 max-w-xl text-[17px] text-white/75">{sub}</p>}
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Link href="/get-a-quote/" className="btn-orange px-7 py-4 text-lg">Get My Free Quote <Arrow className="h-5 w-5" /></Link>
-          <PhoneLink location="cta_band" className="btn-ghost px-7 py-4 text-lg"><Phone className="h-5 w-5" /> {site.phone}</PhoneLink>
+        <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+          <Link href="/get-a-quote/" className="btn-orange h-[54px] px-8 text-[16px] font-bold uppercase tracking-[0.04em]">Get My Free Quote <Arrow className="h-5 w-5" /></Link>
+          <PhoneLink location="cta_band" className="btn-ghost h-[54px] px-8 text-[16px] font-bold uppercase tracking-[0.04em]"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
         </div>
       </Container>
     </section>
@@ -268,8 +314,14 @@ export function Breadcrumbs({ items, light = false }: { items: { name: string; h
 /* ── Also coordinated (future pages as crawlable text, not doorway pages) ── */
 export function AlsoCoordinated({ items }: { items: string[] }) {
   return (
-    <ul className="flex flex-wrap gap-2">
-      {items.map((i) => <li key={i} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-medium text-slate">{i}</li>)}
+    <ul className="flex flex-wrap gap-2.5">
+      {items.map((i) => (
+        <li key={i}>
+          <Link href={futurePageLinks[i] ?? "/services/"} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-[14px] font-semibold text-navy transition hover:border-blue hover:text-blue">
+            {i}<Arrow className="h-3.5 w-3.5 text-blue" />
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }

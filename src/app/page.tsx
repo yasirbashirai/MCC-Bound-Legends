@@ -1,125 +1,174 @@
 import Link from "next/link";
 import { site } from "@/data/site";
-import { futurePages, situations, pages } from "@/data/services";
-import { generalFaqs } from "@/data/faqs";
+import { futurePages, getPage, pages, type ServicePage } from "@/data/services";
+import { homeFaqs } from "@/data/faqs";
 import { reviews } from "@/data/reviews";
 import { meta } from "@/lib/seo";
 import { faqSchema } from "@/lib/schema";
-import { heroSlides, photo } from "@/lib/images";
+import { heroSlides } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
-import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { Ticker } from "@/components/Ticker";
-import { Arrow, Check } from "@/components/Icons";
-import { AlsoCoordinated, CtaBand, FaqList, SectionHead, SpecificGrid, WhoWeServe, WhyUs } from "@/components/Sections";
-import { CoverageBand, MatchList, PhotoSplit, SpecificPhotoGrid, Timeline } from "@/components/Visual";
-import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards } from "@/components/Landing";
+import { Arrow, Chat, Check, Clock, Doc, Headset, Route, Ruler, Shield, Users } from "@/components/Icons";
+import { AlsoCoordinated, CtaBand, FaqList, ReviewGridDark, SectionHead, SpecificGrid, WhoWeServeCards, WhyUs } from "@/components/Sections";
+import { CoverageBand, MatchList, SpecificPhotoGrid, Timeline, TrailerMosaic } from "@/components/Visual";
+import { HomeHero, PhotoCardRow, StatsBand, WhyBand, homeCategoryCards } from "@/components/Landing";
 
 export const metadata = meta(
-  "Nationwide Vehicle & Equipment Transport | MCC Bound Legends",
-  "Nationwide transport coordination for cars, commercial vehicles, boats, RVs, motorcycles, construction equipment and heavy machinery. Request a free quote.",
+  "Nationwide Car, Boat & Equipment Transport | MCC Bound Legends",
+  "Nationwide transport coordination for cars, commercial vehicles, boats, RVs, motorcycles, construction equipment and heavy machinery across all 50 states. Request a free quote.",
   "/"
 );
 
-const homeFaqs = [generalFaqs[1].items[0], generalFaqs[0].items[1], generalFaqs[2].items[0], generalFaqs[1].items[3]];
+/*
+ * Homepage — client revision brief 2026-10-07 (MCC_Bound_Legends_Homepage_Revision_Brief.pdf).
+ * Section order: hero → 7 service cards → stats → more than transport → right trailer →
+ * coast to coast (moved up) → specific vehicles + special situations + also coordinated →
+ * trust cards → 3 steps → individuals & businesses → reviews → FAQ → general CTA.
+ */
+
+/** Brief §9: four benefit points. */
+const BENEFITS = [
+  { icon: Clock, t: "Fast Response Times", s: "Quote assistance from a real transport coordinator." },
+  { icon: Route, t: "Nationwide Coverage", s: "Transportation coordination across all 50 states." },
+  { icon: Shield, t: "Verified Carrier Insurance", s: "Carrier coverage verified before dispatch." },
+  { icon: Ruler, t: "Equipment Matched to Your Load", s: "Trailer and equipment selected according to actual dimensions and weight." },
+];
+
+/** Brief §13: special situations, in the client's order. Oversized Equipment → the heavy equipment page. */
+const SITUATIONS: [string, string][] = [
+  ["non-running-vehicle-transport", "Non-Running Vehicles"],
+  ["auction-vehicle-transport", "Auction Vehicles"],
+  ["boat-transport-without-trailer", "Boats Without Trailers"],
+  ["enclosed-auto-transport", "Enclosed Transport"],
+  ["heavy-equipment-transport", "Oversized Equipment"],
+  ["fleet-vehicle-transport", "Fleet Transport"],
+];
+
+/** Brief §15: six concise trust cards. */
+const TRUST_CARDS = [
+  { icon: Shield, title: "Authority & Insurance Verification", text: "We verify active carrier authority and cargo insurance before dispatch." },
+  { icon: Ruler, title: "Equipment Matching", text: "The carrier and trailer are selected based on the shipment's real specifications." },
+  { icon: Chat, title: "Direct Communication", text: "Clear communication from booking through delivery." },
+  { icon: Doc, title: "Transport Planning", text: "Dimensions, weight, loading and route are considered before dispatch." },
+  { icon: Users, title: "Carrier Network", text: "We work with vetted transport professionals nationwide." },
+  { icon: Headset, title: "One Point of Contact", text: "Customers are not passed around between multiple departments." },
+];
+
+/** Brief §16: three-step process. */
+const STEPS = [
+  { t: "Tell Us What You're Shipping", d: "Share the vehicle or equipment details, pickup and delivery locations." },
+  { t: "We Plan & Match the Right Carrier", d: "We review the shipment requirements and coordinate appropriate equipment." },
+  { t: "Pickup, Updates & Delivery", d: "Receive pickup coordination, transportation updates and delivery communication." },
+];
+
+/** Brief §18: three strong reviews (boat, RV, auto), shown together. */
+const HOME_REVIEWS = ["Christopher Smith", "Jennifer K.", "Joshua Flowers"].map((n) => reviews.find((r) => r.name === n)!);
 
 export default function Home() {
   const services = pages.filter((p) => p.kind === "service");
+  const situations = SITUATIONS.map(([slug, name]) => ({ ...getPage(slug)!, name })) as ServicePage[];
   return (
     <>
       <JsonLd data={faqSchema(homeFaqs)} />
 
-      <LandingHero
-        slides={heroSlides()}
-        eyebrow="Nationwide Vehicle & Equipment Transport"
-        lines={["Cars. Commercial", "Vehicles. Boats.", "RVs. Equipment."]}
-        sub="One trusted transport network for almost anything that moves on wheels, tracks, or water."
-      />
+      <HomeHero slides={heroSlides()} />
 
-      {/* 7 category photo cards, directly under the hero like the reference */}
-      <section className="bg-cloud py-6">
-        <Container><PhotoCardRow cards={categoryCards()} /></Container>
+      {/* §7 Seven service cards, directly under the hero */}
+      <section className="bg-cloud py-7">
+        <Container><PhotoCardRow cards={homeCategoryCards()} /></Container>
       </section>
 
       <StatsBand />
-      <WhyBand />
+      <WhyBand eyebrow="Why choose MCC Bound Legends?" points={BENEFITS} />
 
-      {/* Different vehicles, different equipment */}
-      <section className="bg-white py-20">
-        <Container>
-          <PhotoSplit img={photo("hero-1")} alt="Car hauler carrying SUVs and pickups on a mountain highway at sunset" eyebrow="Why the details matter" title={<>Different vehicles need<br /><span className="text-blue">different transportation.</span></>}>
-            <p className="text-lg leading-relaxed text-slate">A sedan, a box truck, a boat without a trailer, a motorhome and an excavator each need different equipment. We evaluate dimensions, weight, operating condition, ground clearance, loading and route before coordinating a carrier.</p>
+      {/* §11 The Right Trailer for Every Move — image | content, equal heights (fixes the white gap) */}
+      <section className="bg-white py-20 lg:py-24">
+        <Container className="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-2 lg:gap-14">
+          <TrailerMosaic />
+          <div className="reveal-right flex flex-col justify-center">
+            <p className="eyebrow mb-3 text-[13px] text-blue">Why the details matter</p>
+            <h2 className="display text-[32px] text-navy sm:text-[40px]">The right trailer<br /><span className="text-blue">for every move.</span></h2>
+            <p className="mt-5 text-[17px] leading-relaxed text-slate">A sedan, box truck, boat, motorhome and excavator do not use the same transportation equipment. We evaluate dimensions, weight, operating condition, ground clearance, loading requirements and route before coordinating the carrier.</p>
             <div className="mt-6"><MatchList /></div>
-            <Link href="/how-it-works/" className="mt-6 inline-flex items-center gap-1.5 font-semibold text-blue hover:text-navy">See how a shipment is planned <Arrow className="h-4 w-4" /></Link>
-          </PhotoSplit>
+            <Link href="/how-it-works/" className="mt-6 inline-flex items-center gap-1.5 text-[16px] font-semibold text-blue hover:text-navy">See how a shipment is planned <Arrow className="h-4 w-4" /></Link>
+          </div>
         </Container>
       </section>
 
+      {/* §12 Coast to Coast, moved directly after the right-trailer section */}
+      <CoverageBand />
       <Ticker />
 
-      {/* Specific pages */}
-      <section className="bg-cloud py-20">
+      {/* §13–14 Specific vehicles + special situations + also coordinated: one service-navigation area */}
+      <section className="bg-cloud py-20 lg:py-24">
         <Container>
           <SectionHead eyebrow="What exactly is it?" title="Specific vehicles. Specific pages." sub="Searching for a box truck, an excavator or a yacht? Each has a dedicated page with the equipment, considerations and quote form for that exact shipment." />
           <SpecificPhotoGrid items={services} />
-          <div className="mt-14">
-            <SectionHead align="left" eyebrow="Special situations" title="Non-running? Auction? No trailer?" />
+          <div className="mt-14 border-t border-line pt-14">
+            <SectionHead eyebrow="Special situations" title="Non-running? Auction? No trailer?" />
             <SpecificGrid items={situations} />
           </div>
           <div className="reveal mt-10">
-            <p className="eyebrow mb-3 text-muted">Also coordinated</p>
+            <p className="eyebrow mb-3 text-[13px] text-slate">Also coordinated</p>
             <AlsoCoordinated items={futurePages} />
           </div>
         </Container>
       </section>
 
-      {/* Why MCC detail */}
-      <section className="bg-white py-20">
+      {/* §15 Trust, expertise, communication, planning */}
+      <section className="bg-white py-20 lg:py-24">
         <Container>
           <SectionHead eyebrow="How we work" title="Trust, expertise, communication, planning." sub="We do not compete on the lowest advertised number that changes at pickup." />
-          <WhyUs />
+          <WhyUs items={TRUST_CARDS} />
         </Container>
       </section>
 
-      {/* How it works */}
-      <section className="bg-cloud py-20">
+      {/* §16 Three steps */}
+      <section className="bg-cloud py-20 lg:py-24">
         <Container>
           <SectionHead eyebrow="How it works" title="Simple. Planned. Communicated." sub="Three steps, one coordinator, no deposit to book." />
-          <Timeline />
-          <p className="reveal mt-10 text-center"><Link href="/how-it-works/" className="btn-outline px-6 py-3">The full process, step by step <Arrow className="h-4 w-4" /></Link></p>
+          <Timeline steps={STEPS} />
+          <p className="reveal mt-12 text-center"><Link href="/how-it-works/" className="btn-outline px-6 py-3 text-[15px]">The full process, step by step <Arrow className="h-4 w-4" /></Link></p>
         </Container>
       </section>
 
-      <CoverageBand />
-
-      <section className="bg-cloud py-20">
+      {/* §17 Individuals and businesses, with imagery */}
+      <section className="bg-white py-20 lg:py-24">
         <Container>
           <SectionHead eyebrow="Who we serve" title="Individuals and businesses, the same direct service." />
-          <WhoWeServe />
+          <WhoWeServeCards />
         </Container>
       </section>
 
-      <section className="navy-section py-20 text-white">
+      {/* §18 Reviews */}
+      <section className="navy-section py-20 text-white lg:py-24">
         <Container>
-          <SectionHead light eyebrow="What customers say" title="Real shipments. Real people." sub="Verified public reviews from customers who shipped boats, RVs and vehicles with us." />
-          <div className="reveal-scale"><ReviewCarousel reviews={reviews.slice(0, 4)} /></div>
-          <p className="reveal mt-8 text-center text-sm text-white/60">
-            Read more on{" "}
-            {Object.entries(site.reviews).map(([k, v], i, a) => (
-              <span key={k}><a href={v} target="_blank" rel="noopener" className="font-semibold capitalize text-blue-300 hover:text-white">{k === "uship" ? "uShip" : k}</a>{i < a.length - 1 ? " · " : ""}</span>
-            ))}{" "}or <Link href="/testimonials/" className="font-semibold text-white underline decoration-blue underline-offset-4">see all reviews</Link>.
+          <div className="reveal mx-auto mb-10 max-w-3xl text-center">
+            <p className="eyebrow mb-3 text-[13px] text-blue-300">What customers say</p>
+            <h2 className="display text-[36px] text-white sm:text-[44px]">Real shipments. Real people.</h2>
+            <p className="mt-4 text-[17px] leading-relaxed text-white/75">Verified public reviews from customers who shipped boats, RVs and vehicles with us.</p>
+          </div>
+          <ReviewGridDark reviews={HOME_REVIEWS} />
+          <p className="reveal mt-10 text-center text-[15px] text-white/70">
+            5-star rated on{" "}
+            <a href={site.reviews.google} target="_blank" rel="noopener" className="font-semibold text-blue-300 hover:text-white">Google</a>
+            {" "}and{" "}
+            <a href={site.reviews.trustpilot} target="_blank" rel="noopener" className="font-semibold text-blue-300 hover:text-white">Trustpilot</a>
+            {" "}·{" "}<Link href="/testimonials/" className="font-semibold text-white underline decoration-blue underline-offset-4">See all reviews</Link>
           </p>
         </Container>
       </section>
 
-      <section className="bg-white py-20">
-        <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      {/* §19 FAQ */}
+      <section className="bg-white py-20 lg:py-24">
+        <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
           <div className="reveal-left">
-            <p className="eyebrow mb-3 text-blue">Common questions</p>
-            <h2 className="display text-4xl text-navy sm:text-5xl">Straight answers.</h2>
-            <p className="mt-4 text-slate">The questions we get on the phone every day, answered plainly.</p>
-            <Link href="/faq/" className="mt-5 inline-flex items-center gap-1.5 font-semibold text-blue hover:text-navy">All FAQs <Arrow className="h-4 w-4" /></Link>
-            <ul className="mt-8 space-y-2 text-sm text-slate">
+            <p className="eyebrow mb-3 text-[13px] text-blue">Common questions</p>
+            <h2 className="display text-[32px] text-navy sm:text-[40px]">Straight answers.</h2>
+            <p className="mt-4 text-[18px] leading-relaxed text-slate">The questions we get on the phone every day, answered plainly.</p>
+            <Link href="/faq/" className="mt-5 inline-flex items-center gap-1.5 text-[16px] font-semibold text-blue hover:text-navy">All FAQs <Arrow className="h-4 w-4" /></Link>
+            <ul className="mt-8 space-y-2.5 text-[15px] text-slate">
               {["Licensed & bonded broker, USDOT " + site.usdot, "MC " + site.mc, site.hours].map((t) => <li key={t} className="flex items-center gap-2"><Check className="h-4 w-4 text-blue" />{t}</li>)}
             </ul>
           </div>
@@ -127,7 +176,8 @@ export default function Home() {
         </Container>
       </section>
 
-      <CtaBand />
+      {/* §20 General CTA (the boat-only footer banner no longer shows here, §21) */}
+      <CtaBand sub="" />
     </>
   );
 }
