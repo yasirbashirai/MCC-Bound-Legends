@@ -13,7 +13,8 @@
  *
  * What it does: takes the server-rendered HTML, inlines the compiled CSS, swaps next/image URLs for
  * plain files, rewrites internal links to the old site's real URLs, replaces the React form with a
- * FormSubmit POST, adds GTM/Ads tags + dataLayer events, and a tiny mobile menu.
+ * POST to the folder's own send.php (PHP mail on Hostinger + a backup lead log), adds GTM/Ads tags +
+ * dataLayer events, and a tiny mobile menu.
  *
  * NOTE: the boat page is built from here too, into wordpress-boat-page/ (its long-standing path, so
  * the existing UPLOAD-GUIDE + client PDF stay correct). wordpress-boat-page/build.js delegates here.
@@ -192,20 +193,20 @@ async function buildPage(key, cfg) {
   const drawer = `<div id="wpDrawer" class="wp-drawer"><div class="bg" onclick="this.parentNode.classList.remove('open')"></div><div class="panel"><button class="close" aria-label="Close menu" onclick="document.getElementById('wpDrawer').classList.remove('open')">×</button><p style="font-family:var(--font-barlow);font-weight:800;font-size:22px;color:#0d1f35;margin:6px 0 10px">MCC Bound Legends</p>
 <a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/faqs/">FAQ</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/contact-us/">Contact</a><a href="${SITE}/how-it-works/">How It Works</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">${cfg.drawerCta}</a></div></div>`;
 
-  // ── form → FormSubmit ─────────────────────────────────────────────────
+  // ── form → send.php in the same folder ────────────────────────────────
+  // FormSubmit was dropped 2026-10-09: it delivers nothing until a one-time activation email is clicked,
+  // so the live pages lost every lead. send.php runs on the client's Hostinger, no third party involved.
+  // Relative action = works in whatever folder the client extracts the zip into.
   // Match on the id only: React renders the other attributes in no guaranteed order.
   let formSwapped = false;
   out = out.replace(/<form id="quote"([^>]*)>/, (m, attrs) => {
     formSwapped = true;
     const cls = (attrs.match(/\bclass="([^"]*)"/) || [, ""])[1];
-    return `<form id="quote" action="https://formsubmit.co/${LEAD_EMAIL}" method="POST" class="${cls}">
-<input type="hidden" name="_subject" value="${cfg.subject}">
-<input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_next" value="${SITE}/${cfg.slug}/thank-you/">
-<input type="hidden" name="page" value="/${cfg.slug}/"><input type="hidden" name="service" value="${cfg.service}">
+    return `<form id="quote" action="send.php" method="POST" class="${cls}">
+<input type="hidden" name="page" value="/${cfg.slug}/">
 <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">`;
   });
-  // React's own honeypot is redundant once FormSubmit's _honey is in, and it would show up in the email
+  // React's own honeypot is redundant once _honey is in, and it would show up in the email
   out = out.replace(/<input[^>]*\bname="company_website"[^>]*?\/?>/, "");
   out = addAttr(out, "sms_consent", "required");
   // A text input so the placeholder shows; becomes a real date picker on focus
@@ -219,8 +220,8 @@ async function buildPage(key, cfg) {
   var dl=window.dataLayer=window.dataLayer||[];
   document.querySelectorAll('a[href^="tel:"]').forEach(function(a){a.addEventListener('click',function(){dl.push({event:'phone_click',click_location:a.closest('header')?'header':a.closest('form')?'form':'page'});});});
   var f=document.getElementById('quote');
-  // Folder-proof: send the visitor to <this folder>/thank-you/ wherever the page was uploaded
-  if(f&&f._next){var pth=location.pathname;if(pth.slice(-5)==='.html')pth=pth.slice(0,pth.lastIndexOf('/')+1);if(pth.slice(-1)!=='/')pth+='/';f._next.value=location.origin+pth+'thank-you/';if(f.page)f.page.value=pth;}
+  // Record the real folder the page was uploaded to (send.php redirects to <that folder>/thank-you/ itself)
+  if(f&&f.page){var pth=location.pathname;if(pth.slice(-5)==='.html')pth=pth.slice(0,pth.lastIndexOf('/')+1);if(pth.slice(-1)!=='/')pth+='/';f.page.value=pth;}
   if(f){f.addEventListener('submit',function(){dl.push({event:'quote_submit',ship_type:(f.querySelector('[name=${cfg.shipField}]')||{}).value||'${cfg.shipFallback}',page_path:'/${cfg.slug}/'});});}
   document.querySelectorAll('a[href="#quote"]').forEach(function(a){a.addEventListener('click',function(e){var q=document.getElementById('quote');if(q){e.preventDefault();q.scrollIntoView({behavior:'smooth',block:'start'});var first=q.querySelector('input:not([type=hidden])');if(first)setTimeout(function(){first.focus({preventScroll:true})},500);}});});
 })();
@@ -229,7 +230,8 @@ async function buildPage(key, cfg) {
 
   // ── guard rails: fail loudly instead of shipping a broken page ────────
   const problems = [];
-  if (!formSwapped) problems.push("quote form was not swapped to FormSubmit");
+  if (!formSwapped) problems.push("quote form was not swapped to send.php");
+  if (/formsubmit/i.test(out)) problems.push("a FormSubmit reference survived");
   if (/\/_next\//.test(out)) problems.push("a /_next/ URL survived (image or asset would 404)");
   if (/href="\/(?!\/)/.test(out)) problems.push("a root-relative href survived (would break on the old site)");
   if (!out.includes(GTM)) problems.push("GTM container missing");
@@ -242,12 +244,22 @@ async function buildPage(key, cfg) {
   fs.writeFileSync(path.join(cfg.outDir, "index.html"), out);
   for (const src of images) fs.copyFileSync(path.join(ROOT, "public", src), path.join(cfg.outDir, "images", path.basename(src)));
   fs.writeFileSync(path.join(cfg.outDir, "thank-you", "index.html"), thankYou(cfg));
+  fs.writeFileSync(path.join(cfg.outDir, "send.php"), sendPhp(cfg));
   fs.rmSync(cfg.zip, { force: true });
   // Flat zip (index.html at the root, no wrapper folder): Hostinger's File Manager "Extract" asks for a
   // folder name and creates it, so the client types the slug and gets public_html/<slug>/index.html.
   execSync(`cd "${cfg.outDir}" && zip -qr "${cfg.zip}" . -x "*.DS_Store"`);
   const kb = Math.round(fs.statSync(cfg.zip).size / 1024);
   console.log(`✓ ${key.padEnd(24)} → ${path.relative(ROOT, cfg.outDir)}  (${images.size} images, ${kb} KB zip)`);
+}
+
+/** send.php for one page: the shared template with this page's subject/service baked in (PHP single-quoted strings). */
+function sendPhp(cfg) {
+  const q = (s) => s.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+  return fs.readFileSync(path.join(__dirname, "send.php.tpl"), "utf8")
+    .split("__LEAD_EMAIL__").join(q(LEAD_EMAIL))
+    .split("__SUBJECT__").join(q(cfg.subject))
+    .split("__SERVICE__").join(q(cfg.service));
 }
 
 function thankYou(cfg) {

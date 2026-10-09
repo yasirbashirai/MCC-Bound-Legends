@@ -33,8 +33,8 @@ node wordpress-pages/build.js http://localhost:3000  # builds all three pages
 4. Repeat with `faqs-upload.zip` → folder name `faqs`.
 5. Result must be:
    ```
-   public_html/how-it-works/index.html   + images/  + thank-you/index.html
-   public_html/faqs/index.html           + images/  + thank-you/index.html
+   public_html/how-it-works/index.html   + send.php + images/ + thank-you/index.html
+   public_html/faqs/index.html           + send.php + images/ + thank-you/index.html
    ```
 6. hPanel → Advanced → **LiteSpeed cache purge**, then open both URLs.
 
@@ -44,15 +44,22 @@ Deleting them would strip "How It Works" and "FAQ" out of the WordPress menu.
 If a URL still shows the old WordPress page, it is the cache: purge LiteSpeed again and hard-refresh
 (Cmd/Ctrl + Shift + R).
 
-## Form → email (FormSubmit, no plugin, no API key)
+## Form → email (send.php on Hostinger, no plugin, no third party)
 
-- Both pages carry the site's quote form, posting to `https://formsubmit.co/Jeff.c@mccboundlegends.com`.
-- **First submission only**: FormSubmit emails Jeff an "Activate form" link. He clicks it once; after that
-  every lead arrives as a table email. The subject line says which page it came from, and a `service`
-  field records it too, so How It Works / FAQ / boat leads are easy to tell apart.
-- After submit the visitor lands on that page's own `/thank-you/`.
-- To change the lead email: edit `action="https://formsubmit.co/…"` in `index.html` (one line per page).
-- SMS/text alerts are not possible with FormSubmit; the new Next.js site (Vercel) has Twilio SMS built in.
+> **2026-10-09:** the forms used to post to FormSubmit, which delivers **nothing** until a one-time
+> "Activate form" email is clicked. That email was never clicked, so leads were being dropped. The forms now
+> post to a small `send.php` inside each folder, which runs on Hostinger itself. No activation step.
+
+- `send.php` emails each lead to **Jeff.c@mccboundlegends.com** (Reply-To = the customer, so Jeff just hits
+  Reply). The subject line says which page it came from, plus the customer's name.
+- **Backup:** every lead is also saved to `leads-log.php` in the same folder *before* the email is sent, so
+  nothing is lost if an email bounces or lands in spam. Open it in File Manager → Edit to read it. It cannot be
+  read over the web.
+- Bots are filtered by a hidden honeypot field. A post with no phone and no email is rejected.
+- After submit the visitor lands on that folder's own `/thank-you/` (the Google Ads conversion page).
+- To change the lead email: edit `LEAD_TO` and `MAIL_FROM` at the top of `send.php`. `MAIL_FROM` must be a
+  real mailbox on mccboundlegends.com or Hostinger will refuse to send.
+- Re-uploading a zip never deletes `leads-log.php` (it is not in the zip).
 
 ## Tracking (already wired, same IDs as the rest of the old site)
 
@@ -65,7 +72,7 @@ If a URL still shows the old WordPress page, it is the cache: purge LiteSpeed ag
 - [ ] Both URLs load with the new design, purge LiteSpeed if not.
 - [ ] Menu links "How It Works" and "FAQ" land on the new pages.
 - [ ] FAQ accordions open and close (they are plain HTML `<details>`, they work with JS disabled).
-- [ ] Submit each form once, click the FormSubmit activation email, confirm the lead reaches Jeff (check spam).
+- [ ] Submit the form once with real details → lands on the thank-you page → email reaches Jeff (check spam the first time; mark "Not spam").
 - [ ] Tap the phone number on a phone → dialer opens.
 - [ ] "BBB Accredited" appears in the footer badge row (client's copy). If MCC is **not** BBB accredited, remove it.
 

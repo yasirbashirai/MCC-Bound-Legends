@@ -18,6 +18,7 @@ boat-transport-florida/
   index.html            the landing page (CSS + JS inline, identical to the new site's page)
   images/               23 webp images (logo, hero, 8 boat types, 3 options, band, CTA, footer backgrounds + 4 badges)
   thank-you/index.html  form success page = Google Ads conversion page
+  send.php              form handler: emails the lead to Jeff + saves a backup copy (leads-log.php)
 ```
 
 ## Upload (Hostinger hPanel → Files → File Manager) — 5 minutes
@@ -33,13 +34,22 @@ boat-transport-florida/
 If it shows a WordPress 404 instead: hPanel → Advanced → **LiteSpeed cache purge**, and confirm no WordPress page uses the slug
 `boat-transport-florida` (Pages → search). A real folder always wins over a WP permalink once the cache is cleared.
 
-## Form → email (FormSubmit, no plugin, no API key)
-- The form posts to `https://formsubmit.co/Jeff.c@mccboundlegends.com`.
-- **First submission only**: FormSubmit emails Jeff an "Activate form" link. He clicks it once; from then on every lead
-  arrives as a table email (Year/Make/Model, boat type, length, ZIPs, trailer, date, name, phone, email, consent).
-- After submit the visitor lands on `/boat-transport-florida/thank-you/`.
-- To change the lead email: edit `action="https://formsubmit.co/…"` in index.html (one line).
-- SMS/text alerts are not possible with FormSubmit; the Next.js site (Vercel) has Twilio SMS built in.
+## Form → email (send.php on Hostinger, no plugin, no third party)
+
+> **2026-10-09:** the forms used to post to FormSubmit, which delivers **nothing** until a one-time
+> "Activate form" email is clicked. That email was never clicked, so leads were being dropped. The forms now
+> post to a small `send.php` inside each folder, which runs on Hostinger itself. No activation step.
+
+- `send.php` emails each lead to **Jeff.c@mccboundlegends.com** (Reply-To = the customer, so Jeff just hits
+  Reply). The subject line says which page it came from, plus the customer's name.
+- **Backup:** every lead is also saved to `leads-log.php` in the same folder *before* the email is sent, so
+  nothing is lost if an email bounces or lands in spam. Open it in File Manager → Edit to read it. It cannot be
+  read over the web.
+- Bots are filtered by a hidden honeypot field. A post with no phone and no email is rejected.
+- After submit the visitor lands on that folder's own `/thank-you/` (the Google Ads conversion page).
+- To change the lead email: edit `LEAD_TO` and `MAIL_FROM` at the top of `send.php`. `MAIL_FROM` must be a
+  real mailbox on mccboundlegends.com or Hostinger will refuse to send.
+- Re-uploading a zip never deletes `leads-log.php` (it is not in the zip).
 
 ## Tracking (already wired, same IDs as the old site)
 - GTM `GTM-M44WB2FK` + Google Ads tag `AW-18234011636` on both pages.
@@ -53,7 +63,7 @@ Header/footer links point to the OLD site's real pages (`/how-does-it-work/`, `/
 Pages that only exist on the new site fall back to the closest old service page or `/services/`. Footer "Sitemap" → `/sitemap.xml`.
 
 ## Before Jeff points ads at it
-- [ ] Test the form once, click the FormSubmit activation email, confirm the lead lands in Jeff's inbox (check spam).
+- [ ] Submit the form once with real details → lands on the thank-you page → email reaches Jeff (check spam the first time; mark "Not spam").
 - [ ] Tap the phone number on a phone → dialer opens.
 - [ ] "BBB Accredited" appears in the hero strip and footer (client's copy). If MCC is NOT BBB accredited, remove it.
 - [ ] PageSpeed (pagespeed.web.dev) on the live URL, mobile > 70 — send the screenshot.
