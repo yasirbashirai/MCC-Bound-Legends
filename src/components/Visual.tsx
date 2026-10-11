@@ -140,7 +140,7 @@ export function CoverageBand() {
       <div className="wrap relative grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] hd:gap-20">
         <div className="reveal-left">
           <p className="font-display text-[14px] font-bold uppercase tracking-[0.16em] text-blue-300">Nationwide Transport Across All 50 States</p>
-          <h2 className="display mt-3 text-[40px] sm:text-[48px]">Coast to coast.<br /><span className="text-blue-400">Every state.</span></h2>
+          <h2 className="display mt-3 text-[34px] sm:text-[40px]">Coast to coast.<br /><span className="text-blue-400">Every state.</span></h2>
           <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-white/80">MCC Bound Legends coordinates vehicle and equipment transport in <strong className="font-semibold text-white">all 50 states</strong>. Our home base is in Altamonte Springs, Florida, and our vetted carrier network reaches every state from there.</p>
 
           <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -186,11 +186,19 @@ export function Timeline({ steps = STEPS }: { steps?: { t: string; d: string }[]
 }
 
 /* ── Specific pages with photo thumbs when available ─────────────────── */
+/** Existing photos that show the exact vehicle of a specific page. */
+const EXACT_PHOTO: Record<string, string> = {
+  "box-truck-transport": "thumb-commercial-vehicle-transport",
+  "yacht-transport": "type-yacht",
+  "excavator-transport": "thumb-construction-equipment-transport",
+};
+
 export function SpecificPhotoGrid({ items }: { items: ServicePage[] }) {
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((s, i) => {
-        const img = photo(`svc-${s.slug}`) ?? (s.parent ? categoryPhoto(s.parent) : null);
+        // Only a photo that shows this exact vehicle; otherwise the icon tile (brief 2026-10-07 §24: no generic photos)
+        const img = photo(`svc-${s.slug}`) ?? (EXACT_PHOTO[s.slug] ? photo(EXACT_PHOTO[s.slug]) : null);
         return (
           <li key={s.slug} className="reveal-up" style={{ ["--d" as string]: `${(i % 3) * 70}ms` }}>
             <Link href={`/${s.slug}/`} className="card card-hover group flex h-full items-stretch overflow-hidden">
