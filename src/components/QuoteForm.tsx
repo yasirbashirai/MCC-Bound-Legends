@@ -6,7 +6,7 @@ import { getShipOption, shipGroups, shipOptions, smsConsent } from "@/data/quote
 import { trackQuoteSubmit } from "@/lib/analytics";
 import Link from "next/link";
 import { Arrow, Calendar, Gear, Layers, Mail, Note, Phone, Pin, Ruler, Tag, Trailer, User, Weight } from "./Icons";
-import { Field, TrustStrip } from "./FormBits";
+import { DateField, Field, TrustStrip } from "./FormBits";
 
 /**
  * Main quote / contact form. Same visual system as the boat page card (client form
@@ -32,7 +32,6 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
   const [type, setType] = useState<ShipType>(defaultType);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [dateType, setDateType] = useState<"text" | "date">("text");
   const opt = useMemo(() => getShipOption(type), [type]);
   const has = (g: string) => opt?.fields.includes(g as never) ?? false;
   const dark = variant === "card";
@@ -87,10 +86,10 @@ export function QuoteForm({ defaultType = "car", serviceName, variant = "card", 
         <Field icon={Pin}><input name="pickup_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Pick-up ZIP Code" aria-label="Pick-up ZIP code" className="field" required /></Field>
         <Field icon={Pin}><input name="delivery_zip" inputMode="numeric" pattern="[0-9]{5}" placeholder="Drop-off ZIP Code" aria-label="Drop-off ZIP code" className="field" required /></Field>
 
+        {minimal && <DateField className="@min-[420px]:col-span-2" />}
+
         {!minimal && (<>
-          <Field icon={Calendar}>
-            <input name="pickup_date" type={dateType} onFocus={() => setDateType("date")} onBlur={(e) => { if (!e.currentTarget.value) setDateType("text"); }} min={new Date().toISOString().slice(0, 10)} placeholder="Preferred Pick-up Date" aria-label="Preferred pick-up date" className="field" />
-          </Field>
+          <DateField />
           <Field icon={Gear}>
             <select name="operable" defaultValue="yes" aria-label="Does it run and drive?" className="field">
               <option value="yes">Runs &amp; drives</option>

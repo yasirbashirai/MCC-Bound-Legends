@@ -38,4 +38,4 @@ export const getShipOption = (v: string | undefined) => shipOptions.find((o) => 
 
 /** SMS consent text, kept verbatim from the current site (legal requirement). */
 export const smsConsent =
-  "By checking this box, I consent to receive SMS messages from MCC Bound Legends LLC related to follow-up messages and day-to-day messages at the phone number provided above. The SMS frequency may vary. Data rates may apply. For assistance reply HELP. Reply STOP to opt out of receiving text messages.";
+  "I agree to receive texts from MCC Bound Legends LLC. Msg frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.";

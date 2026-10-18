@@ -78,8 +78,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         sub={firstSentence}
         formDefault={p.formDefault}
         serviceName={p.name}
-        formTitle={`Get Your ${p.name.replace(/ Transport$| Shipping$/i, "")} Quote`}
-        tagline={fl.tag}
+        formTitle={`Get Your ${p.name.replace(/ & Machinery$/, "").replace(/ Transport\b| Shipping$/i, "")} Quote`}
       />
 
       {/* Type row */}

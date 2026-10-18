@@ -3,8 +3,9 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { trackQuoteSubmit } from "@/lib/analytics";
-import { Arrow, BoatSm, Calendar, Mail, Phone, Pin, Ruler, Trailer, User } from "./Icons";
-import { Field, TrustStrip } from "./FormBits";
+import { Arrow, BoatSm, Mail, Phone, Pin, Ruler, Trailer, User } from "./Icons";
+import { DateField, Field, TrustStrip } from "./FormBits";
+import { smsConsent } from "@/data/quote";
 
 /**
  * Boat landing-page quote card — 1:1 to the client's form reference (2026-09-19,
@@ -22,7 +23,6 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   // date field shows its placeholder until focused (type=date has no placeholder)
-  const [dateType, setDateType] = useState<"text" | "date">("text");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,9 +76,7 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
             {TRAILER.map(([l]) => <option key={l}>{l}</option>)}
           </select>
         </Field>
-        <Field icon={Calendar}>
-          <input name="pickup_date" type={dateType} onFocus={() => setDateType("date")} onBlur={(e) => { if (!e.currentTarget.value) setDateType("text"); }} min={new Date().toISOString().slice(0, 10)} placeholder="Preferred Pick-up Date" aria-label="Preferred pick-up date" className="field" />
-        </Field>
+        <DateField />
         <Field icon={User}>
           <input name="name" autoComplete="name" placeholder="Your Name" aria-label="Your name" className="field" required />
         </Field>
@@ -92,7 +90,7 @@ export function BoatQuoteForm({ title = "How Much Does It Cost to Ship Your Boat
 
       <label className="mt-4 flex items-start gap-3 text-[13px] leading-[1.45] text-slate">
         <input type="checkbox" name="sms_consent" value="yes" className="consent-box" />
-        <span>I consent to receive SMS messages from MCC Bound Legends LLC. Reply STOP to opt out. See <Link href="/privacy-policy/" className="text-royal underline">Privacy Policy</Link>.</span>
+        <span>{smsConsent} Please review our <Link href="/privacy-policy/" className="text-royal underline">Privacy Policy</Link> and <Link href="/terms-and-conditions/" className="text-royal underline">Terms &amp; Conditions</Link>.</span>
       </label>
 
       {error && <p role="alert" className="mt-3 rounded-lg bg-orange-100 px-3 py-2 text-sm font-medium text-orange-600">{error}</p>}

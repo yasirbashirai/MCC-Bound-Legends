@@ -8,10 +8,46 @@ import { QuoteForm } from "./QuoteForm";
 import { PhoneLink } from "./PhoneLink";
 import { Words } from "./Words";
 import { Counter } from "./Counter";
-import { Arrow, Bolt, Chat, Doc, Phone, Route, Ruler, Shield, Star, Users, VehicleIcon, Clock } from "./Icons";
+import { Arrow, Bolt, Chat, Doc, Phone, Route, Shield, Star, Users, VehicleIcon } from "./Icons";
 import type { ShipType } from "@/data/services";
 
-/* ── Reference-style hero: photo visible, white form, badge column ───── */
+/* ── Hero — client revision brief §4–6 (2026-10-07) + round 2026-10-17 ──
+   ONE shell for the homepage AND every service landing page, so all heroes share
+   the exact same height, width, grid, paddings and type sizes (client: "use the
+   homepage hero as the standard"). LEFT = eyebrow, H1, supporting copy, two buttons,
+   lifted ~90px on desktop (client 2026-10-17). RIGHT = quote form pinned to the right
+   edge. No badge column / tagline. Stacks on mobile: copy first, then the form. */
+type ShellProps = { slides: { src: string; alt: string }[]; fallbackIcon?: IconKey; form: React.ReactNode; children: React.ReactNode };
+
+function HeroShell({ slides, fallbackIcon, form, children }: ShellProps) {
+  return (
+    <section className="hero-bg relative overflow-hidden text-white">
+      {slides.length > 0 ? <HeroSlideshow slides={slides} light /> : (
+        <div className="absolute inset-0 [--icon-bg:#0d1f35]" aria-hidden="true">
+          <div className="road-grid absolute inset-0" />
+          {fallbackIcon && <VehicleIcon name={fallbackIcon} className="absolute right-[-4%] top-[8%] h-[70%] w-[55%] text-blue/10" />}
+        </div>
+      )}
+      <div className="wrap relative z-[2] grid items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
+        <div className="max-w-[720px] lg:-translate-y-[90px]">{children}</div>
+        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
+      </div>
+    </section>
+  );
+}
+
+const HeroEyebrow = ({ children }: { children: React.ReactNode }) => (
+  <p className="font-display text-[13px] font-bold uppercase tracking-[0.18em] text-blue-300 drop-shadow sm:text-[14px]">{children}</p>
+);
+const H1_CLS = "display mt-3 text-[38px] leading-[0.98] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-[48px] xl:text-[54px] hd:text-[56px]";
+const HeroButtons = () => (
+  <div className="reveal-up mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row" style={{ ["--d" as string]: "680ms" }}>
+    <a href="#quote" className="btn-orange h-[50px] whitespace-nowrap px-7 text-[16px] font-bold uppercase tracking-[0.04em] lg:self-start xl:self-auto">Get My Free Quote <Arrow className="h-5 w-5" /></a>
+    <PhoneLink location="hero" className="btn-ghost h-[50px] whitespace-nowrap border-white/80 bg-navy/40 px-7 text-[16px] font-bold uppercase tracking-[0.04em] backdrop-blur lg:self-start xl:self-auto"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
+  </div>
+);
+
+/* Service landing pages: same shell + type as the homepage hero. */
 type HeroProps = {
   slides: { src: string; alt: string }[];
   eyebrow: string;
@@ -22,109 +58,39 @@ type HeroProps = {
   serviceName?: string;
   formTitle?: string;
   crumbs?: React.ReactNode;
-  tagline?: [string, string];   // right column tagline
   fallbackIcon?: IconKey;       // shown when there is no photo yet
 };
 
-const BADGES = [
-  { icon: Clock, t: "Fast", s: "Response times" },
-  { icon: Route, t: "Nationwide", s: "Coverage, all 50 states" },
-  { icon: Shield, t: "Verified", s: "Carrier insurance" },
-  { icon: Ruler, t: "Right trailer", s: "Matched to real specs" },
-];
-const TRUST = [
-  { icon: Shield, t: "Licensed & Bonded", s: "Freight Broker" },
-  { icon: Users, t: "Vetted Carriers", s: "Nationwide" },
-  { icon: Doc, t: "Carrier Insurance", s: "Verified Before Dispatch" },
-  { icon: Star, t: "5-Star Rated", s: "on Google & Trustpilot" },
-];
-
-export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, formTitle, crumbs, tagline = ["Moving America Forward", "One shipment at a time."], fallbackIcon }: HeroProps) {
+export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, formTitle, crumbs, fallbackIcon }: HeroProps) {
   return (
-    <section className="hero-bg relative overflow-hidden text-white">
-      {slides.length > 0 ? <HeroSlideshow slides={slides} light /> : (
-        <div className="absolute inset-0" aria-hidden="true">
-          <div className="road-grid absolute inset-0" />
-          {fallbackIcon && <VehicleIcon name={fallbackIcon} className="absolute right-[-4%] top-[8%] h-[70%] w-[55%] text-blue/10" />}
-        </div>
-      )}
-      <div className="wrap relative z-[2] grid items-start gap-8 pb-10 pt-8 lg:grid-cols-[1.05fr_400px] lg:pb-12 lg:pt-12 xl:grid-cols-[1fr_400px_170px] hd:grid-cols-[1fr_460px_220px] hd:gap-16 hd:pb-16 hd:pt-14">
-        {/* Left: message */}
-        <div className="lg:pt-24 hd:pt-20">
-          {crumbs}
-          <p className="display-md text-lg tracking-wide text-blue-400 drop-shadow sm:text-xl">{eyebrow}</p>
-          <h1 className="display mt-2 text-[46px] leading-[0.92] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-6xl lg:text-[68px] xl:text-[74px] hd:text-[84px] min-[1800px]:text-[96px]">
-            {lines.map((l, i) => (
-              <span key={i} className={`block ${i === accentLine ? "text-blue-400" : ""}`}><Words text={l} start={i * 160} step={55} /></span>
-            ))}
-          </h1>
-          <p className="reveal-up mt-5 max-w-xl text-lg font-medium leading-snug text-white drop-shadow sm:text-[21px] hd:mt-6 hd:max-w-2xl hd:text-[24px]" style={{ ["--d" as string]: "600ms" }}>{sub}</p>
-          <div className="reveal-up mt-6 flex flex-col gap-3 sm:flex-row hd:mt-8 hd:gap-4" style={{ ["--d" as string]: "720ms" }}>
-            <a href="#quote" className="btn-orange display-md px-7 py-4 text-xl tracking-wide">Get a Free Quote <Arrow className="h-5 w-5" /></a>
-            <PhoneLink location="hero" className="btn-ghost display-md border-white/70 bg-navy/40 px-7 py-4 text-xl tracking-wide backdrop-blur"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
-          </div>
-          <ul className="reveal-up mt-8 flex flex-wrap gap-x-7 gap-y-4 hd:mt-10 hd:gap-x-10" style={{ ["--d" as string]: "860ms" }}>
-            {TRUST.map((b) => (
-              <li key={b.t} className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-blue text-white shadow-[0_6px_18px_-6px_rgba(14,165,233,.9)]"><b.icon className="h-5 w-5" /></span>
-                <span className="leading-tight"><span className="block whitespace-nowrap text-[15px] font-bold">{b.t}</span><span className="block whitespace-nowrap text-[13px] text-white/80">{b.s}</span></span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Middle: white quote card */}
-        <div className="reveal-right lg:pt-4" style={{ ["--d" as string]: "250ms" }}>
-          <QuoteForm variant="white" minimal defaultType={formDefault} serviceName={serviceName} title={formTitle ?? "Get Your Transport Quote"} />
-        </div>
-
-        {/* Right: badge column (xl only) */}
-        <aside className="reveal-right hidden xl:flex xl:flex-col xl:gap-5 xl:pt-8 hd:gap-7 hd:pt-10" style={{ ["--d" as string]: "450ms" }}>
-          {BADGES.map((b) => (
-            <div key={b.t} className="flex items-center gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-blue/50 hd:h-14 hd:w-14 bg-navy/60 text-blue-400 backdrop-blur"><b.icon className="h-6 w-6" /></span>
-              <span className="leading-tight"><span className="display-md block text-[15px] tracking-wide hd:text-[18px]">{b.t}</span><span className="block text-[11px] text-white/75 hd:text-[13px]">{b.s}</span></span>
-            </div>
-          ))}
-          <div className="mt-2 border-t-2 border-blue pt-4">
-            <p className="display-md text-[17px] leading-tight tracking-wide text-blue-400 hd:text-[20px]">{tagline[0]}</p>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-white/85 hd:text-[12.5px]">{tagline[1]}</p>
-          </div>
-        </aside>
-      </div>
-    </section>
+    <HeroShell slides={slides} fallbackIcon={fallbackIcon}
+      form={<QuoteForm variant="white" minimal defaultType={formDefault} serviceName={serviceName} title={formTitle ?? "Get Your Transport Quote"} />}>
+      {crumbs}
+      <HeroEyebrow>{eyebrow}</HeroEyebrow>
+      <h1 className={H1_CLS}>
+        {lines.map((l, i) => (
+          <span key={i} className={`block ${i === accentLine ? "text-blue" : ""}`}><Words text={l} start={i * 160} step={55} /></span>
+        ))}
+      </h1>
+      <p className="reveal-up mt-5 max-w-[640px] text-[17px] font-medium leading-[1.6] text-white drop-shadow sm:text-[18px]" style={{ ["--d" as string]: "450ms" }}>{sub}</p>
+      <HeroButtons />
+    </HeroShell>
   );
 }
 
-/* ── Homepage hero — client revision brief §4–6 (2026-10-07) ─────────────
-   Clean two columns: LEFT = eyebrow, H1, two supporting lines, two buttons.
-   RIGHT = quote form, pinned to the right edge of the content area.
-   The old trust row, badge column and "Moving America Forward" tagline are gone
-   (no spacer column left behind). Stacks on mobile: copy first, then the form. */
+/* Homepage hero. "Equipment Transport" in the nav-active blue (client 2026-10-17). */
 export function HomeHero({ slides }: { slides: { src: string; alt: string }[] }) {
   return (
-    <section className="hero-bg relative overflow-hidden text-white">
-      <HeroSlideshow slides={slides} light />
-      <div className="wrap relative z-[2] grid items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
-        <div className="max-w-[720px]">
-          <p className="font-display text-[13px] font-bold uppercase tracking-[0.18em] text-blue-300 drop-shadow sm:text-[14px]">Nationwide Vehicle and Equipment Transport</p>
-          <h1 className="display mt-3 text-[38px] leading-[0.98] drop-shadow-[0_6px_28px_rgba(0,0,0,.55)] sm:text-[48px] xl:text-[54px] hd:text-[56px]">
-            <span className="block"><Words text="Nationwide Car, Boat" step={55} /></span>
-            <span className="block"><Words text="& Equipment Transport" start={160} step={55} /></span>
-          </h1>
-          <p className="reveal-up mt-5 max-w-[640px] text-[17px] font-medium leading-[1.6] text-white drop-shadow sm:text-[18px]" style={{ ["--d" as string]: "450ms" }}>Reliable transportation for cars, commercial vehicles, boats, RVs, motorcycles and heavy equipment across all 50 states.</p>
-          <p className="reveal-up mt-3 max-w-[640px] text-[16px] leading-[1.6] text-white/85 drop-shadow sm:text-[17px]" style={{ ["--d" as string]: "560ms" }}>MCC Bound Legends coordinates your shipment with vetted carriers and equipment matched to your vehicle, dimensions and route.</p>
-          <div className="reveal-up mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row" style={{ ["--d" as string]: "680ms" }}>
-            <a href="#quote" className="btn-orange h-[50px] whitespace-nowrap px-7 text-[16px] font-bold uppercase tracking-[0.04em] lg:self-start xl:self-auto">Get My Free Quote <Arrow className="h-5 w-5" /></a>
-            <PhoneLink location="hero" className="btn-ghost h-[50px] whitespace-nowrap border-white/80 bg-navy/40 px-7 text-[16px] font-bold uppercase tracking-[0.04em] backdrop-blur lg:self-start xl:self-auto"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
-          </div>
-        </div>
-
-        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>
-          <QuoteForm variant="white" minimal title="Get Your Transport Quote" />
-        </div>
-      </div>
-    </section>
+    <HeroShell slides={slides} form={<QuoteForm variant="white" minimal title="Get Your Transport Quote" />}>
+      <HeroEyebrow>Nationwide Vehicle and Equipment Transport</HeroEyebrow>
+      <h1 className={H1_CLS}>
+        <span className="block"><Words text="Nationwide Car, Boat" step={55} /></span>
+        <span className="block"><Words text="&" start={160} step={55} /><Words text="Equipment Transport" start={215} step={55} className="text-blue" /></span>
+      </h1>
+      <p className="reveal-up mt-5 max-w-[640px] text-[17px] font-medium leading-[1.6] text-white drop-shadow sm:text-[18px]" style={{ ["--d" as string]: "450ms" }}>Reliable transportation for cars, commercial vehicles, boats, RVs, motorcycles and heavy equipment across all 50 states.</p>
+      <p className="reveal-up mt-3 max-w-[640px] text-[16px] leading-[1.6] text-white/85 drop-shadow sm:text-[17px]" style={{ ["--d" as string]: "560ms" }}>MCC Bound Legends coordinates your shipment with vetted carriers and equipment matched to your vehicle, dimensions and route.</p>
+      <HeroButtons />
+    </HeroShell>
   );
 }
 

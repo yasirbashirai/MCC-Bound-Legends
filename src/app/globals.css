@@ -98,6 +98,11 @@ body { background: var(--color-cloud); color: var(--color-ink); font-family: var
 .field:where(input[type="date"]) { @apply appearance-none; }
 .field::-webkit-date-and-time-value { text-align: left; }
 .field::-webkit-calendar-picker-indicator { @apply cursor-pointer opacity-60; }
+/* empty date: hide the native mm/dd/yyyy, show our placeholder (DateField) */
+.field:where(input[type="date"])[data-empty="true"] { color: transparent; }
+.field:where(input[type="date"])[data-empty="true"]::-webkit-datetime-edit { color: transparent; }
+.date-placeholder { @apply pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 text-[15.5px] text-slate/80; }
+.form-compact .date-placeholder { @apply left-[44px] text-[14px]; }
 /* leading icon: wrap the control in .field-icon and put the svg first */
 .field-icon { @apply relative; }
 .field-icon > svg { @apply pointer-events-none absolute left-4 top-1/2 h-[22px] w-[22px] -translate-y-1/2 text-navy; }

@@ -1,4 +1,6 @@
-import { Clock, NoDeposit, Shield } from "./Icons";
+"use client";
+import { useState } from "react";
+import { Calendar, Clock, NoDeposit, Shield } from "./Icons";
 
 /**
  * Shared pieces for every quote / contact form — built to the client's form
@@ -10,6 +12,24 @@ type IconType = React.ComponentType<{ className?: string }>;
 /** Leading-icon wrapper: `<Field icon={Pin}><input className="field" … /></Field>` */
 export const Field = ({ icon: Icon, className = "", children }: { icon?: IconType; className?: string; children: React.ReactNode }) =>
   Icon ? <div className={`field-icon ${className}`}><Icon />{children}</div> : <div className={className}>{children}</div>;
+
+/**
+ * "Preferred Pickup Date" — always a real date input, so tapping it opens the
+ * calendar right away (showPicker on desktop, native wheel/calendar on phones).
+ * While empty, the native mm/dd/yyyy text is hidden and a placeholder shows instead.
+ */
+export function DateField({ className = "" }: { className?: string }) {
+  const [empty, setEmpty] = useState(true);
+  const open = (e: React.SyntheticEvent<HTMLInputElement>) => { try { e.currentTarget.showPicker?.(); } catch { /* not allowed (e.g. no user gesture): native fallback */ } };
+  return (
+    <div className={`field-icon ${className}`}>
+      <Calendar />
+      <input name="pickup_date" type="date" min={new Date().toISOString().slice(0, 10)} aria-label="Preferred pickup date" className="field" data-empty={empty}
+        onClick={open} onChange={(e) => setEmpty(!e.currentTarget.value)} />
+      {empty && <span className="date-placeholder" aria-hidden="true">Preferred Pickup Date</span>}
+    </div>
+  );
+}
 
 const TRUST: [IconType, string][] = [[Shield, "Your information is secure"], [NoDeposit, "No deposit required"], [Clock, "We respond within 2 hours"]];
 
