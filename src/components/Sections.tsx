@@ -89,14 +89,15 @@ const WHY = [
   { icon: Users, title: "Built for individuals and businesses", text: "Private owners, dealers, fleet managers, contractors, marinas and auction buyers get the same direct, knowledgeable service." },
 ];
 export type WhyItem = { icon: React.ComponentType<{ className?: string }>; title: string; text: string };
-export function WhyUs({ items = WHY }: { items?: WhyItem[] }) {
+/** `dark`: glass cards for a photo-backed navy section (homepage trust band, client round 2026-10-21 §6). */
+export function WhyUs({ items = WHY, dark = false }: { items?: WhyItem[]; dark?: boolean }) {
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
       {items.map((w, i) => (
-        <div key={w.title} className="card reveal p-6" style={{ transitionDelay: `${i * 60}ms` }}>
-          <span className="grid h-12 w-12 place-items-center rounded-xl bg-navy text-blue-400"><w.icon className="h-6 w-6" /></span>
-          <h3 className="mt-4 text-[18px] font-bold leading-snug text-navy">{w.title}</h3>
-          <p className="mt-2 text-[15px] leading-relaxed text-slate">{w.text}</p>
+        <div key={w.title} className={`reveal p-6 ${dark ? "rounded-2xl border border-white/15 bg-navy/60 backdrop-blur-md" : "card"}`} style={{ transitionDelay: `${i * 60}ms` }}>
+          <span className={`grid h-12 w-12 place-items-center rounded-xl ${dark ? "bg-blue/20 text-blue-300 ring-1 ring-blue/40" : "bg-navy text-blue-400"}`}><w.icon className="h-6 w-6" /></span>
+          <h3 className={`mt-4 text-[18px] font-bold leading-snug ${dark ? "text-white" : "text-navy"}`}>{w.title}</h3>
+          <p className={`mt-2 text-[15px] leading-relaxed ${dark ? "text-white/80" : "text-slate"}`}>{w.text}</p>
         </div>
       ))}
     </div>

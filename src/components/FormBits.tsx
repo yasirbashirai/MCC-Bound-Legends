@@ -18,7 +18,7 @@ export const Field = ({ icon: Icon, className = "", children }: { icon?: IconTyp
  * calendar right away (showPicker on desktop, native wheel/calendar on phones).
  * While empty, the native mm/dd/yyyy text is hidden and a placeholder shows instead.
  */
-export function DateField({ className = "" }: { className?: string }) {
+export function DateField({ className = "", placeholder = "Preferred Pickup Date" }: { className?: string; placeholder?: string }) {
   const [empty, setEmpty] = useState(true);
   const open = (e: React.SyntheticEvent<HTMLInputElement>) => { try { e.currentTarget.showPicker?.(); } catch { /* not allowed (e.g. no user gesture): native fallback */ } };
   return (
@@ -26,7 +26,7 @@ export function DateField({ className = "" }: { className?: string }) {
       <Calendar />
       <input name="pickup_date" type="date" min={new Date().toISOString().slice(0, 10)} aria-label="Preferred pickup date" className="field" data-empty={empty}
         onClick={open} onChange={(e) => setEmpty(!e.currentTarget.value)} />
-      {empty && <span className="date-placeholder" aria-hidden="true">Preferred Pickup Date</span>}
+      {empty && <span className="date-placeholder" aria-hidden="true">{placeholder}</span>}
     </div>
   );
 }

@@ -36,6 +36,7 @@ export const shipOptions: ShipOption[] = [
 export const shipGroups = Array.from(new Set(shipOptions.map((o) => o.group)));
 export const getShipOption = (v: string | undefined) => shipOptions.find((o) => o.value === v);
 
-/** SMS consent text, kept verbatim from the current site (legal requirement). */
+/** SMS consent text, verbatim from the client's revision checklist (website_revisions.pdf §2, 2026-10-21).
+ *  The form appends "Please review our Privacy Policy and Terms & Conditions." with both as links. */
 export const smsConsent =
-  "I agree to receive texts from MCC Bound Legends LLC. Msg frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out.";
+  "By checking this box, I agree to receive SMS messages from MCC Bound Legends LLC at the number provided. Message frequency varies. Message and data rates may apply. Reply HELP for assistance or STOP to opt out.";

@@ -17,9 +17,19 @@ import type { ShipType } from "@/data/services";
    homepage hero as the standard"). LEFT = eyebrow, H1, supporting copy, two buttons,
    lifted ~90px on desktop (client 2026-10-17). RIGHT = quote form pinned to the right
    edge. No badge column / tagline. Stacks on mobile: copy first, then the form. */
-type ShellProps = { slides: { src: string; alt: string }[]; fallbackIcon?: IconKey; form: React.ReactNode; children: React.ReactNode };
+type ShellProps = { slides: { src: string; alt: string }[]; fallbackIcon?: IconKey; form: React.ReactNode; full?: boolean; children: React.ReactNode };
 
-function HeroShell({ slides, fallbackIcon, form, children }: ShellProps) {
+function HeroShell({ slides, fallbackIcon, form, full = false, children }: ShellProps) {
+  if (full) return (
+    // Homepage: uncropped photo band (see HeroSlideshow `full`), text + form on the dark section colour
+    <section className="relative overflow-hidden bg-[#03172d] text-white">
+      <HeroSlideshow slides={slides} full />
+      <div className="wrap relative z-[2] grid items-center gap-8 pb-10 pt-7 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
+        <div className="max-w-[720px] lg:-translate-y-[90px]">{children}</div>
+        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
+      </div>
+    </section>
+  );
   return (
     <section className="hero-bg relative overflow-hidden text-white">
       {slides.length > 0 ? <HeroSlideshow slides={slides} light /> : (
@@ -81,7 +91,7 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
 /* Homepage hero. "Equipment Transport" in the nav-active blue (client 2026-10-17). */
 export function HomeHero({ slides }: { slides: { src: string; alt: string }[] }) {
   return (
-    <HeroShell slides={slides} form={<QuoteForm variant="white" minimal title="Get Your Transport Quote" />}>
+    <HeroShell slides={slides} full form={<QuoteForm variant="white" minimal title="Get Your Free Shipping Quote" />}>
       <HeroEyebrow>Nationwide Vehicle and Equipment Transport</HeroEyebrow>
       <h1 className={H1_CLS}>
         <span className="block"><Words text="Nationwide Car, Boat" step={55} /></span>

@@ -192,13 +192,15 @@ const EXACT_PHOTO: Record<string, string> = {
   "yacht-transport": "type-yacht",
   "excavator-transport": "thumb-construction-equipment-transport",
 };
+/** Client photos per specific page (round 2026-10-21), preferred over the older stand-ins above. */
+const specPhoto = (slug: string) => photo(`spec-${slug}`) ?? photo(`svc-${slug}`) ?? (EXACT_PHOTO[slug] ? photo(EXACT_PHOTO[slug]) : null);
 
 export function SpecificPhotoGrid({ items }: { items: ServicePage[] }) {
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((s, i) => {
         // Only a photo that shows this exact vehicle; otherwise the icon tile (brief 2026-10-07 §24: no generic photos)
-        const img = photo(`svc-${s.slug}`) ?? (EXACT_PHOTO[s.slug] ? photo(EXACT_PHOTO[s.slug]) : null);
+        const img = specPhoto(s.slug);
         return (
           <li key={s.slug} className="reveal-up" style={{ ["--d" as string]: `${(i % 3) * 70}ms` }}>
             <Link href={`/${s.slug}/`} className="card card-hover group flex h-full items-stretch overflow-hidden">
@@ -215,6 +217,43 @@ export function SpecificPhotoGrid({ items }: { items: ServicePage[] }) {
           </li>
         );
       })}
+    </ul>
+  );
+}
+
+/* ── Homepage "Specialized transport for every vehicle" (client round 2026-10-21 §5) ──
+   Large photo cards using the client's renders, shown whole (no zoom / no cut-off loads).
+   The renders come in two shapes (16:9 and ~2.56:1), so each row holds one shape and every
+   card in a row lines up. Rows of 4 on desktop, pairs on tablet, one per row on phones. */
+const SPECIALIZED: { slug: string; ratio: string }[] = [
+  { slug: "box-truck-transport", ratio: "aspect-[16/9]" },
+  { slug: "work-truck-transport", ratio: "aspect-[16/9]" },
+  { slug: "yacht-transport", ratio: "aspect-[16/9]" },
+  { slug: "excavator-transport", ratio: "aspect-[16/9]" },
+  { slug: "semi-truck-transport", ratio: "aspect-[2007/783]" },
+  { slug: "skid-steer-transport", ratio: "aspect-[2007/783]" },
+  { slug: "bulldozer-transport", ratio: "aspect-[2007/783]" },
+  { slug: "forklift-transport", ratio: "aspect-[2007/783]" },
+];
+export function SpecializedGrid({ items }: { items: ServicePage[] }) {
+  const cards = SPECIALIZED.flatMap(({ slug, ratio }) => { const s = items.find((p) => p.slug === slug); return s ? [{ s, ratio, img: specPhoto(slug) }] : []; });
+  return (
+    <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {cards.map(({ s, ratio, img }, i) => (
+        <li key={s.slug} className="reveal-up flex" style={{ ["--d" as string]: `${(i % 4) * 70}ms` }}>
+          <Link href={`/${s.slug}/`} className="card card-hover group flex w-full flex-col overflow-hidden">
+            <span className={`relative block ${ratio} overflow-hidden bg-navy`}>
+              {img ? <Image src={img} alt={`${s.name.replace(/ transport$/i, "")} on a transport trailer`} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" className="object-cover transition duration-500 group-hover:brightness-110" />
+                : <span className="absolute inset-0 grid place-items-center text-blue-300" style={{ ["--icon-bg" as string]: "#0d1f35" }}><VehicleIcon name={s.icon} className="h-12 w-20" /></span>}
+            </span>
+            <span className="flex flex-1 flex-col p-4">
+              <span className="text-[17px] font-semibold text-navy">{s.name}</span>
+              <span className="mt-1 text-[14px] leading-snug text-slate">{s.short}</span>
+              <span className="mt-auto inline-flex items-center gap-1 pt-3 text-[13px] font-bold text-blue transition group-hover:gap-2">View page <Arrow className="h-3.5 w-3.5" /></span>
+            </span>
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }

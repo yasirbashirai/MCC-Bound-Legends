@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
 import { futurePages, getPage, pages, type ServicePage } from "@/data/services";
@@ -5,13 +6,13 @@ import { homeFaqs } from "@/data/faqs";
 import { reviews } from "@/data/reviews";
 import { meta } from "@/lib/seo";
 import { faqSchema } from "@/lib/schema";
-import { heroSlides } from "@/lib/images";
+import { heroSlides, photo } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
 import { Ticker } from "@/components/Ticker";
 import { Arrow, Chat, Check, Clock, Doc, Headset, Route, Ruler, Shield, Users } from "@/components/Icons";
 import { AlsoCoordinated, CtaBand, FaqList, ReviewGridDark, SectionHead, SpecificGrid, WhoWeServeCards, WhyUs } from "@/components/Sections";
-import { CoverageBand, MatchList, SpecificPhotoGrid, Timeline, TrailerMosaic } from "@/components/Visual";
+import { CoverageBand, MatchList, SpecializedGrid, Timeline, TrailerMosaic } from "@/components/Visual";
 import { HomeHero, PhotoCardRow, StatsBand, WhyBand, homeCategoryCards } from "@/components/Landing";
 
 export const metadata = meta(
@@ -67,6 +68,7 @@ const HOME_REVIEWS = ["Christopher Smith", "Jennifer K.", "Joshua Flowers"].map(
 
 export default function Home() {
   const services = pages.filter((p) => p.kind === "service");
+  const trustBg = photo("section-skyline");
   const situations = SITUATIONS.map(([slug, name]) => ({ ...getPage(slug)!, name })) as ServicePage[];
   return (
     <>
@@ -103,8 +105,9 @@ export default function Home() {
       {/* §13–14 Specific vehicles + special situations + also coordinated: one service-navigation area */}
       <section className="bg-cloud py-20 lg:py-24">
         <Container>
-          <SectionHead eyebrow="What exactly is it?" title="Specific vehicles. Specific pages." sub="Searching for a box truck, an excavator or a yacht? Each has a dedicated page with the equipment, considerations and quote form for that exact shipment." />
-          <SpecificPhotoGrid items={services} />
+          {/* client round 2026-10-21 §5: new heading + subtitle, the client's photo for every card */}
+          <SectionHead eyebrow="What exactly is it?" title="Specialized transport for every vehicle" sub="From box trucks and yachts to excavators and heavy machinery, explore transport solutions tailored to your shipment." />
+          <SpecializedGrid items={services} />
           <div className="mt-14 border-t border-line pt-14">
             <SectionHead eyebrow="Special situations" title="Non-running? Auction? No trailer?" />
             <SpecificGrid items={situations} />
@@ -116,11 +119,14 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* §15 Trust, expertise, communication, planning */}
-      <section className="bg-white py-20 lg:py-24">
-        <Container>
-          <SectionHead eyebrow="How we work" title="Trust, expertise, communication, planning." sub="We do not compete on the lowest advertised number that changes at pickup." />
-          <WhyUs items={TRUST_CARDS} />
+      {/* §15 Trust, expertise, communication, planning: full photo background, same treatment as
+          "Coast to coast. Every state." (client round 2026-10-21 §6) */}
+      <section className="relative overflow-hidden bg-navy py-20 text-white lg:py-24">
+        {trustBg && <Image src={trustBg} alt="" fill sizes="100vw" className="object-cover opacity-30" aria-hidden="true" />}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,31,53,.97)_0%,rgba(13,31,53,.85)_50%,rgba(13,31,53,.6)_100%)]" aria-hidden="true" />
+        <Container className="relative">
+          <SectionHead light eyebrow="How we work" title="Trust, expertise, communication, planning." sub="We do not compete on the lowest advertised number that changes at pickup." />
+          <WhyUs items={TRUST_CARDS} dark />
         </Container>
       </section>
 

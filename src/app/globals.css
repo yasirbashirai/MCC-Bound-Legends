@@ -117,6 +117,15 @@ body { background: var(--color-cloud); color: var(--color-ink); font-family: var
 .form-compact .field-icon > svg { @apply left-3.5 h-5 w-5; }
 .form-compact .field-icon > .field { @apply pl-[44px]; }
 /* dark (navy card) variant */
+/* compact hero form (client reference 2026-10-19): 44px pill fields, no leading icons except the date */
+.form-pill .field { @apply h-[44px] rounded-full px-[18px] text-[14.5px]; }
+.form-pill .field:where(select) { @apply pr-10; background-position: right 15px center; background-size: 16px; }
+.form-pill .field-icon > svg { @apply left-4 h-[18px] w-[18px]; }
+.form-pill .field-icon > .field { @apply pl-[42px]; }
+.form-pill .date-placeholder { @apply left-[42px] text-[14.5px]; }
+/* date: hide the native picker glyph (the field opens the calendar on click) and show the select chevron like the reference */
+.form-pill .field:where(input[type="date"]) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d1f35' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; background-size: 16px; }
+.form-pill .field::-webkit-calendar-picker-indicator { opacity: 0; }
 .form-dark .field { @apply border-white/15 bg-white/95; }
 
 /* Marquee */

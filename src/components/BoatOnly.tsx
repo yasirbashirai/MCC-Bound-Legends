@@ -10,3 +10,9 @@ export function BoatOnly({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   return path?.replace(/\/$/, "") === "/boat-transport-florida" ? <>{children}</> : null;
 }
+
+/** The opposite of BoatOnly: every page except the boat Ads page. */
+export function NotBoat({ children }: { children: React.ReactNode }) {
+  const path = usePathname();
+  return path?.replace(/\/$/, "") === "/boat-transport-florida" ? null : <>{children}</>;
+}
