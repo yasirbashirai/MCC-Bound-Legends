@@ -12,7 +12,7 @@ import { Container } from "@/components/Container";
 import { Ticker } from "@/components/Ticker";
 import { Arrow, Chat, Check, Clock, Doc, Headset, Route, Ruler, Shield, Users } from "@/components/Icons";
 import { AlsoCoordinated, CtaBand, FaqList, ReviewGridDark, SectionHead, SpecificGrid, WhoWeServeCards, WhyUs } from "@/components/Sections";
-import { CoverageBand, MatchList, SpecializedGrid, Timeline, TrailerMosaic } from "@/components/Visual";
+import { CoverageBand, MatchList, SpecializedGrid, Timeline, TrailerPhoto } from "@/components/Visual";
 import { HomeHero, PhotoCardRow, StatsBand, WhyBand, homeCategoryCards } from "@/components/Landing";
 
 export const metadata = meta(
@@ -87,7 +87,7 @@ export default function Home() {
       {/* §11 The Right Trailer for Every Move — image | content, equal heights (fixes the white gap) */}
       <section className="bg-white py-20 lg:py-24">
         <Container className="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-2 lg:gap-14">
-          <TrailerMosaic />
+          <TrailerPhoto />
           <div className="reveal-right flex flex-col justify-center">
             <p className="eyebrow mb-3 text-[13px] text-blue">Why the details matter</p>
             <h2 className="display text-[32px] text-navy sm:text-[40px]">The right trailer<br /><span className="text-blue">for every move.</span></h2>

@@ -138,7 +138,7 @@ export function PhotoCardRow({ cards, cols = 7 }: { cards: TypeCard[]; cols?: 6 
 }
 
 export const categoryCards = (exclude?: string): TypeCard[] =>
-  categories.filter((c) => c.slug !== exclude).map((c) => ({ href: `/${c.slug}/`, title: c.name, sub: c.short, img: photo(`thumb-${c.slug}`) ?? photo(`cat-${c.slug}`), icon: c.icon }));
+  categories.filter((c) => c.slug !== exclude).map((c) => ({ href: `/${c.slug}/`, title: c.name, sub: c.short, img: photo(`card-${c.slug}`) ?? photo(`thumb-${c.slug}`) ?? photo(`cat-${c.slug}`), icon: c.icon }));
 
 /** Homepage service cards: exact titles + descriptions from the client revision brief §7 (2026-10-07). */
 const HOME_CARD_COPY: Record<string, [string, string]> = {

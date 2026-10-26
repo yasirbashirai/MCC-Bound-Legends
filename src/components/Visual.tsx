@@ -83,25 +83,12 @@ export function PhotoSplit({ img, alt, side = "left", children, eyebrow, title }
 /* ── "The Right Trailer for Every Move" photo mosaic (brief §11 + §24) ──
    One photo for each vehicle the copy names (sedan, box truck, boat, motorhome, excavator), so the
    picture says the same thing as the text. Fills the full height of the content column (no gap). */
-const MOSAIC = [
-  { img: "hero-1", label: "Cars & SUVs", alt: "Car hauler loaded with SUVs and pickups" },
-  { img: "thumb-commercial-vehicle-transport", label: "Box truck", alt: "Commercial box truck" },
-  { img: "boat-type-with-trailer", label: "Boat", alt: "Center console boat on a trailer" },
-  { img: "thumb-rv-transport", label: "Motorhome", alt: "Class C motorhome" },
-  { img: "thumb-construction-equipment-transport", label: "Excavator", alt: "Tracked excavator" },
-];
-export function TrailerMosaic() {
+/* client round 2026-10-26: one tall photo (Golden-Hour Coastal Car Carrier) fills the column height */
+export function TrailerPhoto() {
+  const src = photo("details-car-carrier");
   return (
-    <div className="reveal-left grid h-full min-h-[440px] grid-cols-2 grid-rows-[1.4fr_1fr_1fr] gap-3">
-      {MOSAIC.map((m, i) => {
-        const src = photo(m.img);
-        return (
-          <div key={m.img} className={`group relative min-h-[130px] overflow-hidden rounded-2xl bg-navy shadow-[var(--shadow-card)] ${i === 0 ? "col-span-2" : ""}`}>
-            {src && <Image src={src} alt={m.alt} fill sizes={i === 0 ? "(max-width:1024px) 100vw, 50vw" : "(max-width:1024px) 50vw, 25vw"} className="object-cover transition duration-700 group-hover:scale-105" />}
-            <span className="absolute bottom-3 left-3 z-[2] rounded-md bg-navy/85 px-2.5 py-1 text-[13px] font-semibold text-white backdrop-blur">{m.label}</span>
-          </div>
-        );
-      })}
+    <div className="reveal-left relative h-full min-h-[440px] overflow-hidden rounded-2xl bg-navy shadow-[var(--shadow-card)]">
+      {src && <Image src={src} alt="Car carrier loaded with SUVs on a Florida waterfront highway at golden hour" fill sizes="(max-width:1024px) 100vw, 50vw" quality={82} className="object-cover object-[62%_50%]" />}
     </div>
   );
 }
