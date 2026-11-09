@@ -1,3 +1,4 @@
+import { AttributionCapture } from "@/components/AttributionCapture";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter, Kaushan_Script } from "next/font/google";
 import Script from "next/script";
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <StickyBar />
+        <AttributionCapture />
         <BackToTop />
         <Reveal />
       </body>

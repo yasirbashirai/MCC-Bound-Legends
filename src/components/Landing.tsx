@@ -4,7 +4,8 @@ import { site } from "@/data/site";
 import { categories, type IconKey } from "@/data/services";
 import { photo } from "@/lib/images";
 import { HeroSlideshow } from "./HeroSlideshow";
-import { QuoteForm } from "./QuoteForm";
+import { StepQuoteForm } from "./StepQuoteForm";
+import { getShipOption } from "@/data/quote";
 import { PhoneLink } from "./PhoneLink";
 import { Words } from "./Words";
 import { Counter } from "./Counter";
@@ -15,8 +16,9 @@ import type { ShipType } from "@/data/services";
    ONE shell for the homepage AND every service landing page, so all heroes share
    the exact same height, width, grid, paddings and type sizes (client: "use the
    homepage hero as the standard"). LEFT = eyebrow, H1, supporting copy, two buttons,
-   lifted ~90px on desktop (client 2026-10-17). RIGHT = quote form pinned to the right
-   edge. No badge column / tagline. Stacks on mobile: copy first, then the form. */
+   top-aligned with the form (2026-11-09: the 3-step form is shorter, so the old 90px lift clipped the copy).
+   RIGHT = 3-step quote form pinned to the right edge. No badge column / tagline.
+   Phones: photo, then the form (Step 1 visible without scrolling, brief 2026-11-03), then the copy. */
 type ShellProps = { slides: { src: string; alt: string }[]; fallbackIcon?: IconKey; form: React.ReactNode; full?: boolean; children: React.ReactNode };
 
 function HeroShell({ slides, fallbackIcon, form, full = false, children }: ShellProps) {
@@ -24,9 +26,10 @@ function HeroShell({ slides, fallbackIcon, form, full = false, children }: Shell
     // Homepage: uncropped photo band (see HeroSlideshow `full`), text + form on the dark section colour
     <section className="relative overflow-hidden bg-[#03172d] text-white">
       <HeroSlideshow slides={slides} full />
-      <div className="wrap relative z-[2] grid items-center gap-8 pb-10 pt-7 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
-        <div className="max-w-[720px] lg:-translate-y-[90px]">{children}</div>
-        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
+      <div className="wrap relative z-[2] grid items-center gap-8 pb-10 pt-7 lg:items-start lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
+        <div className="max-w-[720px]">{children}</div>
+        {/* phones: form first, right under the photo (brief 2026-11-03: Step 1 visible without scrolling) */}
+        <div className="reveal-right order-first w-full lg:order-none lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
       </div>
     </section>
   );
@@ -38,9 +41,10 @@ function HeroShell({ slides, fallbackIcon, form, full = false, children }: Shell
           {fallbackIcon && <VehicleIcon name={fallbackIcon} className="absolute right-[-4%] top-[8%] h-[70%] w-[55%] text-blue/10" />}
         </div>
       )}
-      <div className="wrap relative z-[2] grid items-center gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
-        <div className="max-w-[720px] lg:-translate-y-[90px]">{children}</div>
-        <div className="reveal-right w-full lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
+      <div className="wrap relative z-[2] grid items-center gap-10 py-10 lg:items-start lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12 lg:py-14 xl:grid-cols-[minmax(0,1fr)_440px] hd:grid-cols-[minmax(0,1fr)_460px] hd:py-16">
+        <div className="max-w-[720px]">{children}</div>
+        {/* phones: form first, right under the photo (brief 2026-11-03: Step 1 visible without scrolling) */}
+        <div className="reveal-right order-first w-full lg:order-none lg:justify-self-end" style={{ ["--d" as string]: "250ms" }}>{form}</div>
       </div>
     </section>
   );
@@ -66,16 +70,16 @@ type HeroProps = {
   sub: string;
   formDefault?: ShipType;
   serviceName?: string;
-  formTitle?: string;
   crumbs?: React.ReactNode;
   fallbackIcon?: IconKey;       // shown when there is no photo yet
   full?: boolean;               // wide client render shown uncropped, like the homepage (auto transport, 2026-11-09)
+  presetCondition?: string;     // 3-step form Step 2 condition preset (e.g. "Non-Running")
 };
 
-export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, formTitle, crumbs, fallbackIcon, full }: HeroProps) {
+export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, crumbs, fallbackIcon, full, presetCondition }: HeroProps) {
   return (
     <HeroShell slides={slides} fallbackIcon={fallbackIcon} full={full}
-      form={<QuoteForm variant="white" minimal defaultType={formDefault} serviceName={serviceName} title={formTitle ?? "Get Your Transport Quote"} />}>
+      form={<StepQuoteForm preselect={getShipOption(formDefault)?.label} presetCondition={presetCondition} serviceName={serviceName} />}>
       {crumbs}
       <HeroEyebrow>{eyebrow}</HeroEyebrow>
       <h1 className={H1_CLS}>
@@ -92,7 +96,7 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
 /* Homepage hero. "Equipment Transport" in the nav-active blue (client 2026-10-17). */
 export function HomeHero({ slides }: { slides: { src: string; alt: string }[] }) {
   return (
-    <HeroShell slides={slides} full form={<QuoteForm variant="white" minimal title="Get Your Free Shipping Quote" />}>
+    <HeroShell slides={slides} full form={<StepQuoteForm serviceName="Homepage" />}>
       <HeroEyebrow>Nationwide Vehicle and Equipment Transport</HeroEyebrow>
       <h1 className={H1_CLS}>
         <span className="block"><Words text="Nationwide Car, Boat" step={55} /></span>

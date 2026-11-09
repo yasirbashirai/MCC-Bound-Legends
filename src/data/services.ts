@@ -389,7 +389,7 @@ export const pages: ServicePage[] = [
     h1: "Fleet Vehicle Transport for Dealers, Rental Companies and Fleet Managers",
     intro:
       "Moving several vehicles at once is a scheduling problem as much as a transport problem. MCC Bound Legends gives businesses one coordinator who stages pickups, matches mixed vehicle types to the right carriers and keeps every unit tracked until the last one is delivered.",
-    formDefault: "commercial-truck",
+    formDefault: "car",
     vehicles: ["Dealer inventory transfers", "Rental and leasing fleets", "Company relocations", "Lease returns", "Mixed fleets of cars, vans and trucks", "Seasonal fleet repositioning"],
     equipment: ["Multi-car open carriers", "Enclosed carriers for premium units", "Step deck and flatbed for trucks and vans", "Drive-away teams for operable commercial units"],
     considerations: [
@@ -651,7 +651,7 @@ export const pages: ServicePage[] = [
     h1: "Forklift & Telehandler Transport for Warehouses, Dealers and Job Sites",
     intro:
       "Forklifts are compact but dense, and mast height catches people out. MCC Bound Legends coordinates forklift and telehandler transport from the collapsed mast height and true weight, with carriers who know how to secure them.",
-    formDefault: "construction",
+    formDefault: "heavy-industrial",
     vehicles: ["Warehouse and electric forklifts", "IC and diesel forklifts", "Rough-terrain forklifts", "Telehandlers", "Reach trucks and order pickers (crated)", "Multiple units for dealers and rental fleets"],
     equipment: ["Hotshot and flatbed trailers", "Step deck for tall masts and telehandlers", "Liftgate or dock loading for warehouse units", "Crating for electric and narrow-aisle units"],
     considerations: [

@@ -9,7 +9,7 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
 import { photo } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { PhoneLink } from "@/components/PhoneLink";
-import { BoatQuoteForm } from "@/components/BoatQuoteForm";
+import { StepQuoteForm } from "@/components/StepQuoteForm";
 import { Arrow, Boat, Check, Phone, Shield, Snowflake, Star, Sun, Usa, Users, Waves } from "@/components/Icons";
 
 /**
@@ -129,9 +129,11 @@ export default function BoatTransportFloridaPage() {
         <div className="absolute inset-x-0 top-[var(--hero-h)] hidden h-[66px] bg-[#0b2a4c] xl:block" aria-hidden="true" />
 
         <div className="relative mx-auto grid max-w-7xl xl:grid-cols-[minmax(0,1fr)_480px] xl:gap-x-8 xl:px-8">
-          <div className="min-w-0">
+          {/* Below xl this column dissolves (display: contents) so the quote form can sit right under the photo
+              on phones (brief 2026-11-03: Step 1 visible without scrolling); desktop layout unchanged. */}
+          <div className="contents xl:block xl:min-w-0">
             {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
-            <div className="relative aspect-[1800/947] w-full xl:aspect-auto xl:h-[var(--hero-h)]">
+            <div className="relative order-1 aspect-[1800/947] w-full xl:order-none xl:aspect-auto xl:h-[var(--hero-h)]">
               {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
               {/* Mobile/tablet only: navy fade along the bottom of the photo so the bottom-left tagline reads over the wheels/road (client 2026-09-20: bottom, not top) */}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-navy/85 via-navy/45 to-transparent xl:hidden" aria-hidden="true" />
@@ -153,7 +155,7 @@ export default function BoatTransportFloridaPage() {
             </div>
 
             {/* Feature strip */}
-            <ul className="grid grid-cols-2 bg-[#0b2a4c] sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
+            <ul className="order-3 grid grid-cols-2 bg-[#0b2a4c] xl:order-none sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
               {STRIP.map(({ icon: Icon, color, label }, i) => (
                 <li key={i} className={`flex items-center gap-3 px-4 py-3 sm:justify-center sm:px-3 xl:justify-start xl:py-0 xl:pl-4 hd:pl-6 ${i % 2 ? "border-l border-white/25" : ""} ${i > 1 ? "border-t border-white/25 sm:border-t-0" : ""} ${i > 0 ? "sm:border-l sm:border-white/25" : ""}`}>
                   <Icon className={`h-8 w-8 shrink-0 sm:h-9 sm:w-9 hd:h-10 hd:w-10 ${color} ${Icon === Boat ? "!w-12 hd:!w-14" : ""}`} />
@@ -163,7 +165,7 @@ export default function BoatTransportFloridaPage() {
             </ul>
 
             {/* Copy */}
-            <div className="px-5 pb-8 pt-7 sm:px-8 xl:grid xl:grid-cols-[minmax(0,1.18fr)_minmax(0,0.82fr)] xl:gap-x-8 hd:gap-x-10 xl:px-0 xl:pb-9 xl:pt-8">
+            <div className="order-4 px-5 pb-8 pt-7 sm:px-8 xl:order-none xl:grid xl:grid-cols-[minmax(0,1.18fr)_minmax(0,0.82fr)] xl:gap-x-8 hd:gap-x-10 xl:px-0 xl:pb-9 xl:pt-8">
               <div>
                 <p className="eyebrow text-[12px] tracking-[0.32em] text-blue-300 sm:text-[13px]">Snowbird Boat Transport <span className="text-white">Specialists</span> — Florida</p>
                 <h1 className="mt-3 text-[34px] font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_14px_rgba(0,0,0,.45)] sm:text-[44px] xl:text-[34px] xl:tracking-[-0.025em] hd:text-[41px]">Boat Transport to Florida –<br className="hidden hd:block" /> Snowbird Season Specialists</h1>
@@ -185,8 +187,8 @@ export default function BoatTransportFloridaPage() {
           </div>
 
           {/* Quote form (+ desktop checklist) */}
-          <div className="px-5 pb-8 sm:px-8 xl:flex xl:flex-col xl:px-0 xl:pb-9 xl:pt-5">
-            <BoatQuoteForm />
+          <div className="order-2 px-5 pb-6 pt-5 sm:px-8 xl:order-none xl:flex xl:flex-col xl:px-0 xl:pb-9 xl:pt-5">
+            <StepQuoteForm preselect="Boat With Trailer" serviceName="Boat Transport to Florida (Snowbird)" />
             <ul className="mt-7 hidden space-y-2.5 text-[16px] xl:mt-auto xl:block xl:pl-8 xl:pt-6">
               {CHECKS.map((t) => <li key={t} className="flex items-center gap-3"><CheckDot className="h-[22px] w-[22px]" color="bg-blue" />{t}</li>)}
             </ul>

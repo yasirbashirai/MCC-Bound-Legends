@@ -15,7 +15,7 @@ const crumbs = [{ name: "Home", href: "/" }, { name: "Get a Quote", href: "/get-
 
 export default async function Quote({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   const { type } = await searchParams;
-  const def = (getShipOption(type)?.value ?? "car") as ShipType;
+  const def = getShipOption(type)?.value as ShipType | undefined; // ?type= preset if valid, else "Select shipment type" (brief §4)
   return (
     <>
       <JsonLd data={breadcrumbSchema(crumbs)} />
