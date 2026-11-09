@@ -37,11 +37,12 @@ const FLAVOUR: Record<string, { tag: [string, string]; rowEyebrow: string; rowTi
 /** "SUVs and crossovers" -> "suvs-and-crossovers" (matches public/images/photos/type-<slug>.webp). */
 const typeSlug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 /** Category pages whose client hero is a wide render shown uncropped (rounds 2026-11-09). */
-const FULL_HERO = new Set(["auto-transport", "commercial-vehicle-transport", "rv-transport"]);
+const FULL_HERO = new Set(["auto-transport", "commercial-vehicle-transport", "rv-transport", "motorcycle-transport"]);
 const HERO_ALT: Record<string, string> = {
   "auto-transport": "Car carrier loaded with SUVs and sedans on a city highway at sunset",
   "commercial-vehicle-transport": "Semi truck hauling a box truck on a step-deck trailer along a highway",
   "rv-transport": "Class A motorhome hauled on a lowboy trailer along a city highway at sunset",
+  "motorcycle-transport": "Pickup towing an enclosed trailer loaded with motorcycles at sunset",
 };
 const BOAT_TYPES: TypeCard[] = [
   { href: "#quote", title: "Center Console Boats", sub: "18' to 40+ feet", img: photo("type-center-console"), icon: "boat" },
