@@ -28,6 +28,7 @@ const FOOTER_PHOTOS: Record<string, { src: string; alt: string; desk: string }> 
   "/commercial-vehicle-transport": { src: "/images/footer/commercial-vehicle-transport-footer.webp", alt: "Box truck loaded on a step-deck trailer on a highway at sunset", desk: "object-[90%_50%]" },
   "/rv-transport": { src: "/images/footer/rv-transport-footer.webp", alt: "Class A motorhome hauled on a lowboy trailer at sunset", desk: "object-[71%_50%]" },
   "/motorcycle-transport": { src: "/images/footer/motorcycle-transport-footer.webp", alt: "Enclosed trailer loaded with motorcycles, ramp down at sunset", desk: "object-[88%_50%]" },
+  "/construction-equipment-transport": { src: "/images/footer/construction-equipment-transport-footer.webp", alt: "Excavator hauled on a lowboy trailer at sunset", desk: "object-[90%_50%]" },
 };
 const FOOTER_DEFAULT = { src: "/images/footer/supercar-sunset.webp", alt: "Red supercar loading into an enclosed trailer on a Miami waterfront at sunset", desk: "object-[57%_50%]" };
 
