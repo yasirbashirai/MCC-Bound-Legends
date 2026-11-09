@@ -34,6 +34,8 @@ const FLAVOUR: Record<string, { tag: [string, string]; rowEyebrow: string; rowTi
   "construction-equipment-transport": { tag: ["Heavy iron.", "Moved right."], rowEyebrow: "We transport all types of equipment", rowTitle: "Any machine. Any site.", whyTitle: <>Permits, trailers,<br />loading. Handled.</> },
   "heavy-equipment-transport": { tag: ["Oversize.", "On schedule."], rowEyebrow: "We transport all types of machinery", rowTitle: "Any load. Any size.", whyTitle: <>Planned down to<br />the last bridge.</> },
 };
+/** "SUVs and crossovers" -> "suvs-and-crossovers" (matches public/images/photos/type-<slug>.webp). */
+const typeSlug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const BOAT_TYPES: TypeCard[] = [
   { href: "#quote", title: "Center Console Boats", sub: "18' to 40+ feet", img: photo("type-center-console"), icon: "boat" },
   { href: "/yacht-transport/", title: "Yacht Transport", sub: "Luxury & oversized", img: photo("type-yacht"), icon: "yacht" },
@@ -54,13 +56,14 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
   const review = reviews.find((r) => r.service.toLowerCase().includes(p.name.split(" ")[0].toLowerCase())) ?? reviews[0];
   const fl = FLAVOUR[cat.slug] ?? FLAVOUR["auto-transport"];
   const heroImg = servicePhoto(p.slug, p.parent ?? p.slug);
-  const slides = cat.slug === "boat-transport-florida" && photo("hero-2") ? [{ src: photo("hero-2")!, alt: "Boat transport on a Florida causeway" }] : heroImg ? [{ src: heroImg, alt: p.name }] : [];
+  const slides = cat.slug === "boat-transport-florida" && photo("hero-2") ? [{ src: photo("hero-2")!, alt: "Boat transport on a Florida causeway" }] : heroImg ? [{ src: heroImg, alt: p.slug === "auto-transport" ? "Car carrier loaded with SUVs and sedans on a city highway at sunset" : p.name }] : [];
   const firstSentence = p.intro.split(". ")[0] + ".";
 
   // Type cards: children pages first (real links), then vehicle types from the data (quote anchors)
   const typeCards: TypeCard[] = cat.slug === "boat-transport-florida" && p.kind === "category" ? BOAT_TYPES : [
-    ...kids.map((k) => ({ href: `/${k.slug}/`, title: k.name, sub: k.short, img: photo(`svc-${k.slug}`), icon: k.icon })),
-    ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: null, icon: iconFor(v, p.icon) })),
+    // card photos: type-<slug>.webp (client round 2026-11-09, auto transport), then the service page photo
+    ...kids.map((k) => ({ href: `/${k.slug}/`, title: k.name, sub: k.short, img: photo(`type-${k.slug}`) ?? photo(`svc-${k.slug}`), icon: k.icon })),
+    ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: photo(`type-${typeSlug(v)}`), icon: iconFor(v, p.icon) })),
   ].slice(0, 7);
   const clip = (t: string, n = 64) => (t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, "") + "…");
   const whyPts = p.considerations.slice(0, 4).map((c, i) => ({ icon: [Ruler, Route, Doc, Shield][i], t: c.title, s: clip(c.text.split(". ")[0]) }));
@@ -72,6 +75,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
       <LandingHero
         slides={slides}
         fallbackIcon={p.icon}
+        full={p.slug === "auto-transport"}
         crumbs={<div className="mb-4"><Breadcrumbs items={crumbs} light /></div>}
         eyebrow={p.eyebrow}
         lines={[p.h1]}

@@ -69,11 +69,12 @@ type HeroProps = {
   formTitle?: string;
   crumbs?: React.ReactNode;
   fallbackIcon?: IconKey;       // shown when there is no photo yet
+  full?: boolean;               // wide client render shown uncropped, like the homepage (auto transport, 2026-11-09)
 };
 
-export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, formTitle, crumbs, fallbackIcon }: HeroProps) {
+export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, formTitle, crumbs, fallbackIcon, full }: HeroProps) {
   return (
-    <HeroShell slides={slides} fallbackIcon={fallbackIcon}
+    <HeroShell slides={slides} fallbackIcon={fallbackIcon} full={full}
       form={<QuoteForm variant="white" minimal defaultType={formDefault} serviceName={serviceName} title={formTitle ?? "Get Your Transport Quote"} />}>
       {crumbs}
       <HeroEyebrow>{eyebrow}</HeroEyebrow>

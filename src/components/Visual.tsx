@@ -180,7 +180,7 @@ const EXACT_PHOTO: Record<string, string> = {
   "excavator-transport": "thumb-construction-equipment-transport",
 };
 /** Client photos per specific page (round 2026-10-21), preferred over the older stand-ins above. */
-const specPhoto = (slug: string) => photo(`spec-${slug}`) ?? photo(`svc-${slug}`) ?? (EXACT_PHOTO[slug] ? photo(EXACT_PHOTO[slug]) : null);
+const specPhoto = (slug: string) => photo(`spec-${slug}`) ?? photo(`svc-${slug}`) ?? photo(`type-${slug}`) ?? (EXACT_PHOTO[slug] ? photo(EXACT_PHOTO[slug]) : null);
 
 export function SpecificPhotoGrid({ items }: { items: ServicePage[] }) {
   return (
