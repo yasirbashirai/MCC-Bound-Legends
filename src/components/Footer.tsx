@@ -208,7 +208,7 @@ export function Footer() {
           {/* client round 2026-10-21 §7: luxury supercar everywhere, the boat page keeps its truck + yacht */}
           <BoatOnly><Image src="/images/footer/truck-yacht-mobile.webp" alt="Black RAM pickup towing a luxury yacht along a coastal highway" fill sizes="(min-width:1280px) 30vw, 0px" className="object-cover object-[50%_62%]" /></BoatOnly>
           {/* client round 2026-10-26: sharper sunset render served full-res (a downsized srcset was being stretched = the blur); its baked slogan is cropped off here, so ours stays */}
-          <NotBoat><FooterCarImage className="object-cover object-[57%_50%]" autoClassName="object-cover object-[64%_50%]" /></NotBoat>
+          <NotBoat><FooterCarImage /></NotBoat>
           {/* fade into navy on the left + bottom so it reads as part of the footer */}
           <div className="absolute inset-0 bg-gradient-to-r from-marine via-marine/30 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-marine to-transparent" />
@@ -223,7 +223,7 @@ export function Footer() {
             <Image src="/images/footer/truck-yacht-mobile.webp" alt="Black RAM pickup towing a luxury yacht along a coastal highway" fill sizes="100vw" className="object-cover object-[50%_58%] sm:hidden" />
             <Image src="/images/footer/truck-yacht-desktop.webp" alt="" fill sizes="100vw" className="hidden object-cover object-[50%_60%] sm:block" />
           </BoatOnly>
-          <NotBoat><FooterCarImage className="object-cover object-right" /></NotBoat>
+          <NotBoat><FooterCarImage mobile /></NotBoat>
           <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-marine to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-marine to-transparent" />
           <BoatOnly><Slogan className="absolute bottom-4 right-5" small /></BoatOnly>

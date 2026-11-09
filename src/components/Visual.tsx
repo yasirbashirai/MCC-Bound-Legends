@@ -187,7 +187,7 @@ export function SpecificPhotoGrid({ items }: { items: ServicePage[] }) {
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((s, i) => {
         // Only a photo that shows this exact vehicle; otherwise the icon tile (brief 2026-10-07 §24: no generic photos)
-        const img = specPhoto(s.slug);
+        const img = photo(`type-${s.slug}`) ?? specPhoto(s.slug); // newest client card photo first (2026-11-09); homepage SpecializedGrid keeps spec-
         return (
           <li key={s.slug} className="reveal-up" style={{ ["--d" as string]: `${(i % 3) * 70}ms` }}>
             <Link href={`/${s.slug}/`} className="card card-hover group flex h-full items-stretch overflow-hidden">
