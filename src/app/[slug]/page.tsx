@@ -45,6 +45,19 @@ const HERO_ALT: Record<string, string> = {
   "motorcycle-transport": "Pickup towing an enclosed trailer loaded with motorcycles at sunset",
   "construction-equipment-transport": "Semi truck hauling an excavator on a lowboy trailer along a city highway at sunset",
   "heavy-equipment-transport": "Semi truck hauling heavy industrial machinery on a multi-axle lowboy at sunset",
+  // service/situation heroes = one of the page's own client photos (round 2026-11-11)
+  "auction-vehicle-transport": "Car carrier loading pickups and SUVs at a vehicle auction yard",
+  "box-truck-transport": "Box truck loaded on a step-deck trailer",
+  "bulldozer-transport": "Crawler dozer secured on a lowboy trailer",
+  "enclosed-auto-transport": "Exotic sports car strapped inside an enclosed car trailer",
+  "excavator-transport": "Tracked excavator secured on a lowboy trailer",
+  "fleet-vehicle-transport": "Car carrier loaded with dealer inventory at a dealership",
+  "forklift-transport": "Forklifts and telehandlers loaded on a step-deck trailer",
+  "non-running-vehicle-transport": "Non-starting car being winched onto a rollback tow truck",
+  "semi-truck-transport": "Day cab semi tractor hauled on a lowboy trailer",
+  "skid-steer-transport": "Wheeled skid steer secured on a flatbed trailer",
+  "work-truck-transport": "Utility service body truck hauled on a step-deck trailer",
+  "atv-utv-transport": "UTV side-by-sides secured on a trailer",
 };
 const BOAT_TYPES: TypeCard[] = [
   { href: "#quote", title: "Center Console Boats", sub: "18' to 40+ feet", img: photo("type-center-console"), icon: "boat" },
@@ -73,7 +86,9 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
   const typeCards: TypeCard[] = cat.slug === "boat-transport-florida" && p.kind === "category" ? BOAT_TYPES : [
     // card photos: type-<slug>.webp (client round 2026-11-09, auto transport), then the service page photo
     ...kids.map((k) => ({ href: `/${k.slug}/`, title: k.name, sub: k.short, img: photo(`type-${k.slug}`) ?? photo(`svc-${k.slug}`), icon: k.icon })),
-    ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: photo(`type-${typeSlug(v)}`), icon: iconFor(v, p.icon) })),
+    // page-scoped photo first (type-<page>--<vehicle>.webp, client round 2026-11-11: same label can mean a
+    // different photo on two pages, e.g. "Salvage and insurance-auction vehicles"), then the shared type- photo
+    ...p.vehicles.map((v) => ({ href: "#quote", title: v, sub: "Get a quote", img: photo(`type-${p.slug}--${typeSlug(v)}`) ?? photo(`type-${typeSlug(v)}`), icon: iconFor(v, p.icon) })),
   ].slice(0, 7);
   const clip = (t: string, n = 64) => (t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, "") + "…");
   const whyPts = p.considerations.slice(0, 4).map((c, i) => ({ icon: [Ruler, Route, Doc, Shield][i], t: c.title, s: clip(c.text.split(". ")[0]) }));
