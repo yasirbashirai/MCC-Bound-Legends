@@ -10,15 +10,14 @@ const redirects301: [string, string][] = [
   ["/services/boat-and-yacht-transport", "/boat-transport-florida"],
   ["/services/heavy-equipment-shipping", "/heavy-equipment-transport"],
   ["/services/motorcycle-transport", "/motorcycle-transport"],
-  ["/services/atvs-and-utvs-transport", "/motorcycle-transport"],
-  ["/services/expedited-transport", "/auto-transport"],
-  ["/services/military-and-veterans-transport", "/auto-transport"],
+  ["/services/atvs-and-utvs-transport", "/atv-utv-transport"],
+  ["/services/expedited-transport", "/expedited-transport"],
+  ["/services/military-and-veterans-transport", "/military-vehicle-transport"],
   ["/services/auction-auto-transport", "/auction-vehicle-transport"],
   ["/services-2", "/services"],
   ["/how-does-it-work", "/how-it-works"],
   ["/contact-us", "/contact"],
   ["/terms-and-condition", "/terms-and-conditions"],
-  ["/auto-transport-tips", "/faq"],
 ];
 
 const nextConfig: NextConfig = {

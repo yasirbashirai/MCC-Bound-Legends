@@ -666,6 +666,112 @@ export const pages: ServicePage[] = [
     keywords: ["forklift transport", "forklift shipping", "telehandler transport", "forklift hauling"],
     related: ["skid-steer-transport", "construction-equipment-transport", "heavy-equipment-transport", "commercial-vehicle-transport"],
   },
+
+  /* ─────────────── Milestone 2 pages (proposal scope, built 2026-11-11) ─────────────── */
+  {
+    slug: "atv-utv-transport",
+    kind: "service",
+    parent: "motorcycle-transport",
+    name: "ATV & UTV Transport",
+    short: "ATVs, quads, UTVs, side-by-sides and golf carts",
+    icon: "motorcycle",
+    title: "ATV & UTV Transport Nationwide | MCC Bound Legends",
+    description:
+      "Ship an ATV, UTV, side-by-side or golf cart anywhere in the US. Open or enclosed carriers, secured with soft straps and wheel chocks. Licensed broker, free quote.",
+    eyebrow: "ATV & UTV Transport",
+    h1: "ATV & UTV Transport, Secured and Coordinated Door to Door",
+    intro:
+      "ATVs, UTVs and side-by-sides are wider and heavier than most people expect, and a loaded roll cage or aftermarket lift changes which trailer can take them. MCC Bound Legends coordinates open or enclosed transport from your machine's real width, height and weight, for a single quad or a dealer's full delivery.",
+    formDefault: "powersports",
+    vehicles: [
+      "ATVs and quads", "UTVs and side-by-sides", "Sport and recreational UTVs", "Utility and work UTVs",
+      "Golf carts and LSVs", "Youth ATVs", "Multiple units for dealers and rental fleets",
+    ],
+    equipment: ["Open carriers and flatbeds for most ATVs and UTVs", "Enclosed trailers for new, custom or high-value machines", "Hotshot trailers for fast single-unit moves", "Multi-unit trailers for dealer deliveries"],
+    considerations: [
+      { title: "Width and height", text: "Full-size side-by-sides can be over 64 inches wide, and roll cages, roofs and light bars add height. We quote from the real measurements." },
+      { title: "Weight", text: "A four-seat UTV can weigh well over 1,500 lb. Weight decides how many units fit and which trailer is used." },
+      { title: "Running condition", text: "Running machines drive on and off. Non-running ones need a winch, which we arrange before pickup." },
+      { title: "Accessories", text: "Loose gear, coolers and removable parts should come off or be secured. Tell us about plows, winches and racks upfront." },
+    ],
+    faqs: [
+      { q: "How much does it cost to ship an ATV or UTV?", a: "Price depends on distance, size, weight, open or enclosed transport and running condition. Send your ZIP codes and the year, make and model and we quote a real number." },
+      { q: "Can you ship more than one ATV or UTV together?", a: "Yes. Multiple units on the same route often move together on one trailer, which usually lowers the cost per unit." },
+      { q: "Do you ship golf carts?", a: "Yes. Golf carts and low-speed vehicles move on open or enclosed carriers, secured the same way as ATVs and UTVs." },
+      { q: "Can I ship a non-running ATV or UTV?", a: "Yes. Tell us when you request the quote so we dispatch a carrier with a winch." },
+    ],
+    keywords: ["ATV transport", "UTV transport", "ship a side by side", "ATV shipping", "UTV shipping", "golf cart shipping"],
+    related: ["motorcycle-transport", "non-running-vehicle-transport", "enclosed-auto-transport", "rv-transport"],
+  },
+  {
+    slug: "expedited-transport",
+    kind: "situation",
+    parent: "auto-transport",
+    name: "Expedited Transport",
+    short: "Priority pickup and direct delivery on a deadline",
+    icon: "car",
+    title: "Expedited Car & Vehicle Transport | MCC Bound Legends",
+    description:
+      "Need it moved fast? Expedited vehicle transport with priority pickup and direct delivery, coordinated by a licensed broker. Cars, trucks, boats and equipment. Free quote.",
+    eyebrow: "Expedited Transport",
+    h1: "Expedited Vehicle Transport When the Date Cannot Move",
+    intro:
+      "A closing date, a relocation start, a buyer waiting at the other end. When the timing matters more than anything else, MCC Bound Legends coordinates priority pickup and the most direct route available, with a carrier dispatched for your shipment instead of waiting for a full load.",
+    formDefault: "car",
+    vehicles: [
+      "Cars, SUVs and pickups", "Exotic and high-value vehicles", "Dealer and auction purchases on a deadline",
+      "Commercial trucks and work vehicles", "Boats and personal watercraft", "Equipment needed on a job site",
+    ],
+    equipment: ["Dedicated single-vehicle carriers for direct runs", "Hotshot trailers for fast one-unit moves", "Team drivers on long routes when available", "Enclosed carriers for high-value expedited moves"],
+    considerations: [
+      { title: "Your real deadline", text: "Tell us the date it must be picked up or delivered. We work backwards from that date and tell you honestly what is possible." },
+      { title: "Pickup readiness", text: "Expedited only works if the vehicle, keys and paperwork are ready when the carrier arrives. We confirm this before dispatch." },
+      { title: "Direct versus shared", text: "A dedicated carrier skips other stops, which is what makes it faster. It also costs more than a standard shared load." },
+      { title: "Route and distance", text: "Long routes have legal limits on driving hours. We give you a realistic window, not a promise that breaks DOT rules." },
+    ],
+    faqs: [
+      { q: "How fast can you pick up my vehicle?", a: "On many routes an expedited pickup can be arranged within one to two days of booking. It depends on your location and carrier availability, and we tell you before you book." },
+      { q: "How much more does expedited transport cost?", a: "Expedited costs more than standard transport because the carrier is dispatched for your shipment instead of filling a full load. We quote both options so you can choose." },
+      { q: "Is a delivery date guaranteed?", a: "We give you a realistic delivery window based on distance and legal driving hours, and keep you updated the whole way. Weather and road conditions can still affect timing." },
+    ],
+    keywords: ["expedited car shipping", "expedited auto transport", "fast car shipping", "rush vehicle transport", "guaranteed pickup car shipping"],
+    related: ["auto-transport", "enclosed-auto-transport", "auction-vehicle-transport", "military-vehicle-transport"],
+  },
+  {
+    slug: "military-vehicle-transport",
+    kind: "situation",
+    parent: "auto-transport",
+    name: "Military & Veterans Transport",
+    short: "PCS moves, deployments and veteran relocations",
+    icon: "car",
+    title: "Military & Veterans Car Shipping (PCS) | MCC Bound Legends",
+    description:
+      "Car shipping for active-duty service members, veterans and military families. PCS moves, deployments and base-to-base transport, coordinated around your orders. Free quote.",
+    eyebrow: "Military & Veterans",
+    h1: "Military & Veterans Vehicle Transport, Built Around Your Orders",
+    intro:
+      "PCS orders rarely arrive with much notice, and a second vehicle or a motorcycle is usually the thing nobody has a plan for. MCC Bound Legends coordinates door-to-door and base-area transport for service members, veterans and military families, scheduled around report dates and housing timelines.",
+    formDefault: "car",
+    vehicles: [
+      "Personal cars, SUVs and pickups", "Second vehicles during a PCS move", "Motorcycles and powersports",
+      "Boats and RVs", "Vehicles for deployed service members", "Veteran and military family relocations",
+    ],
+    equipment: ["Open carriers for everyday vehicles", "Enclosed carriers for high-value or classic vehicles", "Motorcycle-equipped carriers", "Marine and RV transport for larger moves"],
+    considerations: [
+      { title: "Report and housing dates", text: "Tell us your report date and when you have an address. We plan pickup and delivery around both." },
+      { title: "Base access", text: "Many carriers cannot drive onto an installation. We arrange a nearby meeting point or a release person when needed." },
+      { title: "Someone to hand over", text: "If you deploy or ship out first, a spouse or authorized person can release or receive the vehicle with written permission." },
+      { title: "Personal items", text: "Carriers allow only a small amount of personal items, below window level. Household goods belong in your military move." },
+    ],
+    faqs: [
+      { q: "Can you ship my car for a PCS move?", a: "Yes. We coordinate door-to-door or base-area transport within the continental US and schedule around your report date. Send your orders timeline with the quote request." },
+      { q: "Do you offer a military discount?", a: "Ask your coordinator when you call or request a quote. Tell us you are active duty, a veteran or a military family member." },
+      { q: "Can someone else release or receive my vehicle?", a: "Yes. A spouse, family member or friend you authorize in writing can hand over or receive the vehicle and sign the inspection report." },
+      { q: "Can the carrier pick up on base?", a: "It depends on the installation. Many carriers are not cleared for base access, so we usually arrange a nearby off-base location." },
+    ],
+    keywords: ["military car shipping", "PCS car shipping", "ship car PCS", "veteran car transport", "military vehicle shipping"],
+    related: ["auto-transport", "expedited-transport", "motorcycle-transport", "enclosed-auto-transport"],
+  },
 ];
 
 /* ───────────────────────────── helpers ───────────────────────────── */
@@ -679,7 +785,7 @@ export const brokerNote = TRUST_NOTE;
 /** Future expansion list — displayed as "also coordinated", NOT built as pages until data justifies it. */
 export const futurePages = [
   "Cargo Van Transport", "Bus Transport", "Travel Trailer Transport", "Fifth Wheel Transport",
-  "ATV & UTV Transport", "Backhoe Transport", "Wheel Loader Transport", "Industrial Machinery Transport",
+  "Backhoe Transport", "Wheel Loader Transport", "Industrial Machinery Transport",
   "Agricultural Equipment Transport",
 ];
 
@@ -689,7 +795,6 @@ export const futurePageLinks: Record<string, string> = {
   "Bus Transport": "/commercial-vehicle-transport/",
   "Travel Trailer Transport": "/rv-transport/",
   "Fifth Wheel Transport": "/rv-transport/",
-  "ATV & UTV Transport": "/motorcycle-transport/",
   "Backhoe Transport": "/construction-equipment-transport/",
   "Wheel Loader Transport": "/construction-equipment-transport/",
   "Industrial Machinery Transport": "/heavy-equipment-transport/",

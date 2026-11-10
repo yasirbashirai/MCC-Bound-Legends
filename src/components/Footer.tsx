@@ -18,7 +18,8 @@ import { BoatOnly, FooterCarImage, NotBoat } from "./BoatOnly";
 
 const quick = [
   ["Home", "/"], ["Services", "/services/"], ["Get a Quote", "/get-a-quote/"], ["How It Works", "/how-it-works/"],
-  ["About Us", "/about-us/"], ["Reviews", "/testimonials/"], ["FAQ", "/faq/"], ["Contact", "/contact/"],
+  ["About Us", "/about-us/"], ["Reviews", "/testimonials/"], ["FAQ", "/faq/"], ["Car Shipping Cost", "/cost-to-ship-a-car/"],
+  ["Transport Tips", "/auto-transport-tips/"], ["Contact", "/contact/"],
 ];
 
 const legal = [
