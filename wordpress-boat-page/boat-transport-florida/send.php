@@ -13,6 +13,7 @@
 
 const MCC_LEAD_TO   = 'Jeff.c@mccboundlegends.com';
 const MCC_MAIL_FROM = 'Jeff.c@mccboundlegends.com';   // must be a real mailbox on mccboundlegends.com or Hostinger rejects it
+const MCC_ALERT_TO  = 'info@mccboundlegends.com';  // second mailbox: gets the lead again (with a warning) when the email above fails
 const MCC_SUBJECT   = 'New Boat Transport Quote (mccboundlegends.com/boat-transport-florida/)';
 const MCC_SERVICE   = 'Boat Transport to Florida (Snowbird)';
 
@@ -61,6 +62,23 @@ $log = __DIR__ . '/leads-log.php';
 if (!file_exists($log)) @file_put_contents($log, "<?php exit; ?>\n");
 @file_put_contents($log, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
 
+// ── 1b. trailer answer sanity check (server-side backup for the form) ──
+// A "Boat With Trailer" lead must never say "No trailer", and a "Boat Without Trailer" lead
+// must never say it has one. Reject the contradiction instead of emailing a confusing lead.
+$shipType   = $clean($_POST['ship_type'] ?? '');
+$trailer    = $clean($_POST['trailer_available'] ?? '');
+$trailerBad = ($shipType === 'boat-trailer' && $trailer === 'No trailer')
+           || ($shipType === 'boat-no-trailer' && strpos($trailer, 'Yes') === 0);
+if ($trailerBad) {
+  @file_put_contents($log, json_encode([
+    'FLAGGED' => 'trailer mismatch',
+    'ship_type' => $shipType,
+    'trailer_available' => $trailer,
+    'at' => date('c'),
+  ], JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
+  $back($here . '?trailer_mismatch=1#quote');
+}
+
 // ── 2. email ──
 $rows = '';
 foreach ($data as $label => $value) {
@@ -82,9 +100,16 @@ $subject = MCC_SUBJECT . (!empty($data['Name']) ? ' — ' . $noNewlines($data['N
 
 // Preferred: send through WordPress (public_html/wp-load.php), so the site's WP Mail SMTP plugin delivers it
 // over authenticated SMTP, exactly like the site's own WPForms emails. Hostinger's bare PHP mail() is
-// accepted but silently never delivered (2026-10-09), so it is only the last resort.
-$method = 'mail()';
-$sent = false;
+// accepted but was silently never delivered (2026-10-09), so it is only the fallback — but it is always
+// tried now: on 2026-11-14/16 SMTP started answering "data not accepted" and every lead after that went
+// out as no email at all, because the old code never reached the fallback once wp_mail had been used.
+$headers = ['MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', 'From: MCC Bound Legends Website <' . MCC_MAIL_FROM . '>'];
+if ($replyTo) $headers[] = $replyTo;
+
+$sent   = false;
+$via    = [];
+$errors = [];
+
 $wpLoad = dirname(__DIR__) . '/wp-load.php';
 if (is_file($wpLoad)) {
   ob_start();                                   // WordPress/plugins must not print before our redirect
@@ -94,24 +119,73 @@ if (is_file($wpLoad)) {
     require_once $wpLoad;
     extract($__mcc);
     if (function_exists('wp_mail')) {
-      $method = 'wp_mail';
       $err = '';
       add_action('wp_mail_failed', function ($e) use (&$err) { $err = $e->get_error_message(); });
       $sent = wp_mail(MCC_LEAD_TO, $subject, $body, array_filter(['Content-Type: text/html; charset=UTF-8', $replyTo]));
-      if (!$sent && $err) $method .= ' (' . $err . ')';
+      $via[] = 'wp_mail';
+      if (!$sent) $errors[] = 'wp_mail: ' . ($err ?: 'returned false');
+    } else {
+      $errors[] = 'wp_mail: not available';
     }
   } catch (Throwable $e) {
-    $method = 'wp_mail crashed: ' . $e->getMessage();
+    $errors[] = 'wp_mail crashed: ' . $e->getMessage();
   }
   ob_end_clean();
-}
-if (!$sent && strpos($method, 'wp_mail') !== 0) {
-  $headers = ['MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', 'From: MCC Bound Legends Website <' . MCC_MAIL_FROM . '>'];
-  if ($replyTo) $headers[] = $replyTo;
-  $sent = @mail(MCC_LEAD_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . MCC_MAIL_FROM);
+} else {
+  $errors[] = 'wp-load.php not found';
 }
 
-@file_put_contents($log, json_encode(['MAIL' => $sent ? 'sent' : 'FAILED', 'via' => $method, 'at' => date('c')], JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
+// Fallback: PHP mail() from the Hostinger box. Better a lead that may need a spam-folder check than no email.
+// mail() can report success and still be dropped by Hostinger (2026-10-09), so it never silences the alert
+// below — it only decides whether the lead is likely delivered.
+$smtpFailed = !$sent;
+if (!$sent) {
+  $mailed = @mail(MCC_LEAD_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . MCC_MAIL_FROM);
+  $via[] = 'mail()';
+  if ($mailed) $sent = true; else $errors[] = 'mail(): rejected by the server';
+}
 
-// ── 3. thank-you page (conversion) ──
-$back($here . 'thank-you/');
+// ── 3. SMTP refused it → alert the second mailbox, with the lead in it (never a silent loss) ──
+if ($smtpFailed) {
+  $headline = $sent
+    ? 'SMTP refused this lead; it went out through PHP mail() instead — please confirm it arrived.'
+    : 'This lead could not be emailed at all.';
+  $note = '<p style="font-family:Arial,sans-serif;font-size:14px;color:#b91c1c"><strong>' . htmlspecialchars($headline) . '</strong> '
+    . 'A copy is saved in leads-log.php in this folder.<br>'
+    . htmlspecialchars(implode(' | ', $errors)) . '</p>';
+  $alertSubject = 'LEAD EMAIL ' . ($sent ? 'FALLBACK' : 'FAILED') . ' — ' . MCC_SUBJECT;
+  $alertBody    = $body . $note;
+  $alerted      = false;
+  if (function_exists('wp_mail')) {
+    $alerted = wp_mail(MCC_ALERT_TO, $alertSubject, $alertBody, array_filter(['Content-Type: text/html; charset=UTF-8', $replyTo]));
+    if ($alerted) $via[] = 'alert:wp_mail';
+  }
+  if (!$alerted) {
+    $alertHeaders = $headers;
+    if (@mail(MCC_ALERT_TO, '=?UTF-8?B?' . base64_encode($alertSubject) . '?=', $alertBody, implode("\r\n", $alertHeaders), '-f' . MCC_MAIL_FROM)) {
+      $alerted = true;
+      $via[] = 'alert:mail()';
+    }
+  }
+  $errors[] = $alerted ? 'alert sent to ' . MCC_ALERT_TO : 'alert could not be sent either';
+}
+
+@file_put_contents($log, json_encode([
+  'MAIL' => $sent ? 'sent' : 'FAILED',
+  'via' => implode(' → ', $via),
+  'errors' => $errors ?: null,
+  'at' => date('c'),
+], JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
+
+// ── 4. thank-you page (conversion) — only when the email actually went out ──
+if ($sent) $back($here . 'thank-you/');
+
+// Sending failed: the lead is saved in leads-log.php and the alert mailbox has been notified.
+error_log('MCC quote form: email delivery failed for a lead saved in ' . $log . ' (' . implode(' | ', $errors) . ')');
+http_response_code(500);
+echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Please call us | MCC Bound Legends</title></head>'
+  . '<body style="font-family:Arial,sans-serif;background:#f8fafc;color:#0f172a;text-align:center;padding:60px 20px">'
+  . '<h1 style="color:#1e63d6">Sorry, something went wrong.</h1>'
+  . '<p>We could not send your quote request just now. Please call us at <a href="tel:8887850028">(888) 785-0028</a> so we can help you right away.</p>'
+  . '</body></html>';
+exit;

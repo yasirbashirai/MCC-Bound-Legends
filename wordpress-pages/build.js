@@ -27,6 +27,7 @@ const ORIGIN = process.argv[2] || "http://localhost:3000";
 const ONLY = process.argv.slice(3);
 const SITE = "https://mccboundlegends.com";
 const LEAD_EMAIL = "Jeff.c@mccboundlegends.com";
+const ALERT_EMAIL = "info@mccboundlegends.com";   // send.php re-sends a lead here if the email above fails
 const GTM = "GTM-M44WB2FK";
 const ADS = "AW-18234011636";
 const ROOT = path.resolve(__dirname, "..");
@@ -45,7 +46,7 @@ const PAGES = {
     zip: path.join(ROOT, "wordpress-boat-page", "boat-transport-florida-upload.zip"),
     subject: "New Boat Transport Quote (mccboundlegends.com/boat-transport-florida/)",
     service: "Boat Transport to Florida (Snowbird)",
-    shipField: "trailer_available",
+    preselect: "boat-trailer",   // same preselect the React page passes to StepQuoteForm
     shipFallback: "boat",
     drawerCta: "Get a Free Boat Quote →",
     ty: {
@@ -63,7 +64,7 @@ const PAGES = {
     zip: path.join(__dirname, "how-it-works-upload.zip"),
     subject: "New Quote Request (mccboundlegends.com/how-it-works/)",
     service: "How It Works page",
-    shipField: "ship_type",
+    preselect: "",
     shipFallback: "vehicle",
     drawerCta: "Get a Free Quote →",
     ty: {
@@ -80,7 +81,7 @@ const PAGES = {
     zip: path.join(__dirname, "faqs-upload.zip"),
     subject: "New Quote Request (mccboundlegends.com/faqs/)",
     service: "FAQ page",
-    shipField: "ship_type",
+    preselect: "",
     shipFallback: "vehicle",
     drawerCta: "Get a Free Quote →",
     ty: {
@@ -128,10 +129,343 @@ const LINKS = {
 };
 const fallbackLink = `${SITE}/services/`;
 
-/** Add an attribute to a rendered tag. React does not guarantee attribute order, so never match on it. */
-const addAttr = (html, nameAttr, extra) =>
-  html.replace(new RegExp(`<input([^>]*\\bname="${nameAttr}"[^>]*?)\\s*/?>`), (m, attrs) =>
-    m.includes(extra.split("=")[0]) ? m : `<input${attrs} ${extra}>`);
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Static 3-step quote form — the WordPress pages are plain HTML, so the React
+ * component (src/components/StepQuoteForm.tsx) is reproduced here by hand,
+ * 1:1 in looks, validation and payload. Keeping the field NAMES identical means
+ * send.php, leads-log.php and every GTM variable built on those names keep
+ * working without a single backend change.
+ *
+ *   Step 1 Route    ship_type · pickup_zip · delivery_zip
+ *   Step 2 Details  vehicle / boat / equipment / something-else group (only the
+ *                   matching one is enabled, so only its fields are posted)
+ *   Step 3 Contact  pickup_date · name · phone · email · sms_consent
+ *
+ * Options post the same slugs the live pages already send (car, boat-trailer…),
+ * so the lead email and Ads conversion data stay byte-for-byte compatible.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** value + label, in the same order as src/data/quote.ts */
+const SHIP = [
+  ["car", "Car / Sedan"],
+  ["suv-pickup", "SUV / Pickup Truck"],
+  ["classic-exotic", "Classic / Exotic / Luxury Car"],
+  ["commercial-truck", "Box / Work / Commercial Truck"],
+  ["semi-tractor", "Semi Tractor (Day Cab / Sleeper)"],
+  ["van-bus", "Cargo Van / Bus / Shuttle"],
+  ["boat-trailer", "Boat With Trailer"],
+  ["boat-no-trailer", "Boat Without Trailer"],
+  ["yacht", "Yacht / Large Vessel"],
+  ["motorhome", "Motorhome (Class A / B / C)"],
+  ["towable-rv", "Travel Trailer / Fifth Wheel"],
+  ["motorcycle", "Motorcycle"],
+  ["powersports", "ATV / UTV / Golf Cart"],
+  ["construction", "Construction Equipment"],
+  ["heavy-industrial", "Heavy / Industrial Machinery"],
+  ["other", "Something Else"],
+];
+const BOAT_TYPES = ["Center Console", "Sailboat", "Yacht / Mega Yacht", "Pontoon Boat", "Fishing Boat", "Speedboat", "Cabin Cruiser", "Jet Ski / PWC", "Other"];
+const TRAILER_OPTS = ["Yes, road-worthy", "Yes, not road-worthy", "No trailer", "Not sure"];
+const TRANSPORT_OPTS = ["Open Carrier", "Enclosed Carrier", "Flatbed / Step Deck", "Not Sure"];
+const CONDITION_OPTS = ["Running", "Non-Running"];
+
+const SMS_CONSENT =
+  "By checking this box, I agree to receive SMS messages from MCC Bound Legends LLC at the number provided. " +
+  "Message frequency varies. Message and data rates may apply. Reply HELP for assistance or STOP to opt out.";
+
+const opts = (list) => list.map((o) => `<option>${o}</option>`).join("");
+const errBox = `<div class="mccq-err" aria-live="polite"></div>`;
+
+/** `id` is unique per group; `name` is the field send.php reads. */
+const selectField = (id, name, label, list, { disabled = false, preset = "" } = {}) => `<div class="mccq-field">
+<label for="${id}">${label}</label>
+<select id="${id}" name="${name}" required${disabled ? " disabled" : ""}>
+<option value="">Select</option>${list.map((o) => `<option${o === preset ? " selected" : ""}>${o}</option>`).join("")}
+</select>${errBox}
+</div>`;
+
+const ymmField = (id, label, placeholder, disabled) => `<div class="mccq-field">
+<label for="${id}">${label}</label>
+<input type="text" id="${id}" name="ymm" placeholder="${placeholder}" required${disabled ? " disabled" : ""}>${errBox}
+</div>`;
+
+/** Which Step 2 group a ship_type belongs to — mirrors groupOf() in StepQuoteForm.tsx. */
+const groupOf = (v) =>
+  ["boat-trailer", "boat-no-trailer", "yacht"].includes(v) ? "boat" : ["construction", "heavy-industrial"].includes(v) ? "equip" : v === "other" ? "other" : "vehicle";
+
+/** The whole card, same markup the React component renders (minus the inline success panel: here send.php redirects to thank-you/). */
+function stepFormHtml(cfg) {
+  const ship = SHIP.map(([v, l]) => `<option value="${v}"${v === cfg.preselect ? " selected" : ""}>${l}</option>`).join("");
+  const active = groupOf(cfg.preselect ?? "");
+  const off = (g) => (active === g ? "" : " hidden");
+  const dis = (g) => (active === g ? "" : " disabled");
+  return `<div class="mccq">
+<form id="quote" class="mccq-form" action="send.php" method="POST" novalidate>
+<input type="hidden" name="page" value="/${cfg.slug}/">
+<div class="mccq-hp" aria-hidden="true"><label for="mccq-company-website">Company website</label><input type="text" id="mccq-company-website" name="company_website" tabindex="-1" autocomplete="off"></div>
+<input type="hidden" name="gclid"><input type="hidden" name="utm_source"><input type="hidden" name="utm_campaign"><input type="hidden" name="landing_page">
+
+<div class="mccq-head">
+<p class="mccq-eyebrow">Free quote &middot; No deposit</p>
+<h2 class="mccq-title">Get your free transport quote</h2>
+</div>
+
+<ol class="mccq-progress" aria-label="Quote progress">
+<li class="is-active" aria-current="step"><span>Route</span></li>
+<li><span>Details</span></li>
+<li><span>Contact</span></li>
+</ol>
+
+<fieldset class="mccq-step" data-step="1">
+<legend class="mccq-legend">Step 1 of 3: Route</legend>
+<div class="mccq-field">
+<label for="mccq-ship-type">What are you shipping?</label>
+<select id="mccq-ship-type" name="ship_type" required><option value="">Select shipment type</option>${ship}</select>${errBox}
+</div>
+<div class="mccq-row">
+<div class="mccq-field">
+<label for="mccq-pickup-zip">Pick-up ZIP</label>
+<input type="text" id="mccq-pickup-zip" name="pickup_zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g. 48226" required data-check="zip">${errBox}
+</div>
+<div class="mccq-field">
+<label for="mccq-delivery-zip">Drop-off ZIP</label>
+<input type="text" id="mccq-delivery-zip" name="delivery_zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g. 33602" required data-check="zip">${errBox}
+</div>
+</div>
+<button type="button" class="mccq-btn" data-next>Get my quote &rarr;</button>
+<p class="mccq-trust"><b>No deposit</b> &middot; USDOT 4464266 &middot; MC 1760960 &middot; Licensed &amp; insured carriers</p>
+</fieldset>
+
+<fieldset class="mccq-step" data-step="2" hidden>
+<legend class="mccq-legend">Step 2 of 3: Details</legend>
+
+<div class="mccq-group" data-group="vehicle"${off("vehicle")}>
+${ymmField("mccq-ymm-vehicle", "Year, make &amp; model", "e.g. 2021 Ford F-150", !!dis("vehicle"))}
+<div class="mccq-row">
+${selectField("mccq-operable-vehicle", "operable", "Condition", CONDITION_OPTS, { disabled: !!dis("vehicle") })}
+${selectField("mccq-transport-vehicle", "transport_type", "Transport type", TRANSPORT_OPTS, { disabled: !!dis("vehicle") })}
+</div>
+</div>
+
+<div class="mccq-group" data-group="boat"${off("boat")}>
+${ymmField("mccq-ymm-boat", "Year, make &amp; model", "e.g. 2019 Boston Whaler", !!dis("boat"))}
+<div class="mccq-row">
+${selectField("mccq-boat-type", "boat_type", "Boat type", BOAT_TYPES, { disabled: !!dis("boat") })}
+<div class="mccq-field">
+<label for="mccq-length">Length (ft)</label>
+<input type="number" id="mccq-length" name="length" inputmode="numeric" min="5" max="200" placeholder="e.g. 24" required data-check="length"${dis("boat")}>${errBox}
+</div>
+</div>
+${selectField("mccq-trailer", "trailer_available", "Do you have a trailer?", TRAILER_OPTS, { disabled: !!dis("boat"), preset: cfg.preselect === "boat-no-trailer" ? "No trailer" : "" })}
+</div>
+
+<div class="mccq-group" data-group="equip"${off("equip")}>
+${ymmField("mccq-ymm-equip", "Make &amp; model", "e.g. CAT 320 excavator", !!dis("equip"))}
+<div class="mccq-row">
+${selectField("mccq-operable-equip", "operable", "Condition", CONDITION_OPTS, { disabled: !!dis("equip") })}
+${selectField("mccq-transport-equip", "transport_type", "Transport type", TRANSPORT_OPTS, { disabled: !!dis("equip") })}
+</div>
+</div>
+
+<div class="mccq-group" data-group="other"${off("other")}>
+${ymmField("mccq-ymm-other", "Describe what you're shipping", "e.g. 20 ft shipping container", !!dis("other"))}
+${selectField("mccq-transport-other", "transport_type", "Transport type", TRANSPORT_OPTS, { disabled: !!dis("other") })}
+</div>
+
+<div class="mccq-nav">
+<button type="button" class="mccq-back" data-back>&larr; Back</button>
+<button type="button" class="mccq-btn" data-next>Continue &rarr;</button>
+</div>
+</fieldset>
+
+<fieldset class="mccq-step" data-step="3" hidden>
+<legend class="mccq-legend">Step 3 of 3: Contact</legend>
+<div class="mccq-field">
+<label for="mccq-pickup-date">Preferred pickup date <span class="mccq-opt">(leave blank if flexible)</span></label>
+<input type="date" id="mccq-pickup-date" name="pickup_date">
+</div>
+<div class="mccq-field">
+<label for="mccq-name">Your name</label>
+<input type="text" id="mccq-name" name="name" autocomplete="name" required>${errBox}
+</div>
+<div class="mccq-row">
+<div class="mccq-field">
+<label for="mccq-phone">Phone</label>
+<input type="tel" id="mccq-phone" name="phone" autocomplete="tel" placeholder="(555) 555-5555" required data-check="phone">${errBox}
+</div>
+<div class="mccq-field">
+<label for="mccq-email">Email</label>
+<input type="email" id="mccq-email" name="email" autocomplete="email" required data-check="email">${errBox}
+</div>
+</div>
+<input type="hidden" name="sms_consent" value="no" id="mccq-sms-no">
+<label class="mccq-check" for="mccq-sms">
+<input type="checkbox" id="mccq-sms" name="_sms_ok" value="yes">
+<span>${SMS_CONSENT} Please review our <a href="${SITE}/privacy-policy/">Privacy Policy</a> and <a href="${SITE}/terms-and-condition/">Terms &amp; Conditions</a>.</span>
+</label>
+<div class="mccq-nav">
+<button type="button" class="mccq-back" data-back>&larr; Back</button>
+<button type="submit" class="mccq-btn">Get my free quote</button>
+</div>
+</fieldset>
+</form>
+</div>`;
+}
+
+/** Step logic — same rules and messages as checkField() in the React component. */
+function mccqJs(cfg) {
+  return `<script>
+(function(){
+  var form=document.getElementById('quote');
+  if(!form||!form.classList.contains('mccq-form'))return;
+  var dl=window.dataLayer=window.dataLayer||[];
+  var steps=[].slice.call(form.querySelectorAll('.mccq-step'));
+  var bar=[].slice.call(form.querySelectorAll('.mccq-progress li'));
+  var ship=form.querySelector('[name="ship_type"]');
+  var groups={vehicle:form.querySelector('[data-group="vehicle"]'),boat:form.querySelector('[data-group="boat"]'),equip:form.querySelector('[data-group="equip"]'),other:form.querySelector('[data-group="other"]')};
+  var BOAT=['boat-trailer','boat-no-trailer','yacht'],EQUIP=['construction','heavy-industrial'];
+  var step=1;
+  function digits(s){return (s||'').replace(/\\D/g,'');}
+  function groupOf(v){return BOAT.indexOf(v)>-1?'boat':EQUIP.indexOf(v)>-1?'equip':v==='other'?'other':'vehicle';}
+  function box(el){return el.closest('.mccq-field')||el.closest('.mccq-check')||el.parentNode;}
+  function errOf(el){var b=box(el);return b?b.querySelector('.mccq-err'):null;}
+  function showErr(el,msg){var b=errOf(el);if(b)b.textContent=msg||'';if(msg)el.setAttribute('aria-invalid','true');else el.removeAttribute('aria-invalid');}
+  function check(el){
+    if(el.disabled)return '';
+    var v=(el.value||'').trim(),kind=el.getAttribute('data-check');
+    if(el.required&&!v)return el.tagName==='SELECT'?'Please choose one.':'Please fill this in.';
+    if(!v)return '';
+    if(kind==='zip'&&!/^\\d{5}$/.test(v))return 'Enter a 5-digit ZIP code.';
+    if(kind==='phone'){var d=digits(v);if(!(d.length===10||(d.length===11&&d[0]==='1')))return 'Enter a 10-digit phone number.';}
+    if(kind==='email'&&!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(v))return 'Enter a valid email address.';
+    if(kind==='length'){var n=Number(v);if(!(n>=5&&n<=200))return 'Enter a length between 5 and 200 ft.';}
+    return '';
+  }
+  function validate(n){
+    var fs=form.querySelector('[data-step="'+n+'"]');if(!fs)return true;
+    var first=null;
+    [].forEach.call(fs.querySelectorAll('input,select'),function(el){
+      if(el.type==='checkbox'||el.type==='hidden')return;
+      var m=check(el);showErr(el,m);
+      if(m&&!first)first=el;
+    });
+    if(first)first.focus();
+    return !first;
+  }
+  function go(n){
+    step=n;
+    steps.forEach(function(fs){fs.hidden=Number(fs.getAttribute('data-step'))!==n;});
+    bar.forEach(function(li,i){
+      li.className=i+1===n?'is-active':i+1<n?'is-done':'';
+      if(i+1===n)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current');
+    });
+    var fs=form.querySelector('[data-step="'+n+'"]');
+    var first=fs&&fs.querySelector('input:not([type="hidden"]):not(:disabled),select:not(:disabled)');
+    if(first){try{first.focus({preventScroll:true});}catch(e){first.focus();}}
+    if(form.getBoundingClientRect().top<0)form.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function syncGroups(){
+    var g=groupOf(ship?ship.value:'');
+    Object.keys(groups).forEach(function(k){
+      var gbox=groups[k];if(!gbox)return;
+      var hide=k!==g;
+      gbox.hidden=hide;
+      [].forEach.call(gbox.querySelectorAll('input,select'),function(el){
+        el.disabled=hide;
+        if(hide)showErr(el,'');
+      });
+    });
+    if(ship&&ship.value==='boat-no-trailer'){
+      var tr=form.querySelector('#mccq-trailer');
+      if(tr&&!tr.value)tr.value='No trailer';
+    }
+  }
+  form.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){if(validate(step))go(step+1);});});
+  form.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){go(step-1);});});
+  if(ship)ship.addEventListener('change',function(){showErr(ship,check(ship));syncGroups();});
+  // Same payload as the React form: sms_consent is "yes" only when the box is ticked, otherwise "no".
+  var smsBox=form.querySelector('#mccq-sms'),smsHidden=form.querySelector('#mccq-sms-no');
+  function syncSms(){if(smsBox&&smsHidden)smsHidden.value=smsBox.checked?'yes':'no';}
+  if(smsBox)smsBox.addEventListener('change',syncSms);
+  syncSms();
+  form.addEventListener('input',function(e){
+    var el=e.target;
+    if(el.getAttribute&&el.getAttribute('data-check')==='zip')el.value=digits(el.value).slice(0,5);
+    if(el.getAttribute&&el.getAttribute('aria-invalid')==='true')showErr(el,check(el));
+  });
+  form.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'||step>=3)return;
+    var t=e.target;
+    if(t.tagName!=='INPUT'||t.type==='submit'||t.type==='checkbox')return;
+    e.preventDefault();
+    if(validate(step))go(step+1);
+  });
+  // One POST per lead: a second click (or Enter) while the first is in flight used to create a duplicate
+  // lead and a duplicate Ads conversion. Latch only on the real Step 3 submit.
+  form.addEventListener('submit',function(e){
+    if(step<3){e.preventDefault();if(validate(step))go(step+1);return;}
+    if(!validate(3)){e.preventDefault();return;}
+    if(form.getAttribute('data-submitting')==='1'){e.preventDefault();return;}
+    form.setAttribute('data-submitting','1');
+    var b=form.querySelector('button[type="submit"]');
+    if(b){b.disabled=true;b.textContent='Sending\\u2026';}
+    dl.push({event:'quote_submit',ship_type:(ship&&ship.value)||'${cfg.shipFallback}',page_path:'/${cfg.slug}/'});
+  });
+  try{
+    var q=new URLSearchParams(location.search);
+    ['gclid','utm_source','utm_campaign'].forEach(function(k){
+      var el=form.elements.namedItem(k);if(el)el.value=q.get(k)||'';
+    });
+    var lp=form.elements.namedItem('landing_page');if(lp)lp.value=location.pathname;
+    var d=form.elements.namedItem('pickup_date');
+    if(d){var t=new Date();d.min=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+  }catch(e){}
+  syncGroups();
+})();
+</script>`;
+}
+
+/** The .mccq rules live at the end of src/app/globals.css — read them from there so there is one source of truth. */
+function mccqCss() {
+  const g = fs.readFileSync(path.join(ROOT, "src/app/globals.css"), "utf8");
+  const i = g.indexOf("/* ── 3-step quote form");
+  if (i < 0) throw new Error("3-step form CSS block not found in src/app/globals.css");
+  return g.slice(i) + "\n#quote{scroll-margin-top:90px}\n";
+}
+
+/** Find the quote form block and return [start, end) — handles both shapes the routes produce:
+ *  the old `QuoteForm` (<form id="quote">) and the boat page's `StepQuoteForm` (<div class="mccq" id="quote"><form>), which is already 3-step. */
+function quoteBlockRange(html) {
+  let start = html.search(/<form[^>]*\bid="quote"/);
+  let tag = "form";
+  if (start < 0) {
+    start = html.search(/<div[^>]*\bclass="mccq[^"]*"[^>]*\bid="quote"|<div[^>]*\bid="quote"[^>]*\bclass="mccq[^"]*"/);
+    tag = "div";
+  }
+  if (start < 0) return null;
+  // Walk the tags of the same name until the opening one is closed again.
+  const re = new RegExp(`<(/?)${tag}\\b[^>]*>`, "g");
+  re.lastIndex = start;
+  let depth = 0;
+  let m;
+  while ((m = re.exec(html))) {
+    depth += m[1] ? -1 : 1;
+    if (depth === 0) return [start, m.index + m[0].length];
+  }
+  return null;
+}
+
+/** Swap the old single-screen form for the 3-step one, and make sure its CSS + step JS are on the page. */
+function finalizeHtml(html, cfg) {
+  let out = html;
+  const range = quoteBlockRange(out);
+  if (!range) throw new Error(`${cfg.slug}: quote form not found — was the page built from a route with a form?`);
+  out = out.slice(0, range[0]) + stepFormHtml(cfg) + out.slice(range[1]);
+  if (!/\.mccq-form\s*\{/.test(out)) out = out.replace("</head>", `<style>${mccqCss()}</style>\n</head>`);
+  if (!out.includes("data-next")) throw new Error(`${cfg.slug}: 3-step markup missing`);
+  if (!out.includes("syncGroups")) out = out.replace("</body>", `${mccqJs(cfg)}\n</body>`);
+  return out;
+}
 
 async function buildPage(key, cfg) {
   const html = await (await fetch(ORIGIN + cfg.route)).text();
@@ -193,24 +527,13 @@ async function buildPage(key, cfg) {
   const drawer = `<div id="wpDrawer" class="wp-drawer"><div class="bg" onclick="this.parentNode.classList.remove('open')"></div><div class="panel"><button class="close" aria-label="Close menu" onclick="document.getElementById('wpDrawer').classList.remove('open')">×</button><p style="font-family:var(--font-barlow);font-weight:800;font-size:22px;color:#0d1f35;margin:6px 0 10px">MCC Bound Legends</p>
 <a href="${SITE}/">Home</a><a href="${SITE}/services/">Services</a><a href="${SITE}/about-us/">About Us</a><a href="${SITE}/faqs/">FAQ</a><a href="${SITE}/testimonials/">Reviews</a><a href="${SITE}/contact-us/">Contact</a><a href="${SITE}/how-it-works/">How It Works</a><a href="#quote" onclick="document.getElementById('wpDrawer').classList.remove('open')" style="color:#f97316">${cfg.drawerCta}</a></div></div>`;
 
-  // ── form → send.php in the same folder ────────────────────────────────
+  // ── form → 3-step, posting to send.php in the same folder ─────────────
   // FormSubmit was dropped 2026-10-09: it delivers nothing until a one-time activation email is clicked,
   // so the live pages lost every lead. send.php runs on the client's Hostinger, no third party involved.
   // Relative action = works in whatever folder the client extracts the zip into.
-  // Match on the id only: React renders the other attributes in no guaranteed order.
-  let formSwapped = false;
-  out = out.replace(/<form id="quote"([^>]*)>/, (m, attrs) => {
-    formSwapped = true;
-    const cls = (attrs.match(/\bclass="([^"]*)"/) || [, ""])[1];
-    return `<form id="quote" action="send.php" method="POST" class="${cls}">
-<input type="hidden" name="page" value="/${cfg.slug}/">
-<input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">`;
-  });
-  // React's own honeypot is redundant once _honey is in, and it would show up in the email
-  out = out.replace(/<input[^>]*\bname="company_website"[^>]*?\/?>/, "");
-  out = addAttr(out, "sms_consent", "required");
-  // A text input so the placeholder shows; becomes a real date picker on focus
-  out = addAttr(out, "pickup_date", `onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"`);
+  // The React single-screen form is replaced entirely (see stepFormHtml) — same field names as before,
+  // so send.php / leads-log.php / GTM variables need no change.
+  out = finalizeHtml(out, cfg);
   // BackToTop (client-only button) has no job here
   out = out.replace(/<button[^>]*aria-label="Back to top"[^>]*>[\s\S]*?<\/button>/, "");
 
@@ -222,15 +545,19 @@ async function buildPage(key, cfg) {
   var f=document.getElementById('quote');
   // Record the real folder the page was uploaded to (send.php redirects to <that folder>/thank-you/ itself)
   if(f&&f.page){var pth=location.pathname;if(pth.slice(-5)==='.html')pth=pth.slice(0,pth.lastIndexOf('/')+1);if(pth.slice(-1)!=='/')pth+='/';f.page.value=pth;}
-  if(f){f.addEventListener('submit',function(){dl.push({event:'quote_submit',ship_type:(f.querySelector('[name=${cfg.shipField}]')||{}).value||'${cfg.shipFallback}',page_path:'/${cfg.slug}/'});});}
-  document.querySelectorAll('a[href="#quote"]').forEach(function(a){a.addEventListener('click',function(e){var q=document.getElementById('quote');if(q){e.preventDefault();q.scrollIntoView({behavior:'smooth',block:'start'});var first=q.querySelector('input:not([type=hidden])');if(first)setTimeout(function(){first.focus({preventScroll:true})},500);}});});
+  // The submit latch + quote_submit event live in the 3-step script (they must only fire on the Step 3 submit).
+  document.querySelectorAll('a[href="#quote"]').forEach(function(a){a.addEventListener('click',function(e){var q=document.getElementById('quote');if(q){e.preventDefault();q.scrollIntoView({behavior:'smooth',block:'start'});var first=q.querySelector('input:not([type=hidden]),select');if(first)setTimeout(function(){first.focus({preventScroll:true})},500);}});});
 })();
 </script>`;
   out = out.replace("</body>", `${drawer}\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n${js}\n</body>`);
 
   // ── guard rails: fail loudly instead of shipping a broken page ────────
   const problems = [];
-  if (!formSwapped) problems.push("quote form was not swapped to send.php");
+  if (!/class="mccq-form"/.test(out)) problems.push("3-step form was not injected");
+  if (!/data-step="3"/.test(out)) problems.push("step 3 missing");
+  if (!/name="ship_type"/.test(out)) problems.push("ship_type field missing (send.php + GTM depend on it)");
+  if (!/name="sms_consent"/.test(out)) problems.push("sms_consent field missing");
+  if (/class="field-icon/.test(out) && !/mccq-form/.test(out)) problems.push("old single-screen form survived");
   if (/formsubmit/i.test(out)) problems.push("a FormSubmit reference survived");
   if (/\/_next\//.test(out)) problems.push("a /_next/ URL survived (image or asset would 404)");
   if (/href="\/(?!\/)/.test(out)) problems.push("a root-relative href survived (would break on the old site)");
@@ -258,6 +585,7 @@ function sendPhp(cfg) {
   const q = (s) => s.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
   return fs.readFileSync(path.join(__dirname, "send.php.tpl"), "utf8")
     .split("__LEAD_EMAIL__").join(q(LEAD_EMAIL))
+    .split("__ALERT_EMAIL__").join(q(ALERT_EMAIL))
     .split("__SUBJECT__").join(q(cfg.subject))
     .split("__SERVICE__").join(q(cfg.service));
 }

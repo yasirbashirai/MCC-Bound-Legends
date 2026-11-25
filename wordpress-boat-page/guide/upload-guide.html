@@ -138,14 +138,14 @@ small { color: #64748b; }
 <section class="page">
   <div class="tag">Step 2 · 3 minutes</div>
   <h1>Activate the quote form</h1>
-  <p class="lead">The form sends leads by email through <b>FormSubmit</b> (free, no plugin, no API key). It needs one activation click.</p>
+  <p class="lead">The form posts to <b>send.php</b> in the same folder. It runs on Hostinger itself and emails the lead through WordPress — no FormSubmit, no third party, no activation click.</p>
   <ol class="steps">
-    <li>On the live page, fill in the quote form with test details and submit it.</li>
-    <li>FormSubmit emails <b>Jeff.c@mccboundlegends.com</b> a message titled <i>"Activate form"</i>. Check spam if it is not in the inbox. Click the activation link <b>once</b>.</li>
-    <li>Submit the form again. The lead now arrives as a clean table email with: Year/Make/Model, boat type, length, pick-up ZIP, drop-off ZIP, trailer, date, name, phone, email, SMS consent.</li>
+    <li>On the live page, fill in the quote form with real details and submit it.</li>
+    <li>Jeff's inbox (<b>Jeff.c@mccboundlegends.com</b>) gets a table email with Year/Make/Model, boat type, length, pick-up ZIP, drop-off ZIP, trailer, date, name, phone, email, SMS consent. Check spam the first time.</li>
+    <li>Every lead is also saved to <code>leads-log.php</code> in the same folder, each followed by a <code>MAIL</code> line saying <code>sent</code> or <code>FAILED</code> with the server's error. If sending fails, <b>info@mccboundlegends.com</b> receives the lead plus a <b>LEAD EMAIL FAILED</b> warning.</li>
     <li>After submitting, the visitor lands on <span class="path">/boat-transport-florida/thank-you/</span>.</li>
   </ol>
-  <p><small>To send leads to a different address: open <code>index.html</code>, find the line <code>action="https://formsubmit.co/Jeff.c@mccboundlegends.com"</code> and change the email. Re-activation is needed for a new address.</small></p>
+  <p><small>To send leads to a different address: change <code>MCC_LEAD_TO</code> (and <code>MCC_ALERT_TO</code>) at the top of <code>send.php</code>. <code>MCC_MAIL_FROM</code> must be a real mailbox on mccboundlegends.com.</small></p>
 
   <div class="tag" style="margin-top:14px">Step 3 · 10 minutes</div>
   <h1>Google Ads conversion tracking</h1>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./boat-design.css";
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
@@ -10,7 +11,7 @@ import { photo } from "@/lib/images";
 import { JsonLd } from "@/components/JsonLd";
 import { PhoneLink } from "@/components/PhoneLink";
 import { StepQuoteForm } from "@/components/StepQuoteForm";
-import { Arrow, Boat, Check, Phone, Shield, Snowflake, Star, Sun, Usa, Users, Waves } from "@/components/Icons";
+import { Arrow, Check, Phone, Star, Users } from "@/components/Icons";
 
 /**
  * /boat-transport-florida/ — Google-Ads landing page built 1:1 to the client's reference
@@ -27,22 +28,29 @@ export const metadata: Metadata = meta(
   PATH,
 );
 
-/* Hero feature strip + checklist (client hero reference, 2026-09-19) */
-const STRIP = [
-  { icon: Snowflake, color: "text-blue-400", label: <>Snowbird<br />Season Specialists</> },
-  { icon: Sun, color: "text-[#FDB913]", label: <>Florida<br />Destinations</> },
-  { icon: Boat, color: "text-white", label: <>All Boat Types<br />&amp; Sizes</> },
-  { icon: Shield, color: "text-white", label: <>On Time<br />&amp; Done Right</> },
+/* Benefits strip — client handoff 2026-11-20 (MCC_Boat_Hero_Content_and_Placement.docx).
+   The four supplied PNGs are used as icons; the labels stay live HTML, separate from the artwork. */
+const STRIP: { img: string; alt: string; label: React.ReactNode }[] = [
+  { img: "/images/snowbird-snowflake.png", alt: "", label: <>Snowbird<br />Season Specialists</> },
+  { img: "/images/florida-sun.png", alt: "", label: <>Florida<br />Destinations</> },
+  { img: "/images/boat-types.png", alt: "", label: <>All Boat Types<br />&amp; Sizes</> },
+  { img: "/images/shield-check.png", alt: "", label: <>On Time<br />&amp; Done Right</> },
 ];
 const CHECKS = ["No Deposit to Book", "Licensed & Insured Carriers", "Fast, Reliable Service"];
+
+/* Route cards stay informational until their shared destinations are available. */
+const POPULAR_ROUTES = [
+  "New York & New Jersey ↔ Florida",
+  "Massachusetts & Connecticut ↔ Florida",
+  "Michigan, Ohio & Illinois ↔ Florida",
+  "Pennsylvania ↔ Florida",
+];
 
 /* Every type card scrolls to the quote form (client: no subpages until Month 2). */
 const TYPES = [
   ["Center Consoles", "type-center-console"], ["Sailboats", "type-sailboat"], ["Yachts and Mega Yachts", "type-yacht"], ["Pontoon Boats", "type-pontoon"],
   ["Fishing Boats", "type-fishing-boat"], ["Speedboats", "boat-type-speedboat"], ["Cabin Cruisers", "boat-type-cabin-cruiser"], ["Boats With Trailers", "boat-type-with-trailer"],
 ] as const;
-
-const ROUTES = ["New York", "New Jersey", "Michigan", "Ohio", "Massachusetts", "Connecticut", "Illinois", "Pennsylvania"];
 
 const TIERS = [["Small Boats", "(up to 25 ft)", "$1,500 – $2,500"], ["Medium Boats", "(26 – 35 ft)", "$2,500 – $3,500"], ["Large Boats & Yachts", "(36+ ft)", "$3,500 – $5,000+"]];
 
@@ -106,7 +114,6 @@ const FaqItem = ({ f }: { f: FAQ }) => (
 );
 
 export default function BoatTransportFloridaPage() {
-  const hero = photo("boat-hero") ?? photo("hero-2");
   const band = photo("boat-band-semi-yacht");
   const cta = photo("boat-cta-boat");
   const crumbs = [{ name: "Home", href: "/" }, { name: "Services", href: "/services/" }, { name: P.name, href: PATH }];
@@ -116,84 +123,36 @@ export default function BoatTransportFloridaPage() {
     <>
       <JsonLd data={[breadcrumbSchema(crumbs), serviceSchema("Boat Shipping to Florida", metadata.description as string, "boat-transport-florida"), faqSchema(FAQS)]} />
 
-      {/* ── HERO — client reference 01_DESKTOP_REFERENCE_FINAL / 02_MOBILE_REFERENCE_FINAL (2026-09-19) ── */}
-      <section className="relative overflow-hidden bg-[#0c2a4c] text-white">
-        {/* Desktop photo band: the full photo, uncropped (client rule), left-aligned; the rest of the band
-            (behind the quote card) is #0c2a4c — client 2026-09-20 (matches the feature strip), was a blurred grey photo fill */}
-        {hero && (
-          <div className="absolute inset-x-0 top-0 hidden h-[var(--hero-h)] bg-[#0c2a4c] xl:block" aria-hidden="true">
-            <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-contain object-left" />
-          </div>
-        )}
-        {/* Feature strip band (full-bleed, under the photo) */}
-        <div className="absolute inset-x-0 top-[var(--hero-h)] hidden h-[66px] bg-[#0b2a4c] xl:block" aria-hidden="true" />
-
-        <div className="relative mx-auto grid max-w-7xl xl:grid-cols-[minmax(0,1fr)_480px] xl:gap-x-8 xl:px-8">
-          {/* Below xl this column dissolves (display: contents) so the quote form can sit right under the photo
-              on phones (brief 2026-11-03: Step 1 visible without scrolling); desktop layout unchanged. */}
-          <div className="contents xl:block xl:min-w-0">
-            {/* Photo: mobile in-flow (full, uncropped) · desktop spacer over the absolute band */}
-            <div className="relative order-1 aspect-[1800/947] w-full xl:order-none xl:aspect-auto xl:h-[var(--hero-h)]">
-              {hero && <Image src={hero} alt="Truck towing a yacht on a trailer to Florida" fill priority sizes="100vw" className="object-cover xl:hidden" />}
-              {/* Mobile/tablet only: navy fade along the bottom of the photo so the bottom-left tagline reads over the wheels/road (client 2026-09-20: bottom, not top) */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-navy/85 via-navy/45 to-transparent xl:hidden" aria-hidden="true" />
-              {/* Coast-to-coast callout — compact (client 2026-09-20: smaller again) and parked just left of the
-                  blue street sign. `right-[15%]` of the photo width lands beside the sign at every viewport because the
-                  photo is always shown uncropped. */}
-              <div className="absolute right-[15%] top-2.5 flex items-center gap-1.5 rounded-lg border border-white/35 bg-navy/55 px-2 py-1 text-white shadow-lg backdrop-blur-md sm:top-4 sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 xl:top-5">
-                <Usa className="h-4 w-6 sm:h-5 sm:w-8 xl:h-6 xl:w-9" />
-                <span className="border-l border-white/40 pl-1.5 sm:pl-2.5">
-                  <span className="display-md block text-[9px] leading-[1.15] tracking-[0.04em] sm:text-[11px] xl:text-[12px] hd:text-[13px]">Coast to Coast<br />Boat Shipping</span>
-                  <Waves className="mt-0.5 h-1.5 w-4 sm:h-[7px] sm:w-6" />
-                </span>
-              </div>
-              {/* Hero tagline, bottom-left of the photo (client design 2026-09-20); last line in deep royal blue — client: sky blue was too light to read.
-                  Bottom-left at every size (client 2026-09-20); below xl a navy fade behind it keeps it legible over the wheels. */}
-              <p className="display absolute bottom-2.5 left-3 text-[16px] leading-[1.05] tracking-[0.01em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.8)] sm:bottom-4 sm:left-5 sm:text-[22px] md:text-[26px] xl:bottom-7 xl:left-8 xl:text-[34px] hd:bottom-9 hd:text-[42px]" aria-label="North to South. Coast to Coast. Your boat moves with us.">
-                North to South.<br />Coast to Coast.<br /><span className="text-blue xl:text-royal xl:drop-shadow-[0_2px_6px_rgba(255,255,255,.35)]">Your Boat Moves With Us.</span>
-              </p>
+      <section className="boat-hero" aria-labelledby="boat-hero-title">
+        <div className="boat-hero-layout">
+          <div className="boat-hero-copy">
+            <Image className="boat-hero-badge" src="/images/photos/boat-badge-coast-to-coast.webp" width={2009} height={507} priority alt="Coast to Coast Boat Shipping" />
+            <p className="boat-hero-label">NATIONWIDE BOAT TRANSPORT SPECIALISTS</p>
+            <h1 id="boat-hero-title">Boat Transport To <span>&amp; From Florida</span></h1>
+            <p className="boat-hero-intro">Whether you&apos;re shipping your boat or yacht to Florida, transporting it back north, or shipping to or from the West Coast, MCC Bound Legends coordinates reliable boat shipping coast to coast. From seasonal snowbird moves to year-round nationwide transport, we handle boats of all sizes, with or without a trailer. Door-to-door service. No deposit required. Get your free quote in 60 seconds.</p>
+            <div className="boat-hero-actions">
+              <a href="#quote">Get My Free Boat Quote <span aria-hidden="true">→</span></a>
+              <PhoneLink location="hero">Call {site.phone}</PhoneLink>
             </div>
-
-            {/* Feature strip */}
-            <ul className="order-3 grid grid-cols-2 bg-[#0b2a4c] xl:order-none sm:grid-cols-4 xl:h-[66px] xl:bg-transparent xl:px-0">
-              {STRIP.map(({ icon: Icon, color, label }, i) => (
-                <li key={i} className={`flex items-center gap-3 px-4 py-3 sm:justify-center sm:px-3 xl:justify-start xl:py-0 xl:pl-4 hd:pl-6 ${i % 2 ? "border-l border-white/25" : ""} ${i > 1 ? "border-t border-white/25 sm:border-t-0" : ""} ${i > 0 ? "sm:border-l sm:border-white/25" : ""}`}>
-                  <Icon className={`h-8 w-8 shrink-0 sm:h-9 sm:w-9 hd:h-10 hd:w-10 ${color} ${Icon === Boat ? "!w-12 hd:!w-14" : ""}`} />
-                  <span className="display-md whitespace-nowrap text-[13px] leading-[1.15] tracking-[0.05em] sm:text-[14px] xl:text-[13.5px] hd:text-[15px]">{label}</span>
-                </li>
+          </div>
+          <div className="boat-hero-photo">
+            <Image src="/images/photos/boat-hero-shaded.webp" width={1672} height={941} sizes="(max-width: 740px) 100vw, (max-width: 1049px) 740px, 100vw" priority alt="Pickup truck towing a yacht on a trailer along the Miami waterfront" />
+            <p className="boat-hero-slogan">North to South.<br />Coast to Coast.<br />Your Boat Moves With Us.</p>
+          </div>
+          <div className="boat-hero-quote">
+            <StepQuoteForm preselect="Boat With Trailer" onlyTypes={["Boat With Trailer", "Boat Without Trailer", "Yacht / Large Vessel"]} serviceName="Boat Transport to Florida (Snowbird)" />
+            <ul className="boat-hero-checks">
+              {CHECKS.map((label) => (
+                <li key={label}><Check />{label}</li>
               ))}
-            </ul>
-
-            {/* Copy */}
-            <div className="order-4 px-5 pb-8 pt-7 sm:px-8 xl:order-none xl:grid xl:grid-cols-[minmax(0,1.18fr)_minmax(0,0.82fr)] xl:gap-x-8 hd:gap-x-10 xl:px-0 xl:pb-9 xl:pt-8">
-              <div>
-                <p className="eyebrow text-[12px] tracking-[0.32em] text-blue-300 sm:text-[13px]">Snowbird Boat Transport <span className="text-white">Specialists</span> — Florida</p>
-                <h1 className="mt-3 text-[34px] font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_14px_rgba(0,0,0,.45)] sm:text-[44px] xl:text-[34px] xl:tracking-[-0.025em] hd:text-[41px]">Boat Transport to Florida –<br className="hidden hd:block" /> Snowbird Season Specialists</h1>
-                <div className="mt-6 hidden flex-wrap gap-3 xl:mt-7 xl:flex">
-                  <a href="#quote" className="btn-orange font-display px-5 py-3 text-[19px] font-bold tracking-wide hd:px-6 hd:py-3.5 hd:text-[22px]">Get My Free Boat Quote <Arrow className="h-5 w-5" /></a>
-                  <PhoneLink location="hero" className="btn-ghost font-display border-white/75 bg-navy/40 px-5 py-3 text-[19px] font-bold tracking-wide backdrop-blur-sm hd:px-6 hd:py-3.5 hd:text-[22px]"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
-                </div>
-              </div>
-              <p className="mt-4 text-[16px] leading-[1.55] text-white/95 xl:mt-8 xl:text-[16.5px]">Shipping your boat south for winter? MCC Bound Legends coordinates seasonal boat transport to Florida from New York, New Jersey, Michigan, Ohio, Massachusetts and all northern states. Door-to-door. No deposit to book. Get your free boat shipping quote in 60 seconds.</p>
-              <div className="mt-6 flex flex-wrap gap-3 xl:hidden">
-                <a href="#quote" className="btn-orange font-display px-6 py-3.5 text-[20px] font-bold tracking-wide max-sm:w-full sm:text-[22px]">Get My Free Boat Quote <Arrow className="h-5 w-5" /></a>
-                <PhoneLink location="hero" className="btn-ghost font-display border-white/75 bg-navy/40 px-6 py-3.5 text-[20px] font-bold tracking-wide backdrop-blur-sm max-sm:w-full sm:text-[22px]"><Phone className="h-5 w-5" /> Call {site.phone}</PhoneLink>
-              </div>
-              {/* Checklist: inline on mobile; on desktop it moves under the form (right column) */}
-              <ul className="mt-6 space-y-2 text-[15.5px] xl:hidden">
-                {CHECKS.map((t) => <li key={t} className="flex items-center gap-2.5"><CheckDot className="h-5 w-5" color="bg-blue" />{t}</li>)}
-              </ul>
-            </div>
-          </div>
-
-          {/* Quote form (+ desktop checklist) */}
-          <div className="order-2 px-5 pb-6 pt-5 sm:px-8 xl:order-none xl:flex xl:flex-col xl:px-0 xl:pb-9 xl:pt-5">
-            <StepQuoteForm preselect="Boat With Trailer" serviceName="Boat Transport to Florida (Snowbird)" />
-            <ul className="mt-7 hidden space-y-2.5 text-[16px] xl:mt-auto xl:block xl:pl-8 xl:pt-6">
-              {CHECKS.map((t) => <li key={t} className="flex items-center gap-3"><CheckDot className="h-[22px] w-[22px]" color="bg-blue" />{t}</li>)}
             </ul>
           </div>
         </div>
+        <ul className="boat-hero-benefits">
+          {STRIP.map(({ img, alt, label }) => (
+            <li key={img}><Image src={img} alt={alt} width={256} height={256} /><span>{label}</span></li>
+          ))}
+        </ul>
       </section>
 
       {/* ── BOAT TYPES ───────────────────────────────────────────────── */}
@@ -224,21 +183,25 @@ export default function BoatTransportFloridaPage() {
         </div>
       </section>
 
-      {/* ── ROUTES ───────────────────────────────────────────────────── */}
-      <section className="bg-mist/60 py-11">
+      {/* ── POPULAR ROUTES — client handoff 2026-11-20 (MCC_Boat_Route_Section_Developer_Instructions.docx):
+          pale gray band, four white bordered buttons, blue text, orange circular arrow. No photos.
+          Desktop 2x2, mobile one column in the reading order above. ── */}
+      <section className="bg-mist/70 py-12">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <h2 className="font-display text-[30px] font-extrabold leading-tight text-royal sm:text-[34px]">Snowbird Boat Transport Routes We Cover</h2>
-          <p className="mt-1 max-w-4xl text-[16.5px] text-slate">We coordinate boat transport to Florida from every major northern state. Our most popular snowbird routes run along I-95 and I-75 from the Northeast and Midwest straight to Florida&apos;s marinas and waterways.</p>
-          <ul className="mt-4.5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {ROUTES.map((s) => (
-              <li key={s}>
-                <a href="#quote" className="flex items-center gap-3 rounded-md border border-line bg-white px-3.5 py-3 text-[16px] font-bold text-royal transition hover:border-orange hover:shadow-[0_4px_14px_rgba(13,31,53,.08)]">
-                  <span className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-orange text-white"><Arrow className="h-3 w-3" /></span>{s} to Florida
-                </a>
+          <h2 className="font-display text-[30px] font-extrabold leading-tight text-royal sm:text-[34px]">Popular Boat Transport Routes To &amp; From Florida</h2>
+          <p className="mt-2 max-w-4xl text-[16.5px] leading-[1.55] text-slate">We coordinate boat transport between Florida and the East Coast, Midwest, Texas, and California—including Illinois, Indiana, Wisconsin, Michigan, and Ohio. Shipping is available in both directions.</p>
+          <ul className="mt-6 grid grid-cols-1 gap-3.5 md:grid-cols-2">
+            {POPULAR_ROUTES.map((label) => (
+              <li key={label} className="flex items-center gap-3.5 rounded-md border border-line bg-white px-5 py-4 text-[16.5px] font-bold leading-[1.3] text-royal">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange text-white"><Arrow className="h-3.5 w-3.5" /></span>
+                {label}
               </li>
             ))}
           </ul>
-          <p className="mt-4.5 text-center text-[15.5px] font-bold text-navy">Don&apos;t see your state? We ship from all 50 states. Call <PhoneLink location="routes" className="underline decoration-orange decoration-2 underline-offset-2">{site.phone}</PhoneLink>.</p>
+          <p className="mt-5 text-center text-[15.5px] font-bold leading-[1.6] text-navy">
+            Don&apos;t see your route? We coordinate boat transport nationwide.<br />
+            Call <PhoneLink location="routes" className="underline decoration-orange decoration-2 underline-offset-2">{site.phone}</PhoneLink>.
+          </p>
         </div>
       </section>
 

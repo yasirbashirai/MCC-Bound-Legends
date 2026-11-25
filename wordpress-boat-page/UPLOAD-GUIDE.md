@@ -42,13 +42,20 @@ If it shows a WordPress 404 instead: hPanel → Advanced → **LiteSpeed cache p
 
 - `send.php` emails each lead to **Jeff.c@mccboundlegends.com** (Reply-To = the customer, so Jeff just hits
   Reply). The subject line says which page it came from, plus the customer's name.
+- **Failure fallback (2026-11-17):** if the SMTP plugin refuses the message (Hostinger answered
+  `SMTP Error: data not accepted` from 2026-11-14 and every lead after that got no email), `send.php` now
+  retries through PHP `mail()` itself. Whenever SMTP refuses, it also sends the lead, plus a
+  **LEAD EMAIL FALLBACK** (mail() rescued it) or **LEAD EMAIL FAILED** warning, to
+  **info@mccboundlegends.com** — so a delivery problem is never silent.
 - **Backup:** every lead is also saved to `leads-log.php` in the same folder *before* the email is sent, so
   nothing is lost if an email bounces or lands in spam. Open it in File Manager → Edit to read it. It cannot be
-  read over the web.
+  read over the web. Each lead line is followed by a `MAIL` line — `sent` / `FAILED`, which transport was used
+  (`wp_mail` → `mail()` → `alert`) and the server's error text.
 - Bots are filtered by a hidden honeypot field. A post with no phone and no email is rejected.
+- Double clicks/Enter are latched, so one visitor produces one lead and one Ads conversion.
 - After submit the visitor lands on that folder's own `/thank-you/` (the Google Ads conversion page).
-- To change the lead email: edit `LEAD_TO` and `MAIL_FROM` at the top of `send.php`. `MAIL_FROM` must be a
-  real mailbox on mccboundlegends.com or Hostinger will refuse to send.
+- To change the addresses: `MCC_LEAD_TO`, `MCC_MAIL_FROM` and `MCC_ALERT_TO` at the top of `send.php`.
+  `MCC_MAIL_FROM` must be a real mailbox on mccboundlegends.com or Hostinger will refuse to send.
 - Re-uploading a zip never deletes `leads-log.php` (it is not in the zip).
 
 ## Tracking (already wired, same IDs as the old site)

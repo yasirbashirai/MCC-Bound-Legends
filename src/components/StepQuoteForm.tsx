@@ -75,6 +75,8 @@ function YmmField({ id, label, placeholder, error, disabled }: FieldProps & { pl
 type Props = {
   /** ship_type label to preselect (one of the 16 options); empty = "Select shipment type" (homepage). */
   preselect?: string;
+  /** Limit the "What are you shipping?" list to these labels (e.g. boat page = 3 boat types). */
+  onlyTypes?: string[];
   /** Preset Step 2 condition, e.g. "Non-Running" on /non-running-vehicle-transport/. */
   presetCondition?: string;
   /** Hidden `service` field for the lead email (page name). */
@@ -82,12 +84,13 @@ type Props = {
   className?: string;
 };
 
-export function StepQuoteForm({ preselect = "", presetCondition = "", serviceName = "", className = "" }: Props) {
+export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "", serviceName = "", className = "" }: Props) {
   const path = usePathname();
   const rootRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState(1);
   const [ship, setShip] = useState(shipOptions.some((o) => o.label === preselect) ? preselect : "");
+  const offered = onlyTypes?.length ? shipOptions.filter((o) => onlyTypes.includes(o.label)) : shipOptions;
   const [errs, setErrs] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const [formErr, setFormErr] = useState("");
@@ -211,7 +214,7 @@ export function StepQuoteForm({ preselect = "", presetCondition = "", serviceNam
             <label htmlFor="mccq-ship-type">What are you shipping?</label>
             <select id="mccq-ship-type" name="ship_type" required value={ship} onChange={(e) => { setShip(e.target.value); setErr(e.target, e.target.getAttribute("aria-invalid") ? checkField(e.target) : ""); }} {...inv("mccq-ship-type")}>
               <option value="">Select shipment type</option>
-              {shipOptions.map((o) => <option key={o.value}>{o.label}</option>)}
+              {offered.map((o) => <option key={o.value}>{o.label}</option>)}
             </select>
             {err("mccq-ship-type")}
           </div>

@@ -5,7 +5,7 @@ import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { generalFaqs } from "@/data/faqs";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
-import { QuoteForm } from "@/components/QuoteForm";
+import { StepQuoteForm } from "@/components/StepQuoteForm";
 import { Arrow, Check } from "@/components/Icons";
 import { Breadcrumbs, CtaBand, EquipmentMatch, FaqList, SectionHead, TrustStrip } from "@/components/Sections";
 
@@ -36,7 +36,7 @@ export default function HowItWorks() {
             <p className="mt-6 max-w-xl text-lg text-white/75">Transport coordination should not be a mystery. This is the process every MCC Bound Legends shipment follows, whether it is a sedan or a 40-ton excavator.</p>
             <div className="mt-10"><TrustStrip dark /></div>
           </div>
-          <div className="lg:sticky lg:top-28"><QuoteForm compact /></div>
+          <div className="lg:sticky lg:top-28"><StepQuoteForm /></div>
         </Container>
       </section>
 

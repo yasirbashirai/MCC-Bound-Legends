@@ -4,7 +4,7 @@ import { meta } from "@/lib/seo";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
-import { QuoteForm } from "@/components/QuoteForm";
+import { StepQuoteForm } from "@/components/StepQuoteForm";
 import { Breadcrumbs, CtaBand, FaqList } from "@/components/Sections";
 
 export const metadata = meta("Vehicle Transport FAQ | MCC Bound Legends", "Answers about transport quotes, deposits, brokers vs carriers, insurance in transit, pickup windows and how to prepare a car, boat or machine for transport.", "/faq/");
@@ -33,7 +33,7 @@ export default function FAQ() {
               </div>
             ))}
           </div>
-          <div className="lg:sticky lg:top-28 lg:self-start"><QuoteForm variant="page" compact /></div>
+          <div className="lg:sticky lg:top-28 lg:self-start"><StepQuoteForm /></div>
         </Container>
       </section>
       <CtaBand />
