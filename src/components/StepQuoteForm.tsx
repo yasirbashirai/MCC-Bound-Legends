@@ -30,6 +30,9 @@ const BOAT_TYPES = ["Center Console", "Sailboat", "Yacht / Mega Yacht", "Pontoon
 const TRAILER = ["Yes, road-worthy", "Yes, not road-worthy", "No trailer", "Not sure"];
 const TRANSPORT = ["Open Carrier", "Enclosed Carrier", "Flatbed / Step Deck", "Not Sure"];
 const CONDITION = ["Running", "Non-Running"];
+/** Route-page direction selector (opt-in via `showDirection`). Pages can pass their own options. */
+const DEFAULT_DIRECTIONS = ["California to Florida", "Florida to California"];
+const FLEXIBILITY = ["Exact date needed", "1–3 days flexible", "Within the week", "I'm flexible"];
 
 const digits = (s: string) => (s || "").replace(/\D/g, "");
 
@@ -81,16 +84,27 @@ type Props = {
   presetCondition?: string;
   /** Hidden `service` field for the lead email (page name). */
   serviceName?: string;
+  /** Show a direction selector (route pages). */
+  showDirection?: boolean;
+  /** Options for the direction selector; defaults to the California ↔ Florida pair. */
+  directionOptions?: string[];
+  /** Optional map of URL fragment → direction label, used to preselect on arrival. */
+  directionAnchors?: Record<string, string>;
+  /** Override the form heading. */
+  title?: string;
+  /** Extra classes on the form wrapper. */
   className?: string;
 };
 
-export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "", serviceName = "", className = "" }: Props) {
+export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "", serviceName = "", showDirection = false, directionOptions, directionAnchors, title, className = "" }: Props) {
   const path = usePathname();
   const rootRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [step, setStep] = useState(1);
   const [ship, setShip] = useState(shipOptions.some((o) => o.label === preselect) ? preselect : "");
   const offered = onlyTypes?.length ? shipOptions.filter((o) => onlyTypes.includes(o.label)) : shipOptions;
+  const dirs = directionOptions?.length ? directionOptions : DEFAULT_DIRECTIONS;
+  const [direction, setDirection] = useState("");
   const [errs, setErrs] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const [formErr, setFormErr] = useState("");
@@ -105,6 +119,25 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
     const date = formRef.current?.elements.namedItem("pickup_date") as HTMLInputElement | null;
     if (date) date.min = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
   }, []);
+
+  // Route page: pick up the intended direction from the URL fragment, and keep it in sync on hash changes.
+  // Only the direction changes — ZIP codes the customer already typed are never replaced.
+  useEffect(() => {
+    if (!showDirection) return;
+    const sync = () => { const d = directionAnchors?.[window.location.hash]; if (d && dirs.includes(d)) setDirection(d); };
+    sync();
+    window.addEventListener("hashchange", sync);
+    // A direction-specific quote button (a[data-dir]) selects that direction and focuses the form.
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest?.("a[data-dir]") as HTMLAnchorElement | null;
+      if (!a) return;
+      const d = a.getAttribute("data-dir");
+      if (d && dirs.includes(d)) setDirection(d);
+      requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>("#mccq-direction")?.focus({ preventScroll: true }));
+    };
+    document.addEventListener("click", onClick);
+    return () => { window.removeEventListener("hashchange", sync); document.removeEventListener("click", onClick); };
+  }, [showDirection, directionAnchors, dirs]);
 
   // "Boat Without Trailer" presets the trailer answer to "No trailer" (only if still empty)
   useEffect(() => {
@@ -142,6 +175,14 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
     });
   }
   const next = () => { if (validate(step)) go(step + 1); };
+
+  /* Explicit "Switch direction" (two-option pages only): flips the direction and swaps the two ZIP fields. */
+  function switchDirection() {
+    setDirection((d) => (d === dirs[0] ? dirs[1] : dirs[0]));
+    const pu = formRef.current?.elements.namedItem("pickup_zip") as HTMLInputElement | null;
+    const de = formRef.current?.elements.namedItem("delivery_zip") as HTMLInputElement | null;
+    if (pu && de) { const t = pu.value; pu.value = de.value; de.value = t; }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -191,7 +232,7 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
       <form ref={formRef} className="mccq-form" noValidate onSubmit={onSubmit} onInput={onInput} onKeyDown={onKeyDown}>
         <div className="mccq-head" hidden={done}>
           <p className="mccq-eyebrow">Free quote · No deposit</p>
-          <h2 className="mccq-title">Get your free transport quote</h2>
+          <h2 className="mccq-title">{title ?? "Get your free transport quote"}</h2>
         </div>
 
         <ol className="mccq-progress" aria-label="Quote progress" hidden={done}>
@@ -210,6 +251,17 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
         {/* STEP 1 — Route */}
         <fieldset className="mccq-step" data-step="1" hidden={done || step !== 1}>
           <legend className="mccq-legend">Step 1 of 3: Route</legend>
+          {showDirection && (
+            <div className="mccq-field">
+              <label htmlFor="mccq-direction">Your direction</label>
+              <select id="mccq-direction" name="direction" required value={direction} onChange={(e) => { setDirection(e.target.value); setErr(e.target, e.target.getAttribute("aria-invalid") ? checkField(e.target) : ""); }} {...inv("mccq-direction")}>
+                <option value="">Choose your direction</option>
+                {dirs.map((d) => <option key={d}>{d}</option>)}
+              </select>
+              {err("mccq-direction")}
+              {direction && dirs.length === 2 && <button type="button" className="mccq-switch" onClick={switchDirection}>Switch direction ⇄</button>}
+            </div>
+          )}
           <div className="mccq-field">
             <label htmlFor="mccq-ship-type">What are you shipping?</label>
             <select id="mccq-ship-type" name="ship_type" required value={ship} onChange={(e) => { setShip(e.target.value); setErr(e.target, e.target.getAttribute("aria-invalid") ? checkField(e.target) : ""); }} {...inv("mccq-ship-type")}>
@@ -272,6 +324,13 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
             <SelectField id="mccq-transport-other" name="transport_type" label="Transport type" options={TRANSPORT} error={errs["mccq-transport-other"]} disabled={off("other")} />
           </div>
 
+          {showDirection && (
+            <div className="mccq-field">
+              <label htmlFor="mccq-notes">Modifications, loading concerns or notes <span className="mccq-opt">(optional)</span></label>
+              <textarea id="mccq-notes" name="notes" rows={2} />
+            </div>
+          )}
+
           <div className="mccq-nav">
             <button type="button" className="mccq-back" onClick={() => go(1)}>← Back</button>
             <button type="button" className="mccq-btn" onClick={next}>Continue →</button>
@@ -285,6 +344,15 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
             <label htmlFor="mccq-pickup-date">Preferred pickup date <span className="mccq-opt">(leave blank if flexible)</span></label>
             <input type="date" id="mccq-pickup-date" name="pickup_date" />
           </div>
+          {showDirection && (
+            <div className="mccq-field">
+              <label htmlFor="mccq-flex">Pickup flexibility <span className="mccq-opt">(optional)</span></label>
+              <select id="mccq-flex" name="pickup_flexibility" defaultValue="">
+                <option value="">Select</option>
+                {FLEXIBILITY.map((f) => <option key={f}>{f}</option>)}
+              </select>
+            </div>
+          )}
           <div className="mccq-field">
             <label htmlFor="mccq-name">Your name</label>
             <input type="text" id="mccq-name" name="name" autoComplete="name" required {...inv("mccq-name")} />

@@ -11,7 +11,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/Container";
 import { Arrow, Check, Doc, Route, Ruler, Shield } from "@/components/Icons";
 import { Breadcrumbs, CtaBand, FaqList, ReviewCard, SectionHead } from "@/components/Sections";
-import { SpecificPhotoGrid, Timeline } from "@/components/Visual";
+import { PopularRoutes, SpecificPhotoGrid, Timeline } from "@/components/Visual";
 import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards, type TypeCard } from "@/components/Landing";
 
 type Params = { slug: string };
@@ -124,6 +124,9 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <PhotoCardRow cards={typeCards} cols={typeCards.length >= 7 ? 7 : 6} />
         </Container>
       </section>
+
+      {/* Route handoff 2026-11: Popular Car Shipping Routes sits right after Any Car Anywhere and before Door to Door Coast to Coast */}
+      {p.slug === "auto-transport" && <PopularRoutes />}
 
       <WhyBand eyebrow={`Why choose MCC for ${p.name.toLowerCase()}`} title={fl.whyTitle} points={whyPts} />
 

@@ -38,12 +38,13 @@ const STRIP: { img: string; alt: string; label: React.ReactNode }[] = [
 ];
 const CHECKS = ["No Deposit to Book", "Licensed & Insured Carriers", "Fast, Reliable Service"];
 
-/* Route cards stay informational until their shared destinations are available. */
-const POPULAR_ROUTES = [
-  "New York & New Jersey ↔ Florida",
-  "Massachusetts & Connecticut ↔ Florida",
-  "Michigan, Ohio & Illinois ↔ Florida",
-  "Pennsylvania ↔ Florida",
+/* Route cards stay informational until their shared destinations are available.
+   The New York / New Jersey route page is live, so that card is a link. */
+const POPULAR_ROUTES: { label: string; href?: string }[] = [
+  { label: "New York & New Jersey ↔ Florida", href: "/boat-transport/new-york-new-jersey-florida/" },
+  { label: "Massachusetts & Connecticut ↔ Florida", href: "/boat-transport/massachusetts-connecticut-florida/" },
+  { label: "Michigan, Ohio & Illinois ↔ Florida" },
+  { label: "Pennsylvania ↔ Florida" },
 ];
 
 /* Every type card scrolls to the quote form (client: no subpages until Month 2). */
@@ -186,17 +187,25 @@ export default function BoatTransportFloridaPage() {
       {/* ── POPULAR ROUTES — client handoff 2026-11-20 (MCC_Boat_Route_Section_Developer_Instructions.docx):
           pale gray band, four white bordered buttons, blue text, orange circular arrow. No photos.
           Desktop 2x2, mobile one column in the reading order above. ── */}
-      <section className="bg-mist/70 py-12">
+      <section id="routes" className="scroll-mt-28 bg-mist/70 py-12">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <h2 className="font-display text-[30px] font-extrabold leading-tight text-royal sm:text-[34px]">Popular Boat Transport Routes To &amp; From Florida</h2>
           <p className="mt-2 max-w-4xl text-[16.5px] leading-[1.55] text-slate">We coordinate boat transport between Florida and the East Coast, Midwest, Texas, and California—including Illinois, Indiana, Wisconsin, Michigan, and Ohio. Shipping is available in both directions.</p>
           <ul className="mt-6 grid grid-cols-1 gap-3.5 md:grid-cols-2">
-            {POPULAR_ROUTES.map((label) => (
-              <li key={label} className="flex items-center gap-3.5 rounded-md border border-line bg-white px-5 py-4 text-[16.5px] font-bold leading-[1.3] text-royal">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange text-white"><Arrow className="h-3.5 w-3.5" /></span>
-                {label}
-              </li>
-            ))}
+            {POPULAR_ROUTES.map((r) => {
+              const inner = (
+                <>
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-orange text-white"><Arrow className="h-3.5 w-3.5" /></span>
+                  {r.label}
+                </>
+              );
+              const cls = "flex items-center gap-3.5 rounded-md border border-line bg-white px-5 py-4 text-[16.5px] font-bold leading-[1.3] text-royal";
+              return (
+                <li key={r.label}>
+                  {r.href ? <Link href={r.href} className={`${cls} transition hover:border-orange hover:shadow-[0_4px_14px_rgba(13,31,53,.08)]`}>{inner}</Link> : <div className={cls}>{inner}</div>}
+                </li>
+              );
+            })}
           </ul>
           <p className="mt-5 text-center text-[15.5px] font-bold leading-[1.6] text-navy">
             Don&apos;t see your route? We coordinate boat transport nationwide.<br />

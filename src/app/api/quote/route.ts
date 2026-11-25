@@ -17,11 +17,11 @@ import { getShipOption } from "@/data/quote";
  * Never fakes success: if no email/webhook channel delivered the lead, the API answers 502 and the
  * form tells the visitor to call instead of showing a thank-you page for a lead nobody received.
  */
-const FIELDS = ["ship_type","pickup_zip","delivery_zip","pickup_date","operable","transport_type","year","make","model","ymm","boat_type","length","width","height","weight","trailer_available","loading_equipment","attachments","name","phone","email","notes","sms_consent","gclid","utm_source","utm_campaign","landing_page","page","service"] as const;
+const FIELDS = ["ship_type","direction","pickup_zip","delivery_zip","pickup_date","pickup_flexibility","operable","transport_type","year","make","model","ymm","boat_type","length","width","height","weight","trailer_available","loading_equipment","attachments","name","phone","email","notes","sms_consent","gclid","utm_source","utm_campaign","landing_page","page","service"] as const;
 
 const LABELS: Record<string, string> = {
-  ship_type: "Shipping", pickup_zip: "Pickup ZIP", delivery_zip: "Delivery ZIP", pickup_date: "Pickup date",
-  operable: "Vehicle condition", transport_type: "Transport type", ymm: "Year / Make / Model", boat_type: "Boat type", trailer_available: "Trailer",
+  ship_type: "Shipping", direction: "Direction", pickup_zip: "Pickup ZIP", delivery_zip: "Delivery ZIP", pickup_date: "Pickup date",
+  pickup_flexibility: "Pickup flexibility", operable: "Vehicle condition", transport_type: "Transport type", ymm: "Year / Make / Model", boat_type: "Boat type", trailer_available: "Trailer",
   loading_equipment: "Loading equipment", sms_consent: "SMS consent", gclid: "Google click ID (gclid)",
   utm_source: "UTM source", utm_campaign: "UTM campaign", landing_page: "Landing page",
 };

@@ -88,7 +88,7 @@ export function TrailerPhoto() {
   const src = photo("details-car-carrier");
   return (
     <div className="reveal-left relative h-full min-h-[440px] overflow-hidden rounded-2xl bg-navy shadow-[var(--shadow-card)]">
-      {src && <Image src={src} alt="Car carrier loaded with SUVs on a Florida waterfront highway at golden hour" fill sizes="(max-width:1024px) 100vw, 50vw" quality={82} className="object-cover object-[62%_50%]" />}
+      {src && <Image src={src} alt="Car carrier, flatbed, RV, excavator lowboy, box truck and boat trailer staged at a Florida marina with the Miami skyline behind" fill sizes="(max-width:1024px) 100vw, 50vw" quality={82} className="object-cover object-[50%_50%]" />}
     </div>
   );
 }
@@ -113,6 +113,48 @@ export function MatchList() {
         </li>
       ))}
     </ul>
+  );
+}
+
+/* ── Popular Car Shipping Routes (Auto Transport page) ─────────────────────
+   Placed after "Any car. Anywhere." and before "Door to door. Coast to coast."
+   Only destinations that exist are published (MCC route handoff: do not link to missing pages).
+   Add the California ↔ Texas pair here once that combined page is live. */
+const POPULAR_ROUTES = [
+  { label: "California to Florida", href: "/car-shipping/california-florida/#california-to-florida", img: "route-thumb-ca", alt: "Los Angeles skyline beyond palm trees" },
+  { label: "Florida to California", href: "/car-shipping/california-florida/#florida-to-california", img: "route-thumb-fl", alt: "Miami skyline over Biscayne Bay" },
+];
+export function PopularRoutes() {
+  return (
+    <section className="bg-cloud py-12">
+      <div className="wrap">
+        <div className="rounded-2xl border-2 border-orange/40 bg-white p-5 sm:p-7">
+          <span className="inline-block rounded-full bg-orange px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white">New selection</span>
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="display text-[32px] text-navy sm:text-[42px]">Popular car shipping routes</h2>
+              <p className="mt-1 text-[16px] text-slate">Choose your direction for route details and a free quote.</p>
+            </div>
+            <Link href="/car-shipping/california-florida/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-navy">See route details <Arrow className="h-4 w-4" /></Link>
+          </div>
+          <ul className="mt-5 grid grid-cols-1 gap-3.5 md:grid-cols-2">
+            {POPULAR_ROUTES.map((r) => (
+              <li key={r.label}>
+                <Link href={r.href} className="group flex items-center gap-4 overflow-hidden rounded-xl border border-line bg-white p-2.5 transition hover:-translate-y-0.5 hover:border-blue/60 hover:shadow-lg">
+                  <span className="relative block h-[84px] w-[40%] shrink-0 overflow-hidden rounded-lg bg-navy">
+                    {photo(r.img) && <Image src={photo(r.img)!} alt={r.alt} fill sizes="(max-width:768px) 40vw, 20vw" className="object-cover transition duration-700 group-hover:scale-105" />}
+                  </span>
+                  <span className="display flex flex-1 items-center justify-between gap-3 text-[20px] leading-[1.05] text-navy sm:text-[24px]">
+                    {r.label}
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue text-white transition group-hover:bg-orange"><Arrow className="h-4 w-4" /></span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 
