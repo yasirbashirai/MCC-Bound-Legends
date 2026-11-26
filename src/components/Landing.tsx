@@ -68,18 +68,39 @@ type HeroProps = {
   lines: string[];              // headline lines
   accentLine?: number;          // index of line rendered in blue
   sub: string;
+  sub2?: string;                // optional second hero paragraph
   formDefault?: ShipType;
   serviceName?: string;
   crumbs?: React.ReactNode;
   fallbackIcon?: IconKey;       // shown when there is no photo yet
   full?: boolean;               // wide client render shown uncropped, like the homepage (auto transport, 2026-11-09)
   presetCondition?: string;     // 3-step form Step 2 condition preset (e.g. "Non-Running")
+  onlyTypes?: string[];         // limit the Step 1 shipment dropdown
+  formTitle?: string;           // override the form heading
+  formNote?: React.ReactNode;   // small line under the form
+  showDirection?: boolean;      // route pages: visible direction selector
+  directionOptions?: string[];
+  directionAnchors?: Record<string, string>;
 };
 
-export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefault = "car", serviceName, crumbs, fallbackIcon, full, presetCondition }: HeroProps) {
+export function LandingHero({ slides, eyebrow, lines, accentLine, sub, sub2, formDefault = "car", serviceName, crumbs, fallbackIcon, full, presetCondition, onlyTypes, formTitle, formNote, showDirection, directionOptions, directionAnchors }: HeroProps) {
+  const form = (
+    <>
+      <StepQuoteForm
+        preselect={getShipOption(formDefault)?.label}
+        presetCondition={presetCondition}
+        serviceName={serviceName}
+        onlyTypes={onlyTypes}
+        showDirection={showDirection}
+        directionOptions={directionOptions}
+        directionAnchors={directionAnchors}
+        title={formTitle}
+      />
+      {formNote && <div className="mt-2 px-1 text-[12px] leading-snug text-white/75">{formNote}</div>}
+    </>
+  );
   return (
-    <HeroShell slides={slides} fallbackIcon={fallbackIcon} full={full}
-      form={<StepQuoteForm preselect={getShipOption(formDefault)?.label} presetCondition={presetCondition} serviceName={serviceName} />}>
+    <HeroShell slides={slides} fallbackIcon={fallbackIcon} full={full} form={form}>
       {crumbs}
       <HeroEyebrow>{eyebrow}</HeroEyebrow>
       <h1 className={H1_CLS}>
@@ -88,6 +109,7 @@ export function LandingHero({ slides, eyebrow, lines, accentLine, sub, formDefau
         ))}
       </h1>
       <p className="reveal-up mt-5 max-w-[640px] text-[17px] font-medium leading-[1.6] text-white drop-shadow sm:text-[18px]" style={{ ["--d" as string]: "450ms" }}>{sub}</p>
+      {sub2 && <p className="reveal-up mt-3 max-w-[640px] text-[16px] leading-[1.6] text-white/85 drop-shadow sm:text-[17px]" style={{ ["--d" as string]: "520ms" }}>{sub2}</p>}
       <HeroButtons />
     </HeroShell>
   );

@@ -145,6 +145,19 @@ export function StepQuoteForm({ preselect = "", onlyTypes, presetCondition = "",
     if (tr && ship === "Boat Without Trailer" && !tr.value) tr.value = "No trailer";
   }, [ship]);
 
+  // Vehicle-category cards on service pages (a[data-ship]) select that shipment type and focus the form.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest?.("a[data-ship]") as HTMLAnchorElement | null;
+      if (!a) return;
+      const label = a.getAttribute("data-ship");
+      if (label && offered.some((o) => o.label === label)) setShip(label);
+      requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>("#mccq-ship-type")?.focus({ preventScroll: true }));
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [offered]);
+
   const keyOf = (el: Element) => el.id;
   const setErr = (el: HTMLInputElement | HTMLSelectElement, msg: string) => setErrs((e) => (e[keyOf(el)] === msg ? e : { ...e, [keyOf(el)]: msg }));
 

@@ -15,8 +15,8 @@ import { PopularRoutes, SpecificPhotoGrid, Timeline } from "@/components/Visual"
 import { LandingHero, PhotoCardRow, StatsBand, WhyBand, categoryCards, type TypeCard } from "@/components/Landing";
 
 type Params = { slug: string };
-// /boat-transport-florida/ has its own dedicated page (src/app/boat-transport-florida/) built to the client reference.
-export function generateStaticParams(): Params[] { return pages.filter((p) => p.slug !== "boat-transport-florida").map((p) => ({ slug: p.slug })); }
+// /boat-transport-florida/, /motorcycle-transport/ and /heavy-equipment-transport/ have their own dedicated pages built to the client reference.
+export function generateStaticParams(): Params[] { return pages.filter((p) => !["boat-transport-florida", "motorcycle-transport", "heavy-equipment-transport"].includes(p.slug)).map((p) => ({ slug: p.slug })); }
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

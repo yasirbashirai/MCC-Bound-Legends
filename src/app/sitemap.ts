@@ -5,7 +5,7 @@ import { tips } from "@/data/tips";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const core = ["", "services", "get-a-quote", "how-it-works", "about-us", "testimonials", "faq", "contact", "cost-to-ship-a-car", "auto-transport-tips", "car-shipping/california-florida", "boat-transport/new-york-new-jersey-florida", "boat-transport/massachusetts-connecticut-florida"];
+  const core = ["", "services", "get-a-quote", "how-it-works", "about-us", "testimonials", "faq", "contact", "cost-to-ship-a-car", "auto-transport-tips", "car-shipping/california-florida", "boat-transport/new-york-new-jersey-florida", "boat-transport/massachusetts-connecticut-florida", "boat-transport/michigan-ohio-illinois-florida", "boat-transport/pennsylvania-florida", "motorcycle-transport/new-york-florida", "motorcycle-transport/california-florida", "heavy-equipment-transport/texas-florida", "heavy-equipment-transport/california-texas"];
   const legal = ["privacy-policy", "terms-and-conditions"];
   return [
     ...core.map((p) => ({ url: `${site.url}/${p}${p ? "/" : ""}`, lastModified: now, changeFrequency: "weekly" as const, priority: p === "" ? 1 : 0.8 })),

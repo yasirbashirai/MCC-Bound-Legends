@@ -190,9 +190,9 @@ export const pages: ServicePage[] = [
     name: "Motorcycle & Powersports",
     short: "Motorcycles, ATVs, UTVs, side-by-sides, golf carts",
     icon: "motorcycle",
-    title: "Motorcycle, ATV & UTV Transport Nationwide | MCC",
+    title: "Motorcycle & Powersports Shipping | MCC Bound Legends",
     description:
-      "Motorcycle shipping and powersports transport nationwide. Cruisers, sport bikes, touring bikes, ATVs, UTVs, side-by-sides and golf carts, secured and coordinated door to door.",
+      "Ship motorcycles, trikes, ATVs, UTVs and golf carts nationwide. Open or enclosed options and loading needs reviewed. Request a motorcycle shipping quote.",
     eyebrow: "Motorcycle & Powersports Transport",
     h1: "Motorcycle & Powersports Transport, Secured and Coordinated Door to Door",
     intro:
@@ -257,9 +257,9 @@ export const pages: ServicePage[] = [
     name: "Heavy Equipment & Machinery",
     short: "Industrial, agricultural, oversized and specialty loads",
     icon: "industrial",
-    title: "Heavy Equipment & Machinery Transport | MCC",
+    title: "Heavy Equipment & Machinery Transport | MCC Bound Legends",
     description:
-      "Oversized and industrial machinery transport coordination nationwide: agricultural equipment, generators, manufacturing machinery and specialty loads. RGN, lowboy, permits and escorts.",
+      "Move industrial machinery, generators, agricultural equipment and specialty loads nationwide. Specifications, loading and route needs reviewed. Request a quote.",
     eyebrow: "Heavy & Industrial Equipment Transport",
     h1: "Heavy Equipment & Machinery Transport for Oversized and Industrial Loads",
     intro:

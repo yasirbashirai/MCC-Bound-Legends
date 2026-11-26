@@ -43,8 +43,8 @@ const CHECKS = ["No Deposit to Book", "Licensed & Insured Carriers", "Fast, Reli
 const POPULAR_ROUTES: { label: string; href?: string }[] = [
   { label: "New York & New Jersey ↔ Florida", href: "/boat-transport/new-york-new-jersey-florida/" },
   { label: "Massachusetts & Connecticut ↔ Florida", href: "/boat-transport/massachusetts-connecticut-florida/" },
-  { label: "Michigan, Ohio & Illinois ↔ Florida" },
-  { label: "Pennsylvania ↔ Florida" },
+  { label: "Michigan, Ohio & Illinois ↔ Florida", href: "/boat-transport/michigan-ohio-illinois-florida/" },
+  { label: "Pennsylvania ↔ Florida", href: "/boat-transport/pennsylvania-florida/" },
 ];
 
 /* Every type card scrolls to the quote form (client: no subpages until Month 2). */
